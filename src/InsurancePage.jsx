@@ -161,6 +161,8 @@ export default function InsurancePage({ onNavigateHome, onNavigatePage }) {
             <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
             <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="text-[#7C1FA8] font-bold cursor-pointer">Insurance</button>
             <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Financing</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Tools</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('blog')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Blog</button>
           </div>
 
           {/* Desktop CTA */}

@@ -1,6 +1,17 @@
 import React from 'react';
 
 export default function Footer({ onNavigatePage }) {
+  const handleNav = (page) => {
+    if (onNavigatePage) {
+      onNavigatePage(page);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       {/* FOOTER - MOBILE VIEW ONLY */}
@@ -10,8 +21,9 @@ export default function Footer({ onNavigatePage }) {
           {/* Logo */}
           <img
             src="/PROPSERI 5 LOGO.png"
-            className="h-10 w-auto object-contain mb-4 filter drop-shadow-sm"
+            className="h-10 w-auto object-contain mb-4 filter drop-shadow-sm cursor-pointer"
             alt="PROSPERi5 Logo"
+            onClick={() => handleNav('home')}
           />
 
           {/* Tagline */}
@@ -36,14 +48,14 @@ export default function Footer({ onNavigatePage }) {
                 SOLUTIONS
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
-                <li><a href="#tools" className="hover:text-white transition-colors">Financial Tools</a></li>
+                <li><button onClick={() => handleNav('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
+                <li><button onClick={() => handleNav('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
+                <li><button onClick={() => handleNav('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
+                <li><button onClick={() => handleNav('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
+                <li><button onClick={() => handleNav('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
+                <li><button onClick={() => handleNav('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
+                <li><button onClick={() => handleNav('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
+                <li><button onClick={() => handleNav('tools')} className="hover:text-white transition-colors cursor-pointer text-left">Financial Tools</button></li>
               </ul>
             </div>
 
@@ -53,10 +65,13 @@ export default function Footer({ onNavigatePage }) {
                 FOR INVESTORS
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
+                <li><button onClick={() => handleNav('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
+                <li><button onClick={() => handleNav('insights')} className="hover:text-white transition-colors cursor-pointer text-left">Market Insights</button></li>
+                <li><button onClick={() => handleNav('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
+                <li><button onClick={() => handleNav('personal-finance')} className="hover:text-white transition-colors cursor-pointer text-left">Personal Finance</button></li>
+                <li><button onClick={() => handleNav('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
+                <li><button onClick={() => handleNav('blog')} className="hover:text-white transition-colors cursor-pointer text-left">Blog & Articles</button></li>
                 <li><a href="#expert" className="hover:text-white transition-colors">Talk To an Expert</a></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
                 <li><a href="#faqs" className="hover:text-white transition-colors">FAQs</a></li>
               </ul>
             </div>
@@ -80,7 +95,8 @@ export default function Footer({ onNavigatePage }) {
                 COMPANY
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
+                <li><button onClick={() => handleNav('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
+                <li><button onClick={() => handleNav('careers')} className="hover:text-white transition-colors cursor-pointer text-left">Careers</button></li>
                 <li><a href="#why-prosperi5" className="hover:text-white transition-colors">Why PROSPERi5</a></li>
                 <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
                 <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
@@ -153,9 +169,9 @@ export default function Footer({ onNavigatePage }) {
             </p>
 
             <div className="flex flex-wrap items-center justify-start gap-2 text-[#F5A623] text-[11px] font-medium mb-3 text-left w-full pr-2">
-              <a href="#privacy" className="hover:underline">Privacy Policy</a>
+              <button onClick={() => handleNav('privacy-policy')} className="hover:underline cursor-pointer">Privacy Policy</button>
               <span>·</span>
-              <a href="#terms" className="hover:underline">Terms & Conditions</a>
+              <button onClick={() => handleNav('terms-and-conditions')} className="hover:underline cursor-pointer">Terms &amp; Conditions</button>
               <span>·</span>
               <a href="#disclaimer" className="hover:underline">Disclaimer</a>
               <span>·</span>
@@ -168,7 +184,7 @@ export default function Footer({ onNavigatePage }) {
 
             <div className="w-full flex justify-end pr-2 pt-1">
               <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                onClick={scrollToTop}
                 className="text-[#F5A623] text-xs font-semibold flex items-center justify-end gap-1.5 hover:underline cursor-pointer py-1"
               >
                 <span>Back to top</span>
@@ -198,8 +214,9 @@ export default function Footer({ onNavigatePage }) {
               <div>
                 <img
                   src="/PROPSERI 5 LOGO.png"
-                  className="h-9 sm:h-10 w-auto object-contain mb-2.5 filter drop-shadow-sm"
+                  className="h-9 sm:h-10 w-auto object-contain mb-2.5 filter drop-shadow-sm cursor-pointer"
                   alt="PROSPERi5 Logo"
+                  onClick={() => handleNav('home')}
                 />
                 <p className="text-xs sm:text-[13px] text-white/90 leading-relaxed font-semibold mb-2.5 max-w-[210px]">
                   Investments, insurance and financing through one trusted relationship.
@@ -216,14 +233,14 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">SOLUTIONS</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
-                <li><a href="#tools" className="hover:text-white transition-colors">Financial Tools</a></li>
+                <li><button onClick={() => handleNav('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
+                <li><button onClick={() => handleNav('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
+                <li><button onClick={() => handleNav('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
+                <li><button onClick={() => handleNav('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
+                <li><button onClick={() => handleNav('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
+                <li><button onClick={() => handleNav('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
+                <li><button onClick={() => handleNav('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
+                <li><button onClick={() => handleNav('tools')} className="hover:text-white transition-colors cursor-pointer text-left">Financial Tools</button></li>
               </ul>
             </div>
 
@@ -231,11 +248,12 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">FOR INVESTORS</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('insights')} className="hover:text-white transition-colors cursor-pointer text-left">Market Insights</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('personal-finance')} className="hover:text-white transition-colors cursor-pointer text-left">Personal Finance</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
+                <li><button onClick={() => handleNav('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
+                <li><button onClick={() => handleNav('insights')} className="hover:text-white transition-colors cursor-pointer text-left">Market Insights</button></li>
+                <li><button onClick={() => handleNav('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
+                <li><button onClick={() => handleNav('personal-finance')} className="hover:text-white transition-colors cursor-pointer text-left">Personal Finance</button></li>
+                <li><button onClick={() => handleNav('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
+                <li><button onClick={() => handleNav('blog')} className="hover:text-white transition-colors cursor-pointer text-left">Blog & Articles</button></li>
                 <li><a href="#expert" className="hover:text-white transition-colors">Talk To an Expert</a></li>
                 <li><a href="#faqs" className="hover:text-white transition-colors">FAQs</a></li>
               </ul>
@@ -245,10 +263,10 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">FOR PARTNERS</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Overview</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Become a Partner</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Login</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Brochure</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Overview</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Become a Partner</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Login</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Brochure</button></li>
               </ul>
             </div>
 
@@ -256,7 +274,8 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">COMPANY</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
+                <li><button onClick={() => handleNav('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
+                <li><button onClick={() => handleNav('careers')} className="hover:text-white transition-colors cursor-pointer text-left">Careers</button></li>
                 <li><a href="#why-prosperi5" className="hover:text-white transition-colors">Why PROSPERi5</a></li>
                 <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
                 <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
@@ -308,7 +327,7 @@ export default function Footer({ onNavigatePage }) {
                   </svg>
                 </a>
                 <a href="#youtube" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </a>
@@ -344,21 +363,37 @@ export default function Footer({ onNavigatePage }) {
             </div>
           </div>
 
-          {/* BOTTOM COPYRIGHT & DISCLAIMER */}
+          {/* BOTTOM COPYRIGHT & DISCLAIMER & SCROLL TO TOP */}
           <div className="pt-4 mt-3 border-t border-white/10 flex flex-col gap-2 text-xs sm:text-[12.5px] text-white/90 font-semibold">
-            <div className="flex flex-col sm:flex-row items-center justify-start gap-x-4 gap-y-2 text-center sm:text-left">
-              <span className="font-semibold">© 2026 PROSPERi5. All rights reserved.</span>
-              <span className="text-white/30 hidden sm:inline">•</span>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 sm:gap-x-3 gap-y-1 text-white/90 font-semibold">
-                <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-                <span className="text-white/40">·</span>
-                <a href="#terms" className="hover:text-white transition-colors">Terms & Conditions</a>
-                <span className="text-white/40">·</span>
-                <a href="#disclaimer" className="hover:text-white transition-colors">Disclaimer</a>
-                <span className="text-white/40">·</span>
-                <a href="#grievance" className="hover:text-white transition-colors">Grievance Redressal</a>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-x-4 gap-y-2 text-center sm:text-left">
+              
+              <div className="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
+                <span className="font-semibold">© 2026 PROSPERi5. All rights reserved.</span>
+                <span className="text-white/30 hidden sm:inline">•</span>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 sm:gap-x-3 gap-y-1 text-white/90 font-semibold">
+                  <button onClick={() => handleNav('privacy-policy')} className="hover:text-[#F5A623] transition-colors cursor-pointer">Privacy Policy</button>
+                  <span className="text-white/40">·</span>
+                  <button onClick={() => handleNav('terms-and-conditions')} className="hover:text-[#F5A623] transition-colors cursor-pointer">Terms &amp; Conditions</button>
+                  <span className="text-white/40">·</span>
+                  <a href="#disclaimer" className="hover:text-[#F5A623] transition-colors">Disclaimer</a>
+                  <span className="text-white/40">·</span>
+                  <a href="#grievance" className="hover:text-[#F5A623] transition-colors">Grievance Redressal</a>
+                </div>
               </div>
+
+              {/* Scroll to Top Action Button */}
+              <button
+                onClick={scrollToTop}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-[#F5A623] hover:text-white transition-all text-xs font-bold shadow-sm cursor-pointer hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+              >
+                <span>Back to top</span>
+                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+                </svg>
+              </button>
+
             </div>
+
             <p className="text-[11px] sm:text-xs text-white/70 text-center sm:text-left leading-normal font-semibold">
               Investment products are subject to market risks. Insurance and financing solutions are subject to provider terms, eligibility and applicable regulations.
             </p>

@@ -13,6 +13,16 @@ import PartnerB2BPage from './PartnerB2BPage';
 import PersonalFinancePage from './PersonalFinancePage';
 import TaxSolutionsPage from './TaxSolutionsPage';
 import MarketInsightsPage from './MarketInsightsPage';
+import ToolsPage from './ToolsPage';
+import SipCalculatorPage from './SipCalculatorPage';
+import EmiCalculatorPage from './EmiCalculatorPage';
+import TermInsuranceCalculatorPage from './TermInsuranceCalculatorPage';
+import LoanAgainstSecuritiesPage from './LoanAgainstSecuritiesPage';
+import PrivacyPolicyPage from './PrivacyPolicyPage';
+import TermsAndConditionsPage from './TermsAndConditionsPage';
+import BlogPage from './BlogPage';
+import BlogDetailPage from './BlogDetailPage';
+import CareersPage from './CareersPage';
 import Footer from './Footer';
 
 function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
@@ -64,24 +74,72 @@ function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
 function App() {
   const getInitialPage = () => {
     const hash = window.location.hash.replace('#', '');
-    if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market'].includes(hash)) {
+    if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'tools', 'blog', 'blogs', 'blog-detail', 'careers', 'career', 'sip-calculator', 'emi-calculator', 'term-insurance-calculator', 'loan-against-securities', 'las-calculator', 'privacy-policy', 'privacy', 'terms-and-conditions', 'terms'].includes(hash)) {
+      if (hash === 'las-calculator') return 'loan-against-securities';
+      if (hash === 'privacy') return 'privacy-policy';
+      if (hash === 'terms') return 'terms-and-conditions';
+      if (hash === 'blogs') return 'blog';
+      if (hash === 'career') return 'careers';
+      if (hash === 'loans') return 'loan';
+      if (hash === 'partner-b2b') return 'partner';
+      if (hash === 'personalfinance' || hash === 'finance') return 'personal-finance';
+      if (hash === 'taxsolutions' || hash === 'tax-solutions') return 'tax';
+      if (hash === 'market-insights' || hash === 'marketinsights' || hash === 'market') return 'insights';
       return hash;
     }
     return sessionStorage.getItem('prosperi_page') || 'home';
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
+  const [selectedArticleId, setSelectedArticleId] = useState(null);
+
+  const handleNavigatePage = (page, extraId = null) => {
+    if (extraId) {
+      setSelectedArticleId(extraId);
+    }
+    if (window.location.hash !== `#${page}`) {
+      window.location.hash = page;
+    }
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'home'].includes(hash)) {
-        setCurrentPage(hash);
+      if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'tools', 'blog', 'blogs', 'blog-detail', 'careers', 'career', 'sip-calculator', 'emi-calculator', 'term-insurance-calculator', 'loan-against-securities', 'las-calculator', 'privacy-policy', 'privacy', 'terms-and-conditions', 'terms', 'home'].includes(hash)) {
+        if (hash === 'las-calculator') {
+          setCurrentPage('loan-against-securities');
+        } else if (hash === 'privacy') {
+          setCurrentPage('privacy-policy');
+        } else if (hash === 'terms') {
+          setCurrentPage('terms-and-conditions');
+        } else if (hash === 'blogs') {
+          setCurrentPage('blog');
+        } else if (hash === 'career') {
+          setCurrentPage('careers');
+        } else if (hash === 'loans') {
+          setCurrentPage('loan');
+        } else if (hash === 'partner-b2b') {
+          setCurrentPage('partner');
+        } else if (hash === 'personalfinance' || hash === 'finance') {
+          setCurrentPage('personal-finance');
+        } else if (hash === 'taxsolutions' || hash === 'tax-solutions') {
+          setCurrentPage('tax');
+        } else if (hash === 'market-insights' || hash === 'marketinsights' || hash === 'market') {
+          setCurrentPage('insights');
+        } else {
+          setCurrentPage(hash);
+        }
       }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [currentPage]);
 
   const [activeTab, setActiveTab] = useState('partners');
   const [hoveredPartnerCard, setHoveredPartnerCard] = useState(null);
@@ -272,6 +330,46 @@ function App() {
     return <MarketInsightsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
+  if (currentPage === 'tools') {
+    return <ToolsPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'sip-calculator') {
+    return <SipCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'emi-calculator') {
+    return <EmiCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'term-insurance-calculator') {
+    return <TermInsuranceCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'loan-against-securities' || currentPage === 'las-calculator') {
+    return <LoanAgainstSecuritiesPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'privacy-policy' || currentPage === 'privacy') {
+    return <PrivacyPolicyPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'terms-and-conditions' || currentPage === 'terms') {
+    return <TermsAndConditionsPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+  }
+
+  if (currentPage === 'blog' || currentPage === 'blogs') {
+    return <BlogPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
+  }
+
+  if (currentPage === 'blog-detail') {
+    return <BlogDetailPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} articleId={selectedArticleId} />;
+  }
+
+  if (currentPage === 'careers' || currentPage === 'career') {
+    return <CareersPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
+  }
+
   return (
     <div className="min-h-screen bg-white font-sans text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-hidden">
 
@@ -438,7 +536,7 @@ function App() {
 
                 {/* Option 4: Borrow Page */}
                 <button
-                  onClick={() => setCurrentPage('borrow')}
+                  onClick={() => navigateToPage('borrow')}
                   className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
                 >
                   <div className="w-10 h-10 rounded-xl bg-purple-surface border border-purple-200 text-[#7C1FA8] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FA8] group-hover/item:text-white transition-all">
@@ -449,10 +547,40 @@ function App() {
                     <span className="text-[11px] text-[#8E8A9D] block font-medium">Instant Loans, Micro Credit & LAP</span>
                   </div>
                 </button>
+
+                {/* Option 5: Tools Page */}
+                <button 
+                  onClick={() => navigateToPage('tools')}
+                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#FAF5FD] border border-purple-200 text-[#7C1FAB] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FAB] group-hover/item:text-white transition-all">
+                    🧮
+                  </div>
+                  <div>
+                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FAB] transition-colors block">Smart Tools</span>
+                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Calculators & Future Planning</span>
+                  </div>
+                </button>
               </div>
             </div>
 
+            <button 
+              onClick={() => navigateToPage('tools')} 
+              className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
+            >
+              Tools
+            </button>
 
+            <button 
+              onClick={() => navigateToPage('blog')} 
+              className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
+            >
+              Blog
+            </button>
+
+            <a href="#why-us" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">Why Us</a>
+            <a href="#how-it-works" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">How It Works</a>
+            <a href="#faqs" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">FAQs</a>
           </div>
 
           {/* Nav Right (Toggles & Action Buttons) - Desktop Only */}
@@ -542,12 +670,30 @@ function App() {
                 <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">About Us</span>
               </button>
 
-              {/* 03 Investors */}
+              {/* 03 Tools */}
+              <button
+                onClick={() => { setMobileMenuOpen(false); setCurrentPage('tools'); }}
+                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
+              >
+                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">03</span>
+                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Tools & Calculators</span>
+              </button>
+
+              {/* 04 Blog */}
+              <button
+                onClick={() => { setMobileMenuOpen(false); setCurrentPage('blog'); }}
+                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
+              >
+                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">04</span>
+                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Blog & Insights</span>
+              </button>
+
+              {/* 05 Investors */}
               <button
                 onClick={() => { setMobileMenuOpen(false); setCurrentPage('investors'); }}
                 className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
               >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">03</span>
+                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">05</span>
                 <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Investors</span>
               </button>
 
