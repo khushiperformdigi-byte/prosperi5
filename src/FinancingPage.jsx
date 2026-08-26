@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Footer from './Footer';
-import Testimonials from './Testimonials';
 
 export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -199,7 +198,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
       <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
         <div className="w-full relative">
           <img 
-            src="/ChatGPT Image Aug 25, 2026, 11_07_34 AM_all_purple.png" 
+            src="/ChatGPT Image Aug 26, 2026, 11_38_20 AM.png" 
             alt="Smart Finance. Stronger Future."
             className="w-full h-auto block -mt-3 sm:-mt-5 lg:-mt-7"
           />
@@ -640,15 +639,17 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
             <h2 className="text-xl font-extrabold">Need Capital for Your Next Big Step?</h2>
             <p className="text-xs text-white/80 mt-1">Get custom financing offers curated from 30+ top banks & NBFCs.</p>
           </div>
-          <button className="bg-accent-gold text-heading-ink font-extrabold px-6 py-3 rounded-full text-xs cursor-pointer shadow-md">
+          <button 
+            onClick={() => setSelectedModal(true)}
+            className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-extrabold px-6 py-3 rounded-full text-xs cursor-pointer shadow-md transition-all active:scale-95"
+          >
             Apply Now →
           </button>
         </section>
 
       </main>
 
-      {/* HOMEPAGE TESTIMONIALS SECTION ABOVE FOOTER */}
-      <Testimonials />
+
 
       {/* HOMEPAGE FLOATING FOOTER */}
       <Footer onNavigatePage={onNavigatePage} />
@@ -656,130 +657,149 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
       {/* PREMIUM PROSPERI5 MODAL DIALOG POPUP */}
       {selectedOptionModal && (
         <div className="fixed inset-0 z-[9999] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-[28px] max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-purple-100 animate-in fade-in zoom-in-95 duration-200 space-y-4 text-left overflow-hidden">
-            
-            {/* Top Gradient Bar */}
-            <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#7C1FAB] via-[#E84C88] to-[#F5A623]"></div>
+          <div 
+            className="bg-white bg-cover bg-center rounded-[28px] max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-purple-100/80 animate-in fade-in zoom-in-95 duration-200 text-left overflow-hidden"
+            style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
+          >
+            {/* Translucent overlay for clean text & input legibility */}
+            <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-0 pointer-events-none" />
 
-            {/* Close Button */}
-            <button 
-              onClick={() => {
-                setSelectedOptionModal(null);
-                setModalSubmitted(false);
-              }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-[#7C1FAB] w-8 h-8 rounded-full bg-gray-100 hover:bg-purple-100 flex items-center justify-center font-extrabold text-sm cursor-pointer transition-colors"
-            >
-              ✕
-            </button>
+            <div className="relative z-10 space-y-4">
+              {/* Top Gradient Bar */}
+              <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#7C1FAB] via-[#E84C88] to-[#F5A623]"></div>
 
-            {!modalSubmitted ? (
-              <>
-                <div className="space-y-1 pr-6">
-                  <span className="bg-purple-100 text-[#7C1FAB] text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-                    PROSPERI5 FINANCING
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-[#1E1B2E]">
-                    {selectedOptionModal.title}
-                  </h3>
-                  {selectedOptionModal.subtitle && (
-                    <p className="text-xs text-[#544F66] font-medium leading-relaxed">
-                      {selectedOptionModal.subtitle}
-                    </p>
+              {/* Close Button */}
+              <button 
+                onClick={() => {
+                  setSelectedOptionModal(null);
+                  setModalSubmitted(false);
+                }}
+                className="absolute top-0 right-0 text-gray-400 hover:text-[#7C1FAB] w-8 h-8 rounded-full bg-gray-100/90 hover:bg-purple-100 flex items-center justify-center font-extrabold text-sm cursor-pointer transition-colors z-20"
+              >
+                ✕
+              </button>
+
+              {!modalSubmitted ? (
+                <>
+                  <div className="space-y-1 pr-6">
+                    <span className="bg-purple-100 text-[#7C1FAB] text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                      PROSPERI5 FINANCING
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#1E1B2E]">
+                      {selectedOptionModal.title}
+                    </h3>
+                    {selectedOptionModal.subtitle && (
+                      <p className="text-xs text-[#544F66] font-medium leading-relaxed">
+                        {selectedOptionModal.subtitle}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* EMI Breakdown Stats if applicable */}
+                  {selectedOptionModal.isEMIBreakdown && (
+                    <div className="space-y-3 bg-[#FAF5FD]/90 backdrop-blur-xs border border-[#E5D9F2] p-4 rounded-2xl">
+                      <div className="bg-white p-3.5 rounded-xl border border-purple-100 flex items-center justify-between shadow-2xs">
+                        <div>
+                          <span className="text-[11px] font-bold text-[#8E8A9D] uppercase block">Monthly EMI</span>
+                          <span className="text-2xl font-extrabold text-[#7C1FAB]">₹ {selectedOptionModal.emi.toLocaleString('en-IN')} <span className="text-xs font-medium text-gray-500">/mo</span></span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs text-gray-600 block">Rate: <strong className="text-[#1E1B2E]">{selectedOptionModal.interestRate}%</strong></span>
+                          <span className="text-xs text-gray-600 block">Tenure: <strong className="text-[#1E1B2E]">{selectedOptionModal.tenureYears} Years</strong></span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
+                        <div className="bg-white p-3 rounded-xl border border-purple-100">
+                          <span className="text-[10.5px] text-[#8E8A9D] block uppercase">Principal Amount</span>
+                          <span className="text-sm font-extrabold text-[#1E1B2E]">₹ {selectedOptionModal.loanAmount.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-purple-100">
+                          <span className="text-[10.5px] text-[#8E8A9D] block uppercase">Total Interest</span>
+                          <span className="text-sm font-extrabold text-[#E84C88]">₹ {selectedOptionModal.totalInterest.toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    </div>
                   )}
-                </div>
 
-                {/* EMI Breakdown Stats if applicable */}
-                {selectedOptionModal.isEMIBreakdown && (
-                  <div className="space-y-3 bg-[#FAF5FD] border border-[#E5D9F2] p-4 rounded-2xl">
-                    <div className="bg-white p-3.5 rounded-xl border border-purple-100 flex items-center justify-between shadow-2xs">
-                      <div>
-                        <span className="text-[11px] font-bold text-[#8E8A9D] uppercase block">Monthly EMI</span>
-                        <span className="text-2xl font-extrabold text-[#7C1FAB]">₹ {selectedOptionModal.emi.toLocaleString('en-IN')} <span className="text-xs font-medium text-gray-500">/mo</span></span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xs text-gray-600 block">Rate: <strong className="text-[#1E1B2E]">{selectedOptionModal.interestRate}%</strong></span>
-                        <span className="text-xs text-gray-600 block">Tenure: <strong className="text-[#1E1B2E]">{selectedOptionModal.tenureYears} Years</strong></span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
-                      <div className="bg-white p-3 rounded-xl border border-purple-100">
-                        <span className="text-[10.5px] text-[#8E8A9D] block uppercase">Principal Amount</span>
-                        <span className="text-sm font-extrabold text-[#1E1B2E]">₹ {selectedOptionModal.loanAmount.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-purple-100">
-                        <span className="text-[10.5px] text-[#8E8A9D] block uppercase">Total Interest</span>
-                        <span className="text-sm font-extrabold text-[#E84C88]">₹ {selectedOptionModal.totalInterest.toLocaleString('en-IN')}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Lead Form */}
-                <form 
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setModalSubmitted(true);
-                  }}
-                  className="space-y-3.5 pt-1"
-                >
-                  <div>
-                    <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Your Full Name</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="e.g. Rahul Sharma"
-                      className="w-full bg-[#FAF8FC] border border-[#EBE8EF] focus:border-[#7C1FAB] focus:bg-white rounded-xl p-2.5 text-xs font-bold text-[#1E1B2E] outline-none transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Phone Number (+91)</label>
-                    <input 
-                      type="tel" 
-                      required 
-                      placeholder="e.g. 98765 43210"
-                      className="w-full bg-[#FAF8FC] border border-[#EBE8EF] focus:border-[#7C1FAB] focus:bg-white rounded-xl p-2.5 text-xs font-bold text-[#1E1B2E] outline-none transition-all"
-                    />
-                  </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full bg-[#7C1FAB] hover:bg-[#63148B] text-white font-extrabold py-3 px-6 rounded-full text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                  {/* Lead Form */}
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setModalSubmitted(true);
+                    }}
+                    className="space-y-3.5 pt-1"
                   >
-                    <span>Request Free Callback & Offer</span>
-                    <span>→</span>
+                    <div>
+                      <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Your Full Name</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="e.g. Rahul Sharma"
+                        className="w-full bg-white/95 border border-[#EBE8EF] focus:border-[#7C1FAB] rounded-xl p-2.5 text-xs font-bold text-[#1E1B2E] outline-none transition-all shadow-2xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Phone Number</label>
+                      <div className="flex items-center bg-white/95 border border-[#EBE8EF] focus-within:border-[#7C1FAB] rounded-xl overflow-hidden shadow-2xs">
+                        <select className="bg-transparent pl-2.5 pr-1 py-2.5 text-xs font-bold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
+                          <option value="+91">🇮🇳 +91</option>
+                          <option value="+1">🇺🇸 +1</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+971">🇦🇪 +971</option>
+                          <option value="+65">🇸🇬 +65</option>
+                          <option value="+61">🇦🇺 +61</option>
+                          <option value="+49">🇩🇪 +49</option>
+                          <option value="+1">🇨🇦 +1</option>
+                        </select>
+                        <input 
+                          type="tel" 
+                          required 
+                          placeholder="e.g. 98765 43210"
+                          className="w-full bg-transparent p-2.5 text-xs font-bold text-[#1E1B2E] outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className="w-full bg-[#7C1FAB] hover:bg-[#63148B] text-white font-extrabold py-3 px-6 rounded-full text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    >
+                      <span>Request Free Callback & Offer</span>
+                      <span>→</span>
+                    </button>
+
+                    <p className="text-[10px] text-center text-gray-400 font-medium">
+                      🔒 100% confidential. No spam guaranteed.
+                    </p>
+                  </form>
+                </>
+              ) : (
+                /* Success View */
+                <div className="py-6 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
+                    ✓
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-xl font-extrabold text-[#1E1B2E]">Request Submitted Successfully!</h4>
+                    <p className="text-xs text-[#544F66] font-medium max-w-xs mx-auto leading-relaxed">
+                      Thank you! Our senior finance specialist will get in touch with you shortly with pre-approved offers.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedOptionModal(null);
+                      setModalSubmitted(false);
+                    }}
+                    className="bg-[#7C1FAB] hover:bg-[#63148B] text-white font-extrabold px-6 py-2.5 rounded-full text-xs transition-all shadow-md cursor-pointer"
+                  >
+                    Done
                   </button>
-
-                  <p className="text-[10px] text-center text-gray-400 font-medium">
-                    🔒 100% confidential. No spam guaranteed.
-                  </p>
-                </form>
-              </>
-            ) : (
-              /* Success View */
-              <div className="py-6 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
-                  ✓
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-xl font-extrabold text-[#1E1B2E]">Request Submitted Successfully!</h4>
-                  <p className="text-xs text-[#544F66] font-medium max-w-xs mx-auto leading-relaxed">
-                    Thank you! Our senior finance specialist will get in touch with you shortly with pre-approved offers.
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setSelectedOptionModal(null);
-                    setModalSubmitted(false);
-                  }}
-                  className="bg-[#7C1FAB] hover:bg-[#63148B] text-white font-extrabold px-6 py-2.5 rounded-full text-xs transition-all shadow-md cursor-pointer"
-                >
-                  Done
-                </button>
-              </div>
-            )}
+              )}
 
+            </div>
           </div>
         </div>
       )}

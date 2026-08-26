@@ -49,32 +49,7 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
     return <span>{prefix}{count}{suffix}</span>;
   }
 
-  const teamMembers = [
-    {
-      name: 'Rajiv Mehta',
-      role: 'Co-Founder & CEO',
-      bio: '20+ years in wealth management. Ex-MD at a leading NBFC. Passionate about democratizing finance.',
-      avatar: '👨‍💼',
-    },
-    {
-      name: 'Priya Sharma',
-      role: 'Co-Founder & COO',
-      bio: 'Former CFP with 15 years of experience building partner distribution networks across India.',
-      avatar: '👩‍💼',
-    },
-    {
-      name: 'Arjun Nair',
-      role: 'Chief Technology Officer',
-      bio: 'Built fintech platforms serving 1M+ users. Ex-Zerodha, passionate about elegant engineering.',
-      avatar: '👨‍💻',
-    },
-    {
-      name: 'Sneha Kapoor',
-      role: 'Chief Business Officer',
-      bio: 'Scaled partner ecosystems across 300+ cities. Expert in distribution strategy and partner success.',
-      avatar: '👩‍🏢',
-    }
-  ];
+
 
   const values = [
     {
@@ -450,30 +425,7 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </section>
 
-      {/* TEAM */}
-      <section className="py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-6">
-          <span className="inline-block bg-[#F3EAFB] text-[#7C1FA8] font-extrabold text-xs tracking-widest uppercase px-4 py-2 rounded-full mb-3">
-            THE PEOPLE BEHIND IT
-          </span>
-          <h2 className="font-sans font-bold text-2xl lg:text-3xl text-[#1E1B2E] leading-tight tracking-tight">Meet Our Leadership</h2>
-          <p className="text-[#544F66] font-medium mt-2 max-w-lg mx-auto text-sm">
-            A team of seasoned finance professionals and technology innovators united by one mission.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {teamMembers.map((member, i) => (
-            <div key={i} className="bg-white border border-[#EBE8EF] rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-[#7C1FA8]/40 transition-all text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#F3EAFB] to-[#E9D5F8] flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-[#7C1FA8]/20">
-                {member.avatar}
-              </div>
-              <h3 className="font-bold text-[#1E1B2E] text-base">{member.name}</h3>
-              <p className="text-[#7C1FA8] font-semibold text-xs mt-1 mb-3">{member.role}</p>
-              <p className="text-[#544F66] text-xs font-medium leading-relaxed">{member.bio}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
 
 
@@ -484,25 +436,46 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
       {selectedModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
           onClick={() => setSelectedModal(null)}>
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold text-xl text-[#1E1B2E]">Talk to an Expert</h2>
-              <button onClick={() => setSelectedModal(null)} className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <p className="text-[#544F66] font-medium mb-6">Our team of financial experts is ready to help you get started on PROSPERi5.</p>
-            <div className="space-y-4">
-              <input type="text" placeholder="Your full name" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors" />
-              <input type="tel" placeholder="Your phone number" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors" />
-              <button
-                onClick={() => setSelectedModal(null)}
-                className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
-              >
-                Request a Callback
-              </button>
+          <div 
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
+            style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Translucent overlay for clean text & input legibility */}
+            <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-0 pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-bold text-xl text-[#1E1B2E]">Talk to an Expert</h2>
+                <button onClick={() => setSelectedModal(null)} className="w-9 h-9 rounded-full bg-gray-100/90 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors z-20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-[#544F66] font-medium mb-6">Our team of financial experts is ready to help you get started on PROSPERi5.</p>
+              <div className="space-y-4">
+                <input type="text" placeholder="Your full name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs" />
+                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] transition-colors shadow-2xs">
+                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇨🇦 +1</option>
+                  </select>
+                  <input type="tel" placeholder="Your phone number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
+                </div>
+                <button
+                  onClick={() => setSelectedModal(null)}
+                  className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
+                >
+                  Request a Callback
+                </button>
+              </div>
             </div>
           </div>
         </div>

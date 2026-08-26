@@ -236,7 +236,7 @@ export default function InsurancePage({ onNavigateHome, onNavigatePage }) {
                 className={`${plan.bgGradient} border ${plan.cardBorder} rounded-[26px] p-5 sm:p-6 transition-all duration-300 shadow-2xs hover:shadow-xl hover:scale-[1.015] group cursor-pointer relative overflow-hidden flex justify-between min-h-[190px] sm:min-h-[210px]`}
               >
                 {/* Left Text & Icon Container */}
-                <div className="flex flex-col justify-between space-y-3 z-10 max-w-[55%] sm:max-w-[58%]">
+                <div className="flex flex-col justify-between space-y-3 z-10 max-w-[58%] sm:max-w-[62%]">
                   <div className="space-y-3">
                     {/* Icon Box */}
                     <div className="w-10 h-10 rounded-2xl bg-white shadow-xs flex items-center justify-center shrink-0">
@@ -253,13 +253,6 @@ export default function InsurancePage({ onNavigateHome, onNavigatePage }) {
                       </p>
                     </div>
                   </div>
-
-                  {/* Circle Arrow Button (Bottom Left) */}
-                  <div className="pt-1">
-                    <div className="w-8 h-8 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center text-[#7C1FAB] group-hover:bg-[#7C1FAB] group-hover:text-white transition-all text-sm font-bold">
-                      →
-                    </div>
-                  </div>
                 </div>
 
                 {/* Right Side 3D Graphic Visual (Seamless Background Blend) */}
@@ -270,6 +263,13 @@ export default function InsurancePage({ onNavigateHome, onNavigatePage }) {
                     style={{ mixBlendMode: 'multiply' }}
                     className="max-w-full max-h-full object-contain object-bottom group-hover:scale-105 transition-transform duration-300"
                   />
+                </div>
+
+                {/* Single Circle Arrow Button (Shifted to Bottom Right Corner) */}
+                <div className="absolute bottom-3.5 right-3.5 z-20">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center text-[#7C1FAB] group-hover:bg-[#7C1FAB] group-hover:text-white transition-all text-xl sm:text-2xl font-bold pb-0.5">
+                    →
+                  </div>
                 </div>
               </div>
             ))}
@@ -375,110 +375,129 @@ export default function InsurancePage({ onNavigateHome, onNavigatePage }) {
       {/* 6. HOMEPAGE FLOATING FOOTER */}
       <Footer onNavigatePage={onNavigatePage} />
 
-      {/* INTERACTIVE QUOTE & DETAILS MODAL */}
+      {/* MODAL / CALCULATOR DIALOG */}
       {selectedPlanModal && (
         <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-purple-100 space-y-4 animate-in fade-in zoom-in duration-200">
-            
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-purple-100 text-[#7C1FAB] flex items-center justify-center font-bold text-sm">
-                  🛡️
-                </div>
-                <h3 className="font-extrabold text-base text-[#1E1B2E]">
-                  {selectedPlanModal.title || 'Insurance Policy Quote'}
-                </h3>
-              </div>
-              <button 
-                onClick={() => { setSelectedPlanModal(null); setQuoteSuccessMsg(false); }}
-                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-bold cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
+          <div 
+            className="bg-white bg-cover bg-center rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-purple-100/80 relative overflow-hidden animate-in fade-in zoom-in duration-200"
+            style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
+          >
+            {/* Translucent overlay for clean text & input legibility */}
+            <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-0 pointer-events-none" />
 
-            {quoteSuccessMsg ? (
-              <div className="py-6 text-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl font-bold">
-                  ✓
+            <div className="relative z-10 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100/80 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-100 text-[#7C1FAB] flex items-center justify-center font-bold text-sm">
+                    🛡️
+                  </div>
+                  <h3 className="font-extrabold text-base text-[#1E1B2E]">
+                    {selectedPlanModal.title || 'Insurance Policy Quote'}
+                  </h3>
                 </div>
-                <h4 className="text-lg font-extrabold text-[#1E1B2E]">Quote Request Sent!</h4>
-                <p className="text-xs text-[#544F66]">
-                  Our certified insurance advisor will call you within 15 minutes with customized plan options.
-                </p>
                 <button 
                   onClick={() => { setSelectedPlanModal(null); setQuoteSuccessMsg(false); }}
-                  className="bg-[#7C1FAB] text-white font-bold px-6 py-2 rounded-full text-xs mt-2"
+                  className="w-7 h-7 rounded-full bg-gray-100/90 hover:bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-bold cursor-pointer transition-colors z-20"
                 >
-                  Done
+                  ✕
                 </button>
               </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-xs text-[#544F66] font-medium">
-                  {selectedPlanModal.subtitle || 'Calculate estimated premium and get instant quotes from 50+ top insurers.'}
-                </p>
 
-                {/* Instant Quote Estimator */}
-                <div className="bg-[#FAF5FD] p-3.5 rounded-2xl border border-purple-100 space-y-3">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#1E1B2E] block mb-1">Coverage Amount</label>
-                    <select 
-                      value={coverageAmount}
-                      onChange={(e) => setCoverageAmount(Number(e.target.value))}
-                      className="w-full bg-white border border-purple-200 rounded-xl p-2 text-xs font-bold text-[#1E1B2E]"
-                    >
-                      <option value={500000}>₹ 5 Lakhs</option>
-                      <option value={1000000}>₹ 10 Lakhs</option>
-                      <option value={2500000}>₹ 25 Lakhs</option>
-                      <option value={5000000}>₹ 50 Lakhs</option>
-                      <option value={10000000}>₹ 1 Crore</option>
-                    </select>
+              {quoteSuccessMsg ? (
+                <div className="py-6 text-center space-y-2">
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl font-bold">
+                    ✓
                   </div>
+                  <h4 className="text-lg font-extrabold text-[#1E1B2E]">Quote Request Sent!</h4>
+                  <p className="text-xs text-[#544F66]">
+                    Our certified insurance advisor will call you within 15 minutes with customized plan options.
+                  </p>
+                  <button 
+                    onClick={() => { setSelectedPlanModal(null); setQuoteSuccessMsg(false); }}
+                    className="bg-[#7C1FAB] text-white font-bold px-6 py-2 rounded-full text-xs mt-2"
+                  >
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-xs text-[#544F66] font-medium">
+                    {selectedPlanModal.subtitle || 'Calculate estimated premium and get instant quotes from 50+ top insurers.'}
+                  </p>
 
-                  <div>
-                    <label className="text-[11px] font-bold text-[#1E1B2E] block mb-1">Your Age</label>
-                    <input 
-                      type="number"
-                      value={memberAge}
-                      onChange={(e) => setMemberAge(Number(e.target.value))}
-                      className="w-full bg-white border border-purple-200 rounded-xl p-2 text-xs font-bold text-[#1E1B2E]"
-                    />
-                  </div>
-
-                  <div className="bg-white p-3 rounded-xl border border-purple-100 flex items-center justify-between">
+                  {/* Instant Quote Estimator */}
+                  <div className="bg-[#FAF5FD]/90 backdrop-blur-xs p-3.5 rounded-2xl border border-purple-100 space-y-3">
                     <div>
-                      <span className="text-[10px] font-bold text-[#8E8A9D] block">Estimated Premium</span>
-                      <span className="text-lg font-extrabold text-[#7C1FAB]">{formatCurrency(calculateEstimate())} <span className="text-[10px] font-normal text-gray-500">/ mo</span></span>
+                      <label className="text-[11px] font-bold text-[#1E1B2E] block mb-1">Coverage Amount</label>
+                      <select 
+                        value={coverageAmount}
+                        onChange={(e) => setCoverageAmount(Number(e.target.value))}
+                        className="w-full bg-white border border-purple-200 rounded-xl p-2 text-xs font-bold text-[#1E1B2E]"
+                      >
+                        <option value={500000}>₹ 5 Lakhs</option>
+                        <option value={1000000}>₹ 10 Lakhs</option>
+                        <option value={2500000}>₹ 25 Lakhs</option>
+                        <option value={5000000}>₹ 50 Lakhs</option>
+                        <option value={10000000}>₹ 1 Crore</option>
+                      </select>
                     </div>
-                    <span className="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">
-                      Zero Commission
-                    </span>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-[#1E1B2E] block mb-1">Your Age</label>
+                      <input 
+                        type="number"
+                        value={memberAge}
+                        onChange={(e) => setMemberAge(Number(e.target.value))}
+                        className="w-full bg-white border border-purple-200 rounded-xl p-2 text-xs font-bold text-[#1E1B2E]"
+                      />
+                    </div>
+
+                    <div className="bg-white p-3 rounded-xl border border-purple-100 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-bold text-[#8E8A9D] block">Estimated Premium</span>
+                        <span className="text-lg font-extrabold text-[#7C1FAB]">{formatCurrency(calculateEstimate())} <span className="text-[10px] font-normal text-gray-500">/ mo</span></span>
+                      </div>
+                      <span className="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">
+                        Zero Commission
+                      </span>
+                    </div>
                   </div>
+
+                  <div className="space-y-2">
+                    <input 
+                      type="text"
+                      placeholder="Your Full Name"
+                      className="w-full bg-white/95 border border-gray-200 rounded-xl p-2.5 text-xs font-medium text-[#1E1B2E] focus:outline-none focus:border-[#7C1FAB] shadow-2xs"
+                    />
+                    <div className="flex items-center bg-white/95 border border-gray-200 rounded-xl overflow-hidden focus-within:border-[#7C1FAB] shadow-2xs">
+                      <select className="bg-transparent pl-2.5 pr-1 py-2.5 text-xs font-bold text-[#1E1B2E] outline-none border-r border-gray-200 cursor-pointer">
+                        <option value="+91">🇮🇳 +91</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+65">🇸🇬 +65</option>
+                        <option value="+61">🇦🇺 +61</option>
+                        <option value="+49">🇩🇪 +49</option>
+                        <option value="+1">🇨🇦 +1</option>
+                      </select>
+                      <input 
+                        type="tel"
+                        placeholder="Mobile Number"
+                        className="w-full bg-transparent p-2.5 text-xs font-medium text-[#1E1B2E] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => setQuoteSuccessMsg(true)}
+                    className="w-full bg-[#7C1FAB] hover:bg-[#65148D] text-white font-extrabold py-3 rounded-full text-xs shadow-md transition-all cursor-pointer"
+                  >
+                    Get Instant Free Quotes →
+                  </button>
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <input 
-                    type="text"
-                    placeholder="Your Full Name"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-xs font-medium text-[#1E1B2E] focus:outline-none focus:border-[#7C1FAB]"
-                  />
-                  <input 
-                    type="tel"
-                    placeholder="Mobile Number"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-xs font-medium text-[#1E1B2E] focus:outline-none focus:border-[#7C1FAB]"
-                  />
-                </div>
-
-                <button 
-                  onClick={() => setQuoteSuccessMsg(true)}
-                  className="w-full bg-[#7C1FAB] hover:bg-[#65148D] text-white font-extrabold py-3 rounded-full text-xs shadow-md transition-all cursor-pointer"
-                >
-                  Get Instant Free Quotes →
-                </button>
-              </div>
-            )}
-
+            </div>
           </div>
         </div>
       )}

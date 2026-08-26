@@ -5,6 +5,14 @@ import FinancingPage from './FinancingPage';
 import AboutPage from './AboutPage';
 import InvestorsPage from './InvestorsPage';
 import ProtectPage from './ProtectPage';
+import BorrowPage from './BorrowPage';
+import LoanPage from './LoanPage';
+import GrowPage from './GrowPage';
+import KnowledgeCenterPage from './KnowledgeCenterPage';
+import PartnerB2BPage from './PartnerB2BPage';
+import PersonalFinancePage from './PersonalFinancePage';
+import TaxSolutionsPage from './TaxSolutionsPage';
+import MarketInsightsPage from './MarketInsightsPage';
 import Footer from './Footer';
 
 function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
@@ -56,7 +64,7 @@ function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
 function App() {
   const getInitialPage = () => {
     const hash = window.location.hash.replace('#', '');
-    if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about'].includes(hash)) {
+    if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market'].includes(hash)) {
       return hash;
     }
     return sessionStorage.getItem('prosperi_page') || 'home';
@@ -67,7 +75,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'home'].includes(hash)) {
+      if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'home'].includes(hash)) {
         setCurrentPage(hash);
       }
     };
@@ -169,9 +177,11 @@ function App() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setSectionVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setSectionVisible(true);
+        }
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
     if (reasonsRef.current) {
       observer.observe(reasonsRef.current);
@@ -200,28 +210,66 @@ function App() {
     };
   }, []);
 
+  const navigateToPage = (p) => {
+    window.location.hash = p;
+    setCurrentPage(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (currentPage === 'protect') {
-    return <ProtectPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <ProtectPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   if (currentPage === 'investment') {
-    return <InvestmentPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <InvestmentPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   if (currentPage === 'insurance') {
-    return <InsurancePage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <InsurancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   if (currentPage === 'financing') {
-    return <FinancingPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <FinancingPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   if (currentPage === 'investors') {
-    return <InvestorsPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <InvestorsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   if (currentPage === 'about') {
-    return <AboutPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
+    return <AboutPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'loan' || currentPage === 'loans') {
+    return <LoanPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'borrow') {
+    return <BorrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'grow') {
+    return <GrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'knowledge') {
+    return <KnowledgeCenterPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'partner' || currentPage === 'partner-b2b') {
+    return <PartnerB2BPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'personal-finance' || currentPage === 'personalfinance' || currentPage === 'finance') {
+    return <PersonalFinancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'tax' || currentPage === 'tax-solutions' || currentPage === 'taxsolutions') {
+    return <TaxSolutionsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+  }
+
+  if (currentPage === 'insights' || currentPage === 'market-insights' || currentPage === 'marketinsights' || currentPage === 'market') {
+    return <MarketInsightsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
   }
 
   return (
@@ -294,12 +342,12 @@ function App() {
           {/* Links - Desktop */}
           <div className="hidden lg:flex items-center justify-center gap-x-6 font-medium text-heading-ink text-sm px-6 flex-1">
             <a href="#home" onClick={() => setCurrentPage('home')} className="whitespace-nowrap text-heading-ink relative py-1 font-semibold after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-0.5 after:bg-accent-pink after:rounded-full">Home</a>
-            <a 
-              href="#about" 
+            <a
+              href="#about"
               onClick={(e) => {
                 e.preventDefault();
                 setCurrentPage('about');
-              }} 
+              }}
               className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
             >
               About Us
@@ -318,8 +366,22 @@ function App() {
                 {/* Top accent gradient line */}
                 <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary-purple via-accent-pink to-accent-gold"></div>
 
-                {/* Option 0: Protect Page */}
-                <button 
+                {/* Option 0: Grow Page */}
+                <button
+                  onClick={() => setCurrentPage('grow')}
+                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#7C1FAB] text-white flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 transition-all">
+                    🌱
+                  </div>
+                  <div>
+                    <span className="font-extrabold text-sm text-[#7C1FAB] transition-colors block">Grow</span>
+                    <span className="text-[11px] text-[#8E8A9D] block font-medium">SIP, Mutual Funds & Wealth Growth</span>
+                  </div>
+                </button>
+
+                {/* Option 0.5: Protect Page */}
+                <button
                   onClick={() => setCurrentPage('protect')}
                   className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
                 >
@@ -333,7 +395,7 @@ function App() {
                 </button>
 
                 {/* Option 1: Investment Page */}
-                <button 
+                <button
                   onClick={() => setCurrentPage('investment')}
                   className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
                 >
@@ -347,7 +409,7 @@ function App() {
                 </button>
 
                 {/* Option 2: Insurance Page */}
-                <button 
+                <button
                   onClick={() => setCurrentPage('insurance')}
                   className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
                 >
@@ -361,7 +423,7 @@ function App() {
                 </button>
 
                 {/* Option 3: Financing Page */}
-                <button 
+                <button
                   onClick={() => setCurrentPage('financing')}
                   className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
                 >
@@ -373,12 +435,24 @@ function App() {
                     <span className="text-[11px] text-[#8E8A9D] block font-medium">Business Loans, LAP & Capital</span>
                   </div>
                 </button>
+
+                {/* Option 4: Borrow Page */}
+                <button
+                  onClick={() => setCurrentPage('borrow')}
+                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-purple-surface border border-purple-200 text-[#7C1FA8] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FA8] group-hover/item:text-white transition-all">
+                    💸
+                  </div>
+                  <div>
+                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FA8] transition-colors block">Borrow</span>
+                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Instant Loans, Micro Credit & LAP</span>
+                  </div>
+                </button>
               </div>
             </div>
 
-            <a href="#why-us" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">Why Us</a>
-            <a href="#how-it-works" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">How It Works</a>
-            <a href="#faqs" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">FAQs</a>
+
           </div>
 
           {/* Nav Right (Toggles & Action Buttons) - Desktop Only */}
@@ -503,35 +577,7 @@ function App() {
                 </div>
               </a>
 
-              {/* 05 Why PROSPERi5 (Height: 68px, Border: 1px, Rounded: 16px) */}
-              <a
-                href="#why-us"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[68px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">05</span>
-                <h4 className="font-bold text-sm text-[#1E1B2E] group-hover:text-white leading-tight transition-colors">Why PROSPERi5</h4>
-              </a>
 
-              {/* 06 How It Works (Height: 68px, Border: 1px, Rounded: 16px) */}
-              <a
-                href="#how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[68px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">06</span>
-                <h4 className="font-bold text-sm text-[#1E1B2E] group-hover:text-white leading-tight transition-colors">How It Works</h4>
-              </a>
-
-              {/* 07 FAQs (Height: 68px, Border: 1px, Rounded: 16px) */}
-              <a
-                href="#faqs"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[68px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">07</span>
-                <h4 className="font-bold text-sm text-[#1E1B2E] group-hover:text-white leading-tight transition-colors">FAQs</h4>
-              </a>
 
             </div>
 
@@ -581,8 +627,8 @@ function App() {
           {/* LEFT CONTENT COLUMN */}
           <div className="lg:col-span-6 flex flex-col items-center lg:items-start z-10 max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
             {/* Hero Main Heading: Plus Jakarta Sans, 600 SemiBold, 36px / 44px, tracking -5%, text-center */}
-            <h1 className="font-sans text-[36px] leading-[44px] lg:text-[48px] lg:leading-[54px] font-semibold text-heading-ink text-center lg:text-left tracking-[-0.05em] max-w-[720px]">
-              The Multi-Asset Wealth Management Platform<br className="hidden lg:block" /> for Every Partner
+            <h1 className="font-sans text-[36px] leading-[44px] lg:text-[48px] lg:leading-[54px] font-semibold text-heading-ink text-center lg:text-left tracking-[-0.05em] max-w-[640px]">
+              The Multi-Asset Wealth Management<br className="hidden lg:block" /> Platform for Every Partner
             </h1>
 
             {/* Underline Split Divider - Mobile Only (Width: 280px, Height: 3px) */}
@@ -616,7 +662,7 @@ function App() {
 
             {/* Desktop CTA BUTTONS ROW */}
             <div className="hidden lg:flex items-center w-[387px] h-[52px] gap-[14px] mt-6 select-none">
-              <button className="flex-1 h-full bg-primary-purple hover:bg-deep-purple text-white font-semibold rounded-xl shadow-lg shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
+              <button onClick={() => setSelectedModal(true)} className="flex-1 h-full bg-primary-purple hover:bg-deep-purple text-white font-semibold rounded-xl shadow-lg shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
                 Start Growing
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -630,7 +676,7 @@ function App() {
             {/* Mobile CTA BUTTONS STACK (Width: 197px, Height: 52px, Rounded: 500px pill) */}
             <div className="flex lg:hidden flex-col items-center gap-3.5 mt-6 select-none mx-auto">
               {/* Button 1: Start Growing ↗ */}
-              <button className="w-[197px] h-[52px] bg-primary-purple hover:bg-deep-purple text-white font-bold rounded-full shadow-md shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
+              <button onClick={() => setSelectedModal(true)} className="w-[197px] h-[52px] bg-primary-purple hover:bg-deep-purple text-white font-bold rounded-full shadow-md shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
                 <span>Start Growing</span>
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -929,19 +975,17 @@ function App() {
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-gradient-to-tr from-[#F5EEFB]/40 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          {/* Section Heading: Centered on Mobile & Desktop, Subheading in 3 lines matching heading width on Desktop */}
+          {/* Section Heading: Centered on Mobile & Desktop */}
           <div className="text-center mb-5 lg:mb-5 w-[342px] max-w-full lg:w-full lg:max-w-5xl mx-auto flex flex-col items-center px-4 lg:px-0">
             <h2 className="font-sans font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] tracking-[-0.5px] text-heading-ink text-center lg:max-w-none max-w-[760px] mx-auto whitespace-normal lg:whitespace-nowrap">
               A Complete Financial Ecosystem For Your Clients
             </h2>
             <p
               style={{ fontFamily: "'Inter', sans-serif" }}
-              className="font-medium text-[14px] leading-[20px] sm:leading-relaxed lg:text-[16px] lg:leading-[24px] tracking-[-0.5px] text-[#544F66] mt-2.5 sm:mt-3 text-center max-w-2xl lg:max-w-[850px] mx-auto"
+              className="font-medium text-[14px] leading-[20px] sm:leading-relaxed lg:text-[16px] lg:leading-[24px] tracking-[-0.5px] text-[#544F66] mt-2.5 sm:mt-3 text-center max-w-2xl lg:max-w-[750px] mx-auto"
             >
               <span className="hidden lg:inline">
-                PROSPERi5 helps you become the first call for every financial need. Instead of watching clients turn<br className="hidden lg:block" />
-                elsewhere for products you do not offer, deepen relationships, increase wallet share and keep more of their financial<br className="hidden lg:block" />
-                journey with you.
+                PROSPERi5 helps you become the first call for every financial need. Instead of watching clients turn elsewhere for products you do not offer, deepen relationships, increase wallet share and keep more of their financial journey with you.
               </span>
               <span className="inline lg:hidden">
                 PROSPERi5 helps you become the first call for every financial need—deepening relationships and keeping more of each client’s financial journey with you.
@@ -983,8 +1027,8 @@ function App() {
               </div>
             </div>
 
-            {/* RIGHT: Three numbered service cards (Desktop 16px card subtext matching section subheading) */}
-            <div className="lg:col-span-6 flex flex-col gap-4 lg:gap-4 px-4 lg:px-4 w-[314px] max-w-full lg:w-full mx-auto lg:mx-0 mt-6 lg:mt-0">
+            {/* RIGHT: Three numbered service cards (Matching uniform subtext width across all points) */}
+            <div className="lg:col-span-6 flex flex-col gap-4 lg:gap-5 px-4 lg:px-4 w-full max-w-xl lg:w-full mx-auto lg:mx-0 mt-6 lg:mt-0">
 
               {/* 1. Investment Card */}
               <div className="flex items-start gap-4 lg:gap-5 pb-4 lg:pb-4 border-b border-gray-200">
@@ -1002,11 +1046,14 @@ function App() {
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] lg:max-w-[420px]"
+                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] w-full max-w-[460px]"
                   >
                     Give your clients access to a portfolio of traditional and new-age investments.
                   </p>
-                  <button className="w-[238px] max-w-full h-[40px] lg:h-[42px] bg-[#7C1FA8] hover:bg-[#6b1991] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95">
+                  <button 
+                    onClick={() => navigateToPage('investment')}
+                    className="w-[245px] max-w-full h-[40px] lg:h-[42px] bg-[#7C1FA8] hover:bg-[#6b1991] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95"
+                  >
                     <span>Explore Investment Products</span>
                     <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -1031,11 +1078,14 @@ function App() {
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] lg:max-w-[420px]"
+                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] w-full max-w-[460px]"
                   >
                     Help your clients protect what matters with a comprehensive range of insurance solutions.
                   </p>
-                  <button className="w-[238px] max-w-full h-[40px] lg:h-[42px] bg-[#C81E8C] hover:bg-[#b0187a] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95">
+                  <button 
+                    onClick={() => navigateToPage('insurance')}
+                    className="w-[245px] max-w-full h-[40px] lg:h-[42px] bg-[#C81E8C] hover:bg-[#b0187a] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95"
+                  >
                     <span>Explore Insurance Products</span>
                     <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -1060,11 +1110,14 @@ function App() {
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] lg:max-w-[420px]"
+                    className="ecosystem-card-subtext-desktop font-medium text-[14px] lg:text-[16px] leading-snug lg:leading-[24px] tracking-[-0.5px] text-[#544F66] w-full max-w-[460px]"
                   >
                     Help your clients access the ideal financing solutions for their personal and business requirements.
                   </p>
-                  <button className="w-[238px] max-w-full h-[40px] lg:h-[42px] bg-[#F5A623] hover:bg-[#de9315] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95">
+                  <button 
+                    onClick={() => navigateToPage('financing')}
+                    className="w-[245px] max-w-full h-[40px] lg:h-[42px] bg-[#F5A623] hover:bg-[#de9315] text-white font-bold rounded-[12px] lg:rounded-[14px] text-xs lg:text-[13.5px] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 lg:mt-2.5 shadow-sm active:scale-95"
+                  >
                     <span>Explore Financing Products</span>
                     <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -1076,30 +1129,7 @@ function App() {
             </div>
           </div>
 
-          {/* Bottom Legend Pill Badge (Visible on mobile & desktop, tagline hidden on mobile) */}
-          <div className="flex flex-col items-center mt-8 lg:mt-8 gap-2 px-4">
-            <div className="w-fit mx-auto flex flex-col items-center gap-2">
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 px-5 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white border border-[#F0E6F7] shadow-[0_8px_30px_rgba(124,31,168,0.08)] select-none">
-                <div className="flex items-center gap-2 transition-transform duration-200 hover:scale-105 cursor-pointer">
-                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#7C1FA8] shrink-0 shadow-sm shadow-[#7C1FA8]/30"></span>
-                  <span className="text-[#7C1FA8] text-[10px] sm:text-xs font-extrabold tracking-widest uppercase">INVESTMENT</span>
-                </div>
-                <div className="w-[1.5px] h-3 sm:h-4 bg-[#E6DFEC]"></div>
-                <div className="flex items-center gap-2 transition-transform duration-200 hover:scale-105 cursor-pointer">
-                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#E84C88] shrink-0 shadow-sm shadow-[#E84C88]/30"></span>
-                  <span className="text-[#E84C88] text-[10px] sm:text-xs font-extrabold tracking-widest uppercase">INSURANCE</span>
-                </div>
-                <div className="w-[1.5px] h-3 sm:h-4 bg-[#E6DFEC]"></div>
-                <div className="flex items-center gap-2 transition-transform duration-200 hover:scale-105 cursor-pointer">
-                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#F5A623] shrink-0 shadow-sm shadow-[#F5A623]/30"></span>
-                  <span className="text-[#F5A623] text-[10px] sm:text-xs font-extrabold tracking-widest uppercase">FINANCING</span>
-                </div>
-              </div>
-              <p className="hidden lg:block text-[10px] sm:text-xs text-[#7C1FA8] font-semibold text-center italic w-full">
-                One connected ecosystem. Three ways to serve every client relationship.
-              </p>
-            </div>
-          </div>
+
         </div>
       </section>
 
@@ -1149,9 +1179,9 @@ function App() {
                   defaultBorder: 'border-purple-100/70',
                   isShifted: false,
                   icon: (isHovered) => (
-                    <div className={`w-[50px] h-[34px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-colors ${isHovered ? 'bg-white text-[#7C1FA8]' : 'bg-[#7C1FA8] text-white'
+                    <div className={`w-[54px] h-[40px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-colors ${isHovered ? 'bg-white text-[#7C1FA8]' : 'bg-[#7C1FA8] text-white'
                       }`}>
-                      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                       </svg>
                     </div>
@@ -1165,7 +1195,7 @@ function App() {
                   defaultBorder: 'border-purple-100/90',
                   isShifted: true,
                   icon: (isHovered) => (
-                    <svg className={`w-9 h-9 lg:w-10 lg:h-10 stroke-[2.5] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
+                    <svg className={`w-11 h-11 lg:w-[50px] lg:h-[50px] stroke-[2.5] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
                       }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0L21.75 8" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h4.75V12.75" />
@@ -1180,7 +1210,7 @@ function App() {
                   defaultBorder: 'border-purple-100/70',
                   isShifted: false,
                   icon: (isHovered) => (
-                    <svg className={`w-8 h-8 lg:w-9 lg:h-9 stroke-[2] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
+                    <svg className={`w-10 h-10 lg:w-[48px] lg:h-[48px] stroke-[2] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
                       }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <rect x="3" y="3" width="7" height="7" rx="1" />
                       <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -1197,7 +1227,7 @@ function App() {
                   defaultBorder: 'border-purple-100/90',
                   isShifted: true,
                   icon: (isHovered) => (
-                    <svg className={`w-8 h-8 lg:w-9 lg:h-9 stroke-[2] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
+                    <svg className={`w-10 h-10 lg:w-[48px] lg:h-[48px] stroke-[2] transition-colors ${isHovered ? 'text-white' : 'text-[#7C1FA8]'
                       }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <rect x="5" y="5" width="14" height="14" rx="2" />
                       <circle cx="5" cy="5" r="2.5" fill={isHovered ? "white" : "#7C1FA8"} />
@@ -1215,12 +1245,40 @@ function App() {
                   defaultBorder: 'border-purple-100/70',
                   isShifted: false,
                   icon: (isHovered) => (
-                    <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isHovered ? 'border-white text-white' : 'border-[#7C1FA8] text-[#7C1FA8]'
-                      }`}>
-                      <svg className="w-4 h-4 lg:w-5 lg:h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </div>
+                    <svg
+                      className={`w-11 h-11 lg:w-[54px] lg:h-[54px] transition-colors shrink-0 ${isHovered ? 'text-white' : 'text-[#7C1FA8]'}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      {/* Outer stroke circle */}
+                      <circle cx="12" cy="12" r="9.5" strokeWidth="1.6" />
+
+                      {/* ₹0 Coin Circle */}
+                      <circle cx="14" cy="8" r="4.2" strokeWidth="1.5" />
+
+                      {/* ₹0 Text inside Coin */}
+                      <text
+                        x="14"
+                        y="9.4"
+                        fontSize="4.2"
+                        fontWeight="900"
+                        textAnchor="middle"
+                        fill="currentColor"
+                        stroke="none"
+                        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+                      >
+                        ₹0
+                      </text>
+
+                      {/* Hand Icon Supporting the Coin */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.6"
+                        d="M5.5 15.5h3.2c1.4 0 2.5.6 3.4 1.3 1.1 1 2.3 1.2 3.4.6 1-.6 1.8-1.7 2.5-2.6 M5.5 13.8v3.2"
+                      />
+                    </svg>
                   )
                 }
               ].map((reason, index) => {
@@ -1240,8 +1298,8 @@ function App() {
                   >
                     {/* Step Number Circle */}
                     <div className={`reason-circle-desktop w-7.5 h-7.5 sm:w-9 sm:h-9 lg:w-[40px] lg:h-[40px] rounded-full flex items-center justify-center text-xs sm:text-[13px] lg:text-[15px] font-bold shrink-0 transition-all duration-200 relative z-10 ${isHovered
-                        ? 'bg-[#7C1FA8] text-white border-none shadow-md scale-105'
-                        : 'bg-white text-[#7C1FA8] border-2 border-[#7C1FA8]'
+                      ? 'bg-[#7C1FA8] text-white border-none shadow-md scale-105'
+                      : 'bg-white text-[#7C1FA8] border-2 border-[#7C1FA8]'
                       }`}>
                       {reason.step}
                     </div>
@@ -1255,12 +1313,12 @@ function App() {
                         }`}
                     >
                       <div className="flex-1 min-w-0 max-w-[220px] lg:max-w-none">
-                        <h3 className={`reason-card-title-desktop font-sans font-semibold text-sm sm:text-base leading-snug mb-1 lg:mb-[2px] lg:font-['Helvetica_Neue',Helvetica,Arial,sans-serif] lg:font-medium lg:text-[20px] lg:leading-[120%] lg:tracking-[0px] lg:min-h-[24px] transition-colors ${isHovered ? 'text-white' : 'text-[#1E1135]'
+                        <h3 className={`reason-card-title-desktop font-semibold text-sm sm:text-base leading-snug mb-1 lg:mb-[2px] lg:font-semibold lg:text-[20px] lg:leading-[120%] lg:tracking-[0px] lg:min-h-[24px] transition-colors ${isHovered ? 'text-white' : 'text-[#1E1135]'
                           }`}>
                           {reason.title}
                         </h3>
                         <p
-                          className={`reason-card-subtext-desktop font-normal text-[13px] sm:text-[14px] leading-[17px] sm:leading-[18px] tracking-[-0.5px] lg:font-['Inter',sans-serif] lg:font-medium lg:text-[15px] lg:leading-[120%] lg:tracking-[-0.5px] lg:min-h-[18px] lg:mt-[2px] transition-colors ${isHovered ? 'text-white/90' : 'text-[#544F66]'
+                          className={`reason-card-subtext-desktop font-semibold text-[13px] sm:text-[14px] leading-[17px] sm:leading-[18px] tracking-[-0.5px] lg:font-['Inter',sans-serif] lg:font-semibold lg:text-[15px] lg:leading-[120%] lg:tracking-[-0.5px] lg:min-h-[18px] lg:mt-[2px] transition-colors ${isHovered ? 'text-white/95' : 'text-[#544F66]'
                             }`}
                         >
                           {reason.description}
@@ -1320,8 +1378,8 @@ function App() {
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className={`h-[48px] px-6 rounded-[24px] font-semibold text-[15px] tracking-[-0.5px] flex items-center justify-center gap-2 transition-all duration-300 shadow-md cursor-pointer active:scale-95 ${partnerCtaClicked
-                      ? 'bg-[#7C1FA8] text-white border-2 border-white shadow-purple-900/50 scale-105'
-                      : 'bg-white text-[#5E1683] hover:bg-[#7C1FA8] hover:text-white hover:border-white border-2 border-transparent'
+                    ? 'bg-[#7C1FA8] text-white border-2 border-white shadow-purple-900/50 scale-105'
+                    : 'bg-white text-[#5E1683] hover:bg-[#7C1FA8] hover:text-white hover:border-white border-2 border-transparent'
                     }`}
                 >
                   <span>Become a Partner</span>
@@ -1373,8 +1431,8 @@ function App() {
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className={`w-[180px] h-[46px] rounded-[23px] font-semibold text-[14px] tracking-[-0.5px] flex items-center justify-center gap-1.5 mx-auto mt-1 shadow-md transition-all duration-300 cursor-pointer active:scale-95 ${partnerCtaClicked
-                      ? 'bg-[#7C1FA8] text-white border-2 border-white scale-105'
-                      : 'bg-white text-[#5E1683] hover:bg-[#7C1FA8] hover:text-white hover:border-white border-2 border-transparent'
+                    ? 'bg-[#7C1FA8] text-white border-2 border-white scale-105'
+                    : 'bg-white text-[#5E1683] hover:bg-[#7C1FA8] hover:text-white hover:border-white border-2 border-transparent'
                     }`}
                 >
                   <span>Become a Partner</span>
@@ -1444,7 +1502,7 @@ function App() {
                 title: 'Identify the Client Need',
                 description: 'Recognise a requirement outside your current area of expertise.',
                 icon: (
-                  <svg className="w-8 h-8 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-14 h-14 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     <circle cx="17" cy="17" r="3" strokeWidth="1.5" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 19l2 2" />
@@ -1455,10 +1513,17 @@ function App() {
                 step: '02',
                 title: 'Refer the Opportunity',
                 description: 'Introduce the client or share the lead with PROSPERi5.',
-                icon: (
-                  <svg className="w-8 h-8 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.924a4.5 4.5 0 011.884-.112l3.411.682a4.5 4.5 0 001.884-.112L21 12l-8.057-2.686a4.5 4.5 0 00-1.884.112l-3.411-.682a4.5 4.5 0 01-1.884.112L3 9.75V15z" />
-                  </svg>
+                icon: (isHovered) => (
+                  <img 
+                    src="/hugeicons_direction-left-01.png" 
+                    alt="Refer the Opportunity direction icon" 
+                    className="w-14 h-14 object-contain transition-all duration-200"
+                    style={{
+                      filter: isHovered 
+                        ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
+                        : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
+                    }}
+                  />
                 ),
               },
               {
@@ -1467,10 +1532,10 @@ function App() {
                 description: 'Our specialists understand the requirement and recommend a suitable solution.',
                 icon: (
                   <div className="relative">
-                    <svg className="w-8 h-8 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-14 h-14 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
-                    <svg className="w-3.5 h-3.5 fill-current absolute -top-1 -right-1" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 fill-current absolute -top-1 -right-1" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
@@ -1481,7 +1546,7 @@ function App() {
                 title: 'Client Requirement Fulfilled',
                 description: 'The client receives the right product and a seamless service experience.',
                 icon: (
-                  <svg className="w-8 h-8 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-14 h-14 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
                   </svg>
                 ),
@@ -1491,7 +1556,7 @@ function App() {
                 title: 'Earn Revenue & Retain the Relationship',
                 description: 'You earn your share while continuing to own and strengthen the relationship.',
                 icon: (
-                  <svg className="w-8 h-8 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-14 h-14 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0L21.75 8" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h4.75V12.75" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18" />
@@ -1509,7 +1574,7 @@ function App() {
                   style={{
                     transitionDelay: howItWorksVisible ? '0ms' : `${index * 160}ms`,
                   }}
-                  className={`rounded-[22px] p-5 sm:p-5.5 flex flex-col justify-between transition-all duration-200 ease-out min-h-[220px] cursor-pointer group ${howItWorksVisible
+                  className={`rounded-[22px] p-5 sm:p-5.5 flex flex-col justify-between transition-all duration-300 ease-out min-h-[220px] cursor-pointer group ${howItWorksVisible
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
                     } ${isHovered
@@ -1526,15 +1591,15 @@ function App() {
                       }`}>
                       {card.title}
                     </h3>
-                    <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-[#F5A623]/90' : 'text-[#544F66]'
+                    <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-[#F5A623]/95' : 'text-[#544F66]'
                       }`}>
                       {card.description}
                     </p>
                   </div>
                   <div className="flex justify-end mt-4">
-                    <div className={`transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-purple-400'
+                    <div className={`transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#7C1FAB]'
                       }`}>
-                      {card.icon}
+                      {typeof card.icon === 'function' ? card.icon(isHovered) : card.icon}
                     </div>
                   </div>
                 </div>
@@ -1922,10 +1987,17 @@ function App() {
                 step: '02',
                 title: 'Refer the Opportunity',
                 description: 'Introduce the client or share the lead with PROSPERi5.',
-                icon: (
-                  <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.924a4.5 4.5 0 011.884-.112l3.411.682a4.5 4.5 0 001.884-.112L21 12l-8.057-2.686a4.5 4.5 0 00-1.884.112l-3.411-.682a4.5 4.5 0 01-1.884.112L3 9.75V15z" />
-                  </svg>
+                icon: (isActive) => (
+                  <img 
+                    src="/hugeicons_direction-left-01.png" 
+                    alt="Refer the Opportunity direction icon" 
+                    className="w-[70px] h-[70px] object-contain transition-all duration-200"
+                    style={{
+                      filter: isActive 
+                        ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
+                        : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
+                    }}
+                  />
                 )
               },
               {
@@ -1972,15 +2044,15 @@ function App() {
                   key={card.step}
                   onClick={() => handleMobileStepClick(idx)}
                   className={`w-[240px] h-[240px] rounded-[16px] p-5 shrink-0 snap-center transition-all duration-300 flex flex-col justify-between cursor-pointer ${isActive
-                    ? 'bg-[#7C1FA8] text-white shadow-xl scale-[1.02]'
-                    : 'bg-white text-[#1E1B2E] border border-[#F0E6F7] shadow-sm'
+                    ? 'bg-[#7C1FA8] text-[#F5A623] shadow-xl scale-[1.02]'
+                    : 'bg-white text-[#1E1B2E] border border-purple-100/90 shadow-sm'
                     }`}
                 >
                   <div className="flex justify-between items-start w-full">
-                    <div className={`mt-1.5 ${isActive ? 'text-white/90' : 'text-[#7C1FA8]'}`}>
-                      {card.icon}
+                    <div className={`mt-1.5 ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
+                      {typeof card.icon === 'function' ? card.icon(isActive) : card.icon}
                     </div>
-                    <span className={`font-extrabold text-sm ${isActive ? 'text-white/80' : 'text-[#7C1FA8]'}`}>
+                    <span className={`font-extrabold text-sm ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
                       {card.step}
                     </span>
                   </div>
@@ -1988,14 +2060,14 @@ function App() {
                   <div className="flex flex-col mt-auto">
                     <h3
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-medium text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-white' : 'text-[#1E1B2E]'
+                      className={`font-semibold text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-[#F5A623]' : 'text-[#1E1B2E]'
                         }`}
                     >
                       {card.title}
                     </h3>
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-medium text-[14px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-[#F5A623]' : 'text-[#544F66]'
+                      className={`font-medium text-[13px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-[#F5A623]/95' : 'text-[#544F66]'
                         }`}
                     >
                       {card.description}
@@ -2398,30 +2470,6 @@ function App() {
 
           </div>
 
-          {/* Bottom Dark Pill Dock Bar (Hidden on mobile) */}
-          <div className="hidden lg:flex bg-[#1D042B] text-white rounded-full py-2.5 px-5 max-w-4xl mx-auto flex-wrap items-center justify-around gap-3 border border-white/10 shadow-md text-[11px] sm:text-xs font-bold font-sans">
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D81B60]"></span>
-              <span>Investor guidance</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7C1FAB]"></span>
-              <span>Partner growth</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F5A623]"></span>
-              <span>Business financing</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-              <span>Client ownership</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D81B60]"></span>
-              <span>End-to-end support</span>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -2569,14 +2617,14 @@ function App() {
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="text-[#D81B60] text-xs font-bold tracking-wider uppercase mb-2 inline-block font-sans"
             >
-              QUESTIONS EVERY SERIOUS ADVISOR ASKS
+              FREQUENTLY ASKED QUESTIONS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-[32px] lg:leading-[38px] font-bold text-heading-ink tracking-tight mb-2.5 text-left max-w-md">
               Questions Every Serious Advisor Asks Us
             </h2>
             <p
               style={{ fontFamily: "'Inter', sans-serif" }}
-              className="font-sans text-xs sm:text-sm lg:text-[14.5px] text-[#544F66] font-medium leading-relaxed max-w-md"
+              className="font-sans text-xs sm:text-sm lg:text-[14.5px] text-[#544F66] font-medium leading-relaxed max-w-[350px]"
             >
               Everything partners usually want to know about client ownership, fees, product expertise, onboarding and payouts.
             </p>
@@ -2705,7 +2753,7 @@ function App() {
             <div className="absolute top-0 right-0 w-[240px] h-[240px] bg-purple-600/20 rounded-full filter blur-[60px] pointer-events-none"></div>
 
             {/* Top Text Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 pt-5 sm:pt-7">
               <span
                 style={{ fontFamily: "'Inter', sans-serif" }}
                 className="text-[#F5A623] font-medium text-[14px] leading-none tracking-[-0.5px] uppercase block mb-1.5"
@@ -2738,12 +2786,24 @@ function App() {
                 />
 
                 {/* Field 2: Mobile Number */}
-                <input
-                  type="tel"
-                  placeholder="Mobile Number"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-5 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
-                />
+                <div className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-4 flex items-center focus-within:border-purple-500 transition-all">
+                  <select className="bg-transparent pr-1 text-xs font-bold text-[#1E1135] outline-none border-r border-purple-200/80 cursor-pointer">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇨🇦 +1</option>
+                  </select>
+                  <input
+                    type="tel"
+                    placeholder="Mobile Number"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="w-full pl-2 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none bg-transparent"
+                  />
+                </div>
 
                 {/* Field 3: Your ARN Number */}
                 <input
@@ -2805,7 +2865,7 @@ function App() {
 
             <div className="flex flex-col gap-3">
               {/* Ownership Promise Box */}
-              <div className="w-[325px] max-w-full min-h-[92px] mx-auto rounded-[16px] bg-[#5E1683] text-white p-4 flex items-center gap-3.5 shadow-md relative overflow-hidden">
+              <div className="w-[325px] max-w-full min-h-[92px] mx-auto rounded-[16px] bg-[#4C0B6B] text-white p-4 flex items-center gap-3.5 shadow-md relative overflow-hidden">
                 {/* Ellipse Checkmark Circle */}
                 <div className="w-[44px] h-[44px] rounded-full bg-[#F5A623] flex items-center justify-center shrink-0 shadow-sm">
                   <svg className="w-5 h-5 text-[#1E1B2E] stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -2913,7 +2973,7 @@ function App() {
             <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 sm:gap-5">
 
               {/* Left Box (Compact Light Card Box) */}
-              <div className="w-full lg:w-[480px] xl:w-[500px] bg-[#FAF6FD] rounded-[22px] p-4 sm:p-5 flex flex-col justify-between border border-purple-200/80 shadow-sm shrink-0">
+              <div className="w-full lg:w-[480px] xl:w-[500px] bg-[#FAF6FD] rounded-[22px] p-5 sm:p-6 pt-6 sm:pt-7 lg:pt-7 flex flex-col justify-between border border-purple-200/80 shadow-sm shrink-0">
                 <div>
                   {/* Badge */}
                   <span className="bg-[#F5A623] text-[#1E1B2E] text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-0.5 rounded-full inline-block mb-2 shadow-sm">
@@ -2934,7 +2994,7 @@ function App() {
 
                 <div>
                   {/* Dark Banner Card */}
-                  <div className="bg-[#1D042B] text-white rounded-[16px] py-3.5 px-4 flex items-center gap-3 shadow-sm mb-3 border border-white/10">
+                  <div className="bg-[#4C0B6B] text-white rounded-[16px] py-3.5 px-4 flex items-center gap-3 shadow-sm mb-3 border border-white/10">
                     <div className="w-8 h-8 rounded-full bg-[#F5A623] text-[#1E1B2E] flex items-center justify-center shrink-0 font-extrabold shadow-sm">
                       <svg className="w-4 h-4 text-[#1E1B2E] stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -2983,7 +3043,7 @@ function App() {
               {/* Right Box (Dark Purple Form Container with Custom Image Background) */}
               <div
                 style={{ backgroundImage: "url('/ChatGPT Image Aug 12, 2026, 09_28_07 PM.png')" }}
-                className="w-full lg:flex-1 bg-cover bg-center text-white rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-[0_20px_50px_rgba(42,6,61,0.4)] relative overflow-hidden border border-purple-400/30"
+                className="w-full lg:flex-1 bg-cover bg-center text-white rounded-[24px] p-5 sm:p-6.5 pt-6 sm:pt-7 lg:pt-7 flex flex-col justify-between shadow-[0_20px_50px_rgba(42,6,61,0.4)] relative overflow-hidden border border-purple-400/30"
               >
 
                 <div className="pt-20 sm:pt-24">
@@ -2997,11 +3057,21 @@ function App() {
                           className="w-full bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-4 py-2.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all font-sans"
                         />
                       </div>
-                      <div>
+                      <div className="flex items-center bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-3 py-1 focus-within:ring-2 focus-within:ring-purple-500/40 transition-all">
+                        <select className="bg-transparent pl-1 pr-1 py-1 text-xs font-bold text-[#1E1B2E] outline-none border-r border-[#E7DEEE] cursor-pointer">
+                          <option value="+91">🇮🇳 +91</option>
+                          <option value="+1">🇺🇸 +1</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+971">🇦🇪 +971</option>
+                          <option value="+65">🇸🇬 +65</option>
+                          <option value="+61">🇦🇺 +61</option>
+                          <option value="+49">🇩🇪 +49</option>
+                          <option value="+1">🇨🇦 +1</option>
+                        </select>
                         <input
                           type="tel"
                           placeholder="Mobile Number"
-                          className="w-full bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-4 py-2.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all font-sans"
+                          className="w-full bg-transparent px-2 py-1.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none font-sans"
                         />
                       </div>
                       <div>
@@ -3032,13 +3102,16 @@ function App() {
                 </div>
 
                 {/* Action Dock Bar - Curved Box Shape */}
-                <div className="bg-[#140624] rounded-[20px] p-2.5 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2.5 border border-white/15 shadow-xl">
+                <div className="bg-[#3B0754] rounded-[20px] p-2.5 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2.5 border border-white/15 shadow-xl">
                   <span className="text-[#F5A623] font-bold text-xs sm:text-[13px] whitespace-nowrap font-sans tracking-tight">
                     Explore before you begin
                   </span>
                   <div className="flex items-center gap-2 sm:gap-2.5">
                     {/* Option 1: Watch 2-Min Demo */}
-                    <button className="bg-[#3B1B47] hover:bg-[#4D235C] border border-white/15 text-white px-3.5 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] shadow-sm whitespace-nowrap">
+                    <button 
+                      onClick={() => setSelectedModal(true)}
+                      className="bg-[#5E1683] hover:bg-[#7C1FAB] border border-white/20 text-white px-3.5 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] shadow-sm whitespace-nowrap"
+                    >
                       <span className="font-semibold text-xs">Watch 2-Min Demo</span>
                       <svg className="w-3 h-3 text-white stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -3046,7 +3119,10 @@ function App() {
                     </button>
 
                     {/* Option 2: Partner Brochure */}
-                    <button className="bg-white hover:bg-purple-50 text-[#6B1F8C] px-3.5 py-1.5 rounded-full shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] whitespace-nowrap">
+                    <button 
+                      onClick={() => setSelectedModal(true)}
+                      className="bg-white hover:bg-purple-50 text-[#6B1F8C] px-3.5 py-1.5 rounded-full shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] whitespace-nowrap"
+                    >
                       <span className="font-bold text-xs">Partner Brochure</span>
                       <svg className="w-3 h-3 text-[#6B1F8C] stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />

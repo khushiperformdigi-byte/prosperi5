@@ -376,8 +376,8 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
 
                 {/* Arrow 1 Connector */}
                 <div className="hidden lg:flex items-center justify-center shrink-0 px-1">
-                  <div className="w-8 h-8 rounded-full bg-white border border-[#E5C6FF] shadow-xs flex items-center justify-center text-[#7C1FAB] hover:bg-[#7C1FAB] hover:text-white transition-all duration-300">
-                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-white border border-[#E5C6FF] shadow-xs flex items-center justify-center text-[#7C1FAB] hover:bg-[#7C1FAB] hover:text-white transition-all duration-300">
+                    <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                   </div>
@@ -406,8 +406,8 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
 
                 {/* Arrow 2 Connector */}
                 <div className="hidden lg:flex items-center justify-center shrink-0 px-1">
-                  <div className="w-8 h-8 rounded-full bg-white border border-[#FBCFE8] shadow-xs flex items-center justify-center text-[#DB2777] hover:bg-[#DB2777] hover:text-white transition-all duration-300">
-                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-white border border-[#FBCFE8] shadow-xs flex items-center justify-center text-[#DB2777] hover:bg-[#DB2777] hover:text-white transition-all duration-300">
+                    <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                   </div>
@@ -436,8 +436,8 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
 
                 {/* Arrow 3 Connector */}
                 <div className="hidden lg:flex items-center justify-center shrink-0 px-1">
-                  <div className="w-8 h-8 rounded-full bg-white border border-[#FDE68A] shadow-xs flex items-center justify-center text-[#F59E0B] hover:bg-[#F59E0B] hover:text-white transition-all duration-300">
-                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-white border border-[#FDE68A] shadow-xs flex items-center justify-center text-[#F59E0B] hover:bg-[#F59E0B] hover:text-white transition-all duration-300">
+                    <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                   </div>
@@ -527,25 +527,46 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
       {/* MODAL DIALOG */}
       {selectedPlanModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setSelectedPlanModal(null)}>
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold text-xl text-[#1E1B2E]">{selectedPlanModal.title || 'Get Protected'}</h2>
-              <button onClick={() => setSelectedPlanModal(null)} className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <p className="text-[#544F66] font-medium mb-6 text-sm">Enter your contact details to receive a customized quote & policy consultation.</p>
-            <div className="space-y-4">
-              <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FAB] transition-colors" />
-              <input type="tel" placeholder="Mobile Number" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FAB] transition-colors" />
-              <button
-                onClick={() => setSelectedPlanModal(null)}
-                className="w-full bg-[#7C1FAB] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
-              >
-                Submit Request
-              </button>
+          <div 
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
+            style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Translucent overlay for clean text & input legibility */}
+            <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-0 pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-bold text-xl text-[#1E1B2E]">{selectedPlanModal.title || 'Get Protected'}</h2>
+                <button onClick={() => setSelectedPlanModal(null)} className="w-9 h-9 rounded-full bg-gray-100/90 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors z-20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-[#544F66] font-medium mb-6 text-sm">Enter your contact details to receive a customized quote & policy consultation.</p>
+              <div className="space-y-4">
+                <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FAB] transition-colors shadow-2xs" />
+                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FAB] transition-colors shadow-2xs">
+                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇨🇦 +1</option>
+                  </select>
+                  <input type="tel" placeholder="Mobile Number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
+                </div>
+                <button
+                  onClick={() => setSelectedPlanModal(null)}
+                  className="w-full bg-[#7C1FAB] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
+                >
+                  Submit Request
+                </button>
+              </div>
             </div>
           </div>
         </div>

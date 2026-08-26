@@ -119,13 +119,37 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO SECTION – Full-width banner image */}
-      <section className="w-full overflow-hidden">
+      {/* 3. HERO SECTION – Full-width banner image with interactive CTA overlay */}
+      <section className="w-full overflow-hidden relative">
         <img
           src="/ChatGPT Image Aug 25, 2026, 03_39_42 PM.png"
           alt="Investor Page - Invest in possibilities. Build lasting wealth."
           className="w-full h-auto block"
         />
+        {/* Interactive Overlay Click Zones over Hero CTAs */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Start Investing CTA overlay area */}
+          <button
+            onClick={() => setSelectedModal(true)}
+            aria-label="Start Investing"
+            className="absolute left-[7%] sm:left-[8%] top-[44%] sm:top-[47%] w-[18%] sm:w-[15%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
+          />
+          {/* Explore Opportunities CTA overlay area */}
+          <button
+            onClick={() => {
+              const el = document.getElementById('opportunities');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+              } else if (onNavigatePage) {
+                onNavigatePage('investment');
+              } else {
+                setSelectedModal(true);
+              }
+            }}
+            aria-label="Explore Opportunities"
+            className="absolute left-[26%] sm:left-[24%] top-[44%] sm:top-[47%] w-[24%] sm:w-[20%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
+          />
+        </div>
       </section>
 
       {/* 4. INVESTMENT OPPORTUNITIES (COMPACT SECTION) */}
@@ -489,7 +513,16 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
                   Start Investing
                 </button>
                 <button
-                  onClick={() => setSelectedModal(true)}
+                  onClick={() => {
+                    const el = document.getElementById('opportunities');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    } else if (onNavigatePage) {
+                      onNavigatePage('investment');
+                    } else {
+                      setSelectedModal(true);
+                    }
+                  }}
                   className="w-full sm:w-auto border-2 border-[#F5A623] text-[#F5A623] hover:bg-[#F5A623]/10 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition-all duration-300 active:scale-95 cursor-pointer text-center"
                 >
                   Explore Opportunities
@@ -533,25 +566,46 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
       {/* EXPERT CALLBACK MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setSelectedModal(false)}>
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold text-xl text-[#1E1B2E]">Start Your Investment Journey</h2>
-              <button onClick={() => setSelectedModal(false)} className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <p className="text-[#544F66] font-medium mb-6 text-sm">Speak to a certified wealth manager to build your custom portfolio.</p>
-            <div className="space-y-4">
-              <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors" />
-              <input type="tel" placeholder="Mobile Number" className="w-full border border-[#EBE8EF] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors" />
-              <button
-                onClick={() => setSelectedModal(false)}
-                className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
-              >
-                Request Consultation
-              </button>
+          <div 
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
+            style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Translucent overlay for clean text & input legibility */}
+            <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-0 pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-bold text-xl text-[#1E1B2E]">Start Your Investment Journey</h2>
+                <button onClick={() => setSelectedModal(false)} className="w-9 h-9 rounded-full bg-gray-100/90 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors z-20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-[#544F66] font-medium mb-6 text-sm">Speak to a certified wealth manager to build your custom portfolio.</p>
+              <div className="space-y-4">
+                <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs" />
+                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] transition-colors shadow-2xs">
+                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇨🇦 +1</option>
+                  </select>
+                  <input type="tel" placeholder="Mobile Number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
+                </div>
+                <button
+                  onClick={() => setSelectedModal(false)}
+                  className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
+                >
+                  Request Consultation
+                </button>
+              </div>
             </div>
           </div>
         </div>

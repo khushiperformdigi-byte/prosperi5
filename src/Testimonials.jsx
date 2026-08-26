@@ -407,30 +407,6 @@ export default function Testimonials() {
 
         </div>
 
-        {/* Bottom Dark Pill Dock Bar (Hidden on mobile) */}
-        <div className="hidden lg:flex bg-[#1D042B] text-white rounded-full py-2.5 px-5 max-w-4xl mx-auto flex-wrap items-center justify-around gap-3 border border-white/10 shadow-md text-[11px] sm:text-xs font-bold font-sans">
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D81B60]"></span>
-            <span>Investor guidance</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#7C1FAB]"></span>
-            <span>Partner growth</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F5A623]"></span>
-            <span>Business financing</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-            <span>Client ownership</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D81B60]"></span>
-            <span>End-to-end support</span>
-          </div>
-        </div>
-
       </div>
     </section>
   );

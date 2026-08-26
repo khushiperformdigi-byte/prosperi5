@@ -41,6 +41,59 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
 
   const { futureValue, invested, gainPercent } = calculateSIP();
 
+  // Dynamic calculation for comparison chart (working in sync with Left Card inputs)
+  const getComparisonData = () => {
+    const P = parseFloat(monthlyInvestment) || 0;
+    const r_inv = (parseFloat(expectedReturn) || 0) / 12 / 100;
+    const r_trad = 6 / 12 / 100; // 6% p.a. traditional savings return rate
+
+    const t3 = Math.max(1, parseInt(timePeriod) || 15);
+    const t1 = Math.max(1, Math.round(t3 / 3));
+    const t2 = Math.max(t1 + 1, Math.round((2 * t3) / 3));
+
+    const calculateFV = (years, rate) => {
+      if (P <= 0 || years <= 0 || rate <= 0) return 0;
+      const n = years * 12;
+      return Math.round(P * ((Math.pow(1 + rate, n) - 1) / rate) * (1 + rate));
+    };
+
+    const periods = [
+      { years: t1, label: `${t1} ${t1 === 1 ? 'Year' : 'Years'}` },
+      { years: t2, label: `${t2} Years` },
+      { years: t3, label: `${t3} Years` }
+    ];
+
+    const items = periods.map((p) => {
+      const invFV = calculateFV(p.years, r_inv);
+      const tradFV = calculateFV(p.years, r_trad);
+      return {
+        ...p,
+        invFV,
+        tradFV
+      };
+    });
+
+    const maxVal = Math.max(...items.map((d) => d.invFV), 100000);
+
+    return { items, maxVal };
+  };
+
+  const { items: comparisonItems, maxVal: comparisonMaxVal } = getComparisonData();
+
+  const formatLakhs = (val) => {
+    if (!val || val <= 0) return '₹0';
+    if (val >= 10000000) {
+      return `₹${(val / 10000000).toFixed(1)}Cr`;
+    }
+    if (val >= 100000) {
+      return `₹${(val / 100000).toFixed(1)}L`;
+    }
+    if (val >= 1000) {
+      return `₹${(val / 1000).toFixed(0)}k`;
+    }
+    return `₹${val}`;
+  };
+
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -147,12 +200,18 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-              <button className="bg-[#7C1FAB] hover:bg-[#63148B] text-white font-bold px-8 py-4 rounded-[18px] text-sm sm:text-base shadow-xl shadow-[#7C1FAB]/25 transition-all flex items-center gap-2.5 cursor-pointer active:scale-95">
+              <button 
+                onClick={() => setSelectedModal(true)}
+                className="bg-[#7C1FAB] hover:bg-[#63148B] text-white font-bold px-8 py-4 rounded-[18px] text-sm sm:text-base shadow-xl shadow-[#7C1FAB]/25 transition-all flex items-center gap-2.5 cursor-pointer active:scale-95"
+              >
                 <span>Start Investing</span>
                 <span className="text-lg font-normal">→</span>
               </button>
 
-              <button className="border-2 border-[#7C1FAB] text-[#7C1FAB] hover:bg-[#7C1FAB]/10 font-bold px-7 py-4 rounded-[18px] text-sm sm:text-base transition-all cursor-pointer">
+              <button 
+                onClick={() => setSelectedModal(true)}
+                className="border-2 border-[#7C1FAB] text-[#7C1FAB] hover:bg-[#7C1FAB]/10 font-bold px-7 py-4 rounded-[18px] text-sm sm:text-base transition-all cursor-pointer"
+              >
                 Talk to Expert
               </button>
             </div>
@@ -495,7 +554,10 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             </div>
 
             {/* Calculate Button */}
-            <button className="w-full bg-[#7C1FAB] hover:bg-[#63148B] text-white font-body font-extrabold py-3.5 rounded-2xl text-sm shadow-xl shadow-[#7C1FAB]/40 border border-purple-400/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] mt-2 relative z-10">
+            <button 
+              onClick={() => setSelectedModal(true)}
+              className="w-full bg-[#7C1FAB] hover:bg-[#63148B] text-white font-body font-extrabold py-3.5 rounded-2xl text-sm shadow-xl shadow-[#7C1FAB]/40 border border-purple-400/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] mt-2 relative z-10"
+            >
               <span>Calculate Growth</span>
               <span className="text-base font-normal">→</span>
             </button>
@@ -541,67 +603,51 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
                   {/* Dashed Horizontal Grid Lines */}
                   <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-[#8E8A9D] font-bold">
                     <div className="border-b border-dashed border-purple-100 flex items-center justify-between pb-0.5">
-                      <span>30L</span>
+                      <span>{formatLakhs(comparisonMaxVal)}</span>
                     </div>
                     <div className="border-b border-dashed border-purple-100 flex items-center justify-between pb-0.5">
-                      <span>20L</span>
+                      <span>{formatLakhs(comparisonMaxVal * 0.66)}</span>
                     </div>
                     <div className="border-b border-dashed border-purple-100 flex items-center justify-between pb-0.5">
-                      <span>10L</span>
+                      <span>{formatLakhs(comparisonMaxVal * 0.33)}</span>
                     </div>
                     <div className="border-b border-purple-200 flex items-center justify-between pb-0.5">
                       <span>0</span>
                     </div>
                   </div>
 
-                  {/* Bars Container */}
+                  {/* Dynamic Bars Container */}
                   <div className="w-full flex items-end justify-around relative z-10 pl-8">
-                    
-                    {/* 5 Years */}
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-end gap-1.5">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-extrabold text-[#F5A623]">₹6.4L</span>
-                          <div className="w-8 bg-[#F5A623] rounded-t-xl h-[45px] transition-all hover:brightness-110"></div>
-                        </div>
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-bold text-[#544F66]">₹5.1L</span>
-                          <div className="w-8 bg-[#7C1FAB] rounded-t-xl h-[36px] transition-all hover:brightness-105"></div>
-                        </div>
-                      </div>
-                      <span className="text-xs font-body font-extrabold text-[#1E1B2E] mt-3">5 Years</span>
-                    </div>
+                    {comparisonItems.map((item, idx) => {
+                      const invH = Math.max(14, Math.round((item.invFV / comparisonMaxVal) * 125));
+                      const tradH = Math.max(10, Math.round((item.tradFV / comparisonMaxVal) * 125));
 
-                    {/* 10 Years */}
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-end gap-1.5">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-extrabold text-[#F5A623]">₹14.8L</span>
-                          <div className="w-8 bg-[#F5A623] rounded-t-xl h-[85px] transition-all hover:brightness-110"></div>
+                      return (
+                        <div key={idx} className="flex flex-col items-center">
+                          <div className="flex items-end gap-1.5">
+                            <div className="flex flex-col items-center gap-1">
+                              <span className="text-[11px] font-heading font-extrabold text-[#F5A623]">
+                                {formatLakhs(item.invFV)}
+                              </span>
+                              <div 
+                                style={{ height: `${invH}px` }}
+                                className="w-7 sm:w-8 bg-[#F5A623] rounded-t-xl transition-all duration-300 hover:brightness-110 shadow-2xs"
+                              />
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <span className="text-[11px] font-heading font-bold text-[#544F66]">
+                                {formatLakhs(item.tradFV)}
+                              </span>
+                              <div 
+                                style={{ height: `${tradH}px` }}
+                                className="w-7 sm:w-8 bg-[#7C1FAB] rounded-t-xl transition-all duration-300 hover:brightness-105 shadow-2xs"
+                              />
+                            </div>
+                          </div>
+                          <span className="text-xs font-body font-extrabold text-[#1E1B2E] mt-3">{item.label}</span>
                         </div>
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-bold text-[#544F66]">₹10.2L</span>
-                          <div className="w-8 bg-[#7C1FAB] rounded-t-xl h-[58px] transition-all hover:brightness-105"></div>
-                        </div>
-                      </div>
-                      <span className="text-xs font-body font-extrabold text-[#1E1B2E] mt-3">10 Years</span>
-                    </div>
-
-                    {/* 15 Years */}
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-end gap-1.5">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-extrabold text-[#F5A623]">₹28.4L</span>
-                          <div className="w-8 bg-[#F5A623] rounded-t-xl h-[130px] transition-all hover:brightness-110"></div>
-                        </div>
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-[11px] font-heading font-bold text-[#544F66]">₹18.6L</span>
-                          <div className="w-8 bg-[#7C1FAB] rounded-t-xl h-[95px] transition-all hover:brightness-105"></div>
-                        </div>
-                      </div>
-                      <span className="text-xs font-body font-extrabold text-[#1E1B2E] mt-3">15 Years</span>
-                    </div>
-
+                      );
+                    })}
                   </div>
 
                 </div>
@@ -740,7 +786,10 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             </div>
           </div>
 
-          <button className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-body font-extrabold px-5 py-2 rounded-full text-xs transition-all shadow-md cursor-pointer whitespace-nowrap active:scale-95 shrink-0">
+          <button 
+            onClick={() => setSelectedModal(true)}
+            className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-body font-extrabold px-5 py-2 rounded-full text-xs transition-all shadow-md cursor-pointer whitespace-nowrap active:scale-95 shrink-0"
+          >
             Start Your Investment Journey →
           </button>
 
