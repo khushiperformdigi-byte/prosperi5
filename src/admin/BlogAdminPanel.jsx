@@ -112,7 +112,7 @@ export default function BlogAdminPanel({ onUnauthorized }) {
         isPopular: Boolean(post.isPopular),
         allowComments: post.allowComments !== false,
         featuredImageId: post.featuredImageId,
-        featuredImageUrl: post.featuredImageUrl || '',
+        featuredImageUrl: post.featuredImageUrl || post.featured_image_url || post.imageUrl || post.image_url || '',
         faqs:
           post.faqs?.length > 0
             ? post.faqs.map((f) => ({ question: f.question, answer: f.answer }))
@@ -155,14 +155,29 @@ export default function BlogAdminPanel({ onUnauthorized }) {
 
     try {
       let featuredImageId = form.featuredImageId || null;
-      let featuredImageUrl = '';
+      let featuredImageUrl = form.featuredImageUrl || '';
 
       if (imageFile) {
-        const media = await uploadAdminMedia(imageFile);
-        featuredImageId = media.id;
+        try {
+          const media = await uploadAdminMedia(imageFile);
+          if (media) {
+            featuredImageId = media.id || featuredImageId;
+            featuredImageUrl = media.url || media.media?.url || featuredImageUrl;
+          }
+        } catch (err) {
+          console.warn('Media file upload fallback:', err);
+        }
       } else if (imageUrlInput.trim()) {
-        const media = await uploadAdminMediaFromUrl(imageUrlInput.trim());
-        featuredImageId = media.id;
+        featuredImageUrl = imageUrlInput.trim();
+        try {
+          const media = await uploadAdminMediaFromUrl(imageUrlInput.trim());
+          if (media) {
+            featuredImageId = media.id || featuredImageId;
+            featuredImageUrl = media.url || media.media?.url || featuredImageUrl;
+          }
+        } catch (err) {
+          console.warn('Media URL upload fallback:', err);
+        }
       }
 
       const body = {
