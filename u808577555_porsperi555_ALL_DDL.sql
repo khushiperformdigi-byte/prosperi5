@@ -107,20 +107,15 @@ CREATE TABLE `media_assets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
--- SEED DATA: Default Admin Account
--- Default Email: admin@prosperi5.com
--- Default Password: AdminSecretPassword123!
+-- SEED DATA: Default Admin Accounts
+-- Email 1: admin@prosperi5.com / AdminSecretPassword123!
+-- Email 2: prosperi@mail.com / Prosperi5$2026
 -- ------------------------------------------------------------
 INSERT INTO `admins` (`id`, `email`, `password_hash`, `name`, `is_active`, `created_at`, `updated_at`)
-VALUES (
-  1,
-  'admin@prosperi5.com',
-  '$2b$10$wE991jFqA1Y5rNqfUfIJu.4wWkEaVqK7gB6v8N3a2s1d0e9f8g7h6',
-  'Prosperi5 Admin',
-  1,
-  NOW(),
-  NOW()
-) ON DUPLICATE KEY UPDATE `updated_at` = NOW();
+VALUES 
+(1, 'admin@prosperi5.com', '$2y$10$89vY3Fw1.O0Q6iO8V9Hk1.9uK.4wWkEaVqK7gB6v8N3a2s1d0e9f8', 'Prosperi5 Admin', 1, NOW(), NOW()),
+(2, 'prosperi@mail.com', '$2y$10$99vY3Fw1.O0Q6iO8V9Hk1.9uK.4wWkEaVqK7gB6v8N3a2s1d0e9f9', 'Prosperi Admin', 1, NOW(), NOW())
+ON DUPLICATE KEY UPDATE `updated_at` = NOW();
 
 -- ------------------------------------------------------------
 -- SEED DATA: 6 Open Jobs
