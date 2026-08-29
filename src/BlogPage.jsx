@@ -12,6 +12,7 @@ function formatDate(value) {
 }
 
 function mapPost(post) {
+  const rawImg = post.featuredImageUrl || post.featured_image_url || post.imageUrl || post.image_url || post.image;
   return {
     id: post.id,
     slug: post.slug,
@@ -19,7 +20,7 @@ function mapPost(post) {
     categoryFilter: post.category || 'All',
     title: post.title,
     excerpt: post.excerpt || '',
-    image: resolveMediaUrl(post.featuredImageUrl) || '/blog_featured_mountain.jpg',
+    image: rawImg ? resolveMediaUrl(rawImg) : 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop',
     date: formatDate(post.publishedAt || post.createdAt),
     readTime: post.readTime || `${post.readTimeMinutes || 5} min read`,
     readTimeMinutes: post.readTimeMinutes || 5,

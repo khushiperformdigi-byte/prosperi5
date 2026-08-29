@@ -267,9 +267,9 @@ export default function BlogAdminPanel({ onUnauthorized }) {
               {posts.map((post) => (
                 <div key={post.id} className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                   <div className="flex gap-4 min-w-0">
-                    {post.featuredImageUrl ? (
+                    {(post.featuredImageUrl || post.featured_image_url || post.imageUrl) ? (
                       <img
-                        src={resolveMediaUrl(post.featuredImageUrl)}
+                        src={resolveMediaUrl(post.featuredImageUrl || post.featured_image_url || post.imageUrl)}
                         alt=""
                         className="w-20 h-14 object-cover rounded-lg border border-[#EBE8EF] shrink-0"
                       />

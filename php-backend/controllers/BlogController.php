@@ -5,18 +5,19 @@ require_once __DIR__ . '/../db.php';
 
 class BlogController {
     public static function formatPost(array $row): array {
+        $img = $row['featured_image_url'] ?? $row['featuredImageUrl'] ?? $row['image_url'] ?? $row['imageUrl'] ?? '';
         return [
             'id' => (int)$row['id'],
-            'title' => $row['title'],
-            'slug' => $row['slug'],
-            'category' => $row['category'],
-            'excerpt' => $row['excerpt'],
-            'content' => $row['content'],
-            'readTime' => $row['read_time'],
-            'featuredImageUrl' => $row['featured_image_url'],
-            'status' => $row['status'],
-            'createdAt' => $row['created_at'],
-            'updatedAt' => $row['updated_at']
+            'title' => $row['title'] ?? '',
+            'slug' => $row['slug'] ?? '',
+            'category' => $row['category'] ?? 'General',
+            'excerpt' => $row['excerpt'] ?? '',
+            'content' => $row['content'] ?? '',
+            'readTime' => $row['read_time'] ?? $row['readTime'] ?? '5 min read',
+            'featuredImageUrl' => $img,
+            'status' => $row['status'] ?? 'published',
+            'createdAt' => $row['created_at'] ?? null,
+            'updatedAt' => $row['updated_at'] ?? null
         ];
     }
 
@@ -115,7 +116,7 @@ class BlogController {
         $excerpt = trim($body['excerpt'] ?? '');
         $content = trim($body['content'] ?? '');
         $readTime = trim($body['readTime'] ?? '4 min read');
-        $featuredImageUrl = trim($body['featuredImageUrl'] ?? '');
+        $featuredImageUrl = trim($body['featuredImageUrl'] ?? $body['featured_image_url'] ?? $body['imageUrl'] ?? $body['image_url'] ?? '');
         $status = trim($body['status'] ?? 'published');
 
         if (!$title || !$content) {
@@ -149,7 +150,7 @@ class BlogController {
         $excerpt = $body['excerpt'] ?? $post['excerpt'];
         $content = $body['content'] ?? $post['content'];
         $readTime = $body['readTime'] ?? $post['read_time'];
-        $featuredImageUrl = $body['featuredImageUrl'] ?? $post['featured_image_url'];
+        $featuredImageUrl = $body['featuredImageUrl'] ?? $body['featured_image_url'] ?? $body['imageUrl'] ?? $body['image_url'] ?? $post['featured_image_url'];
         $status = $body['status'] ?? $post['status'];
 
         DB::execute(
