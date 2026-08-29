@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 import InvestmentPage from './InvestmentPage';
 import InsurancePage from './InsurancePage';
 import FinancingPage from './FinancingPage';
@@ -26,6 +28,8 @@ import BlogAdminPanel from './admin/BlogAdminPanel';
 import CareersPage from './CareersPage';
 import CareersAdminPage from './CareersAdminPage';
 import Footer from './Footer';
+import Navbar from './Navbar';
+import { getPageFromUrl, getPathForPage, PAGE_TITLES } from './utils/routing';
 
 function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
   const [count, setCount] = useState(0);
@@ -73,73 +77,125 @@ function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
   );
 }
 
-function App() {
-  const getInitialPage = () => {
-    const hash = window.location.hash.replace('#', '');
-    if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'tools', 'blog', 'blogs', 'blog-detail', 'careers', 'career', 'sip-calculator', 'emi-calculator', 'term-insurance-calculator', 'loan-against-securities', 'las-calculator', 'privacy-policy', 'privacy', 'terms-and-conditions', 'terms'].includes(hash)) {
-      if (hash === 'las-calculator') return 'loan-against-securities';
-      if (hash === 'privacy') return 'privacy-policy';
-      if (hash === 'terms') return 'terms-and-conditions';
-      if (hash === 'blogs') return 'blog';
-      if (hash === 'career') return 'careers';
-      if (hash === 'loans') return 'loan';
-      if (hash === 'partner-b2b') return 'partner';
-      if (hash === 'personalfinance' || hash === 'finance') return 'personal-finance';
-      if (hash === 'taxsolutions' || hash === 'tax-solutions') return 'tax';
-      if (hash === 'market-insights' || hash === 'marketinsights' || hash === 'market') return 'insights';
-      return hash;
+function ScrollReveal({ children, className = '', animation = 'up', delay = 0, threshold = 0.12 }) {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Check if element is already in viewport initially
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setIsVisible(true);
+      return;
     }
-    return sessionStorage.getItem('prosperi_page') || 'home';
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold, rootMargin: '0px 0px -30px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  const getAnimClass = () => {
+    switch (animation) {
+      case 'scale': return 'home-reveal-scale';
+      case 'left': return 'home-reveal-left';
+      case 'right': return 'home-reveal-right';
+      case 'none': return '';
+      default: return 'home-reveal';
+    }
   };
 
-  const [currentPage, setCurrentPage] = useState(getInitialPage);
-  const [selectedArticleId, setSelectedArticleId] = useState(null);
+  return (
+    <div
+      ref={ref}
+      style={{
+        transitionDelay: `${delay}ms`,
+      }}
+      className={`${getAnimClass()} ${isVisible ? 'home-revealed' : ''} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function App() {
+  const initialUrlInfo = getPageFromUrl();
+  const [currentPage, setCurrentPage] = useState(initialUrlInfo.page);
+  const [selectedArticleId, setSelectedArticleId] = useState(initialUrlInfo.articleId);
+  const [partnerForm1, setPartnerForm1] = useState({ name: '', phone: '', countryCode: '+91', arn: '' });
+  const [partnerForm2, setPartnerForm2] = useState({ name: '', phone: '', countryCode: '+91', arn: '' });
+
+  const handlePartnerSubmit1 = (e) => {
+    e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: 'Partner Registration Form (Home Banner)',
+      name: partnerForm1.name,
+      phone: `${partnerForm1.countryCode} ${partnerForm1.phone}`,
+      extra: { 'ARN Number': partnerForm1.arn }
+    });
+    setPartnerForm1({ name: '', phone: '', countryCode: '+91', arn: '' });
+  };
+
+  const handlePartnerSubmit2 = (e) => {
+    e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: 'Partner Quick Start Form (Home Section)',
+      name: partnerForm2.name,
+      phone: `${partnerForm2.countryCode} ${partnerForm2.phone}`,
+      extra: { 'ARN Number': partnerForm2.arn }
+    });
+    setPartnerForm2({ name: '', phone: '', countryCode: '+91', arn: '' });
+  };
 
   const handleNavigatePage = (page, extraId = null) => {
-    if (extraId) {
+    if (extraId !== null && extraId !== undefined) {
       setSelectedArticleId(extraId);
     }
-    if (window.location.hash !== `#${page}`) {
-      window.location.hash = page;
+    const path = getPathForPage(page, extraId);
+    if (window.location.pathname + window.location.search !== path || window.location.hash) {
+      window.history.pushState({ page, extraId }, '', path);
     }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Clean up legacy hash and set up initial URL
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (['protect', 'investment', 'insurance', 'financing', 'investors', 'about', 'borrow', 'loan', 'loans', 'grow', 'knowledge', 'partner', 'partner-b2b', 'personal-finance', 'personalfinance', 'finance', 'tax', 'tax-solutions', 'taxsolutions', 'insights', 'market-insights', 'marketinsights', 'market', 'tools', 'blog', 'blogs', 'blog-detail', 'careers', 'career', 'sip-calculator', 'emi-calculator', 'term-insurance-calculator', 'loan-against-securities', 'las-calculator', 'privacy-policy', 'privacy', 'terms-and-conditions', 'terms', 'home'].includes(hash)) {
-        if (hash === 'las-calculator') {
-          setCurrentPage('loan-against-securities');
-        } else if (hash === 'privacy') {
-          setCurrentPage('privacy-policy');
-        } else if (hash === 'terms') {
-          setCurrentPage('terms-and-conditions');
-        } else if (hash === 'blogs') {
-          setCurrentPage('blog');
-        } else if (hash === 'career') {
-          setCurrentPage('careers');
-        } else if (hash === 'loans') {
-          setCurrentPage('loan');
-        } else if (hash === 'partner-b2b') {
-          setCurrentPage('partner');
-        } else if (hash === 'personalfinance' || hash === 'finance') {
-          setCurrentPage('personal-finance');
-        } else if (hash === 'taxsolutions' || hash === 'tax-solutions') {
-          setCurrentPage('tax');
-        } else if (hash === 'market-insights' || hash === 'marketinsights' || hash === 'market') {
-          setCurrentPage('insights');
-        } else {
-          setCurrentPage(hash);
-        }
-      }
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    const path = getPathForPage(initialUrlInfo.page, initialUrlInfo.articleId);
+    if (initialUrlInfo.hadHash || window.location.pathname + window.location.search !== path) {
+      window.history.replaceState({ page: initialUrlInfo.page, articleId: initialUrlInfo.articleId }, '', path);
+    }
   }, []);
 
+  // Listen to browser Back/Forward navigation
   useEffect(() => {
+    const handlePopState = () => {
+      const { page, articleId } = getPageFromUrl();
+      setCurrentPage(page);
+      if (articleId) {
+        setSelectedArticleId(articleId);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Set SEO document title on page state change
+  useEffect(() => {
+    if (PAGE_TITLES[currentPage]) {
+      document.title = PAGE_TITLES[currentPage];
+    }
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [currentPage]);
 
@@ -148,7 +204,7 @@ function App() {
   const [hoveredReason, setHoveredReason] = useState(0);
   const [activeStep, setActiveStep] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
-  const [sectionVisible, setSectionVisible] = useState(false);
+  const [sectionVisible, setSectionVisible] = useState(true);
   const [howItWorksVisible, setHowItWorksVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
@@ -215,7 +271,7 @@ function App() {
   const ringSectionRef = useRef(null);
   const ringImgRef = useRef(null);
   const mobilePartnerCardsRef = useRef(null);
-  const [mobilePartnerCardsVisible, setMobilePartnerCardsVisible] = useState(false);
+  const [mobilePartnerCardsVisible, setMobilePartnerCardsVisible] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -232,7 +288,7 @@ function App() {
         observer.unobserve(mobilePartnerCardsRef.current);
       }
     };
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -251,7 +307,7 @@ function App() {
         observer.unobserve(reasonsRef.current);
       }
     };
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -268,520 +324,98 @@ function App() {
         observer.unobserve(howItWorksRef.current);
       }
     };
-  }, []);
+  }, [currentPage]);
 
-  const navigateToPage = (p) => {
-    window.location.hash = p;
-    setCurrentPage(p);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const navigateToPage = (p, extraId = null) => {
+    handleNavigatePage(p, extraId);
   };
 
-  if (currentPage === 'protect') {
-    return <ProtectPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'investment') {
-    return <InvestmentPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'insurance') {
-    return <InsurancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'financing') {
-    return <FinancingPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'investors') {
-    return <InvestorsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'about') {
-    return <AboutPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'loan' || currentPage === 'loans') {
-    return <LoanPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'borrow') {
-    return <BorrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'grow') {
-    return <GrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'knowledge') {
-    return <KnowledgeCenterPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'partner' || currentPage === 'partner-b2b') {
-    return <PartnerB2BPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'personal-finance' || currentPage === 'personalfinance' || currentPage === 'finance') {
-    return <PersonalFinancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'tax' || currentPage === 'tax-solutions' || currentPage === 'taxsolutions') {
-    return <TaxSolutionsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'insights' || currentPage === 'market-insights' || currentPage === 'marketinsights' || currentPage === 'market') {
-    return <MarketInsightsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
-  }
-
-  if (currentPage === 'tools') {
-    return <ToolsPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'sip-calculator') {
-    return <SipCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'emi-calculator') {
-    return <EmiCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'term-insurance-calculator') {
-    return <TermInsuranceCalculatorPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'loan-against-securities' || currentPage === 'las-calculator') {
-    return <LoanAgainstSecuritiesPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'privacy-policy' || currentPage === 'privacy') {
-    return <PrivacyPolicyPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'terms-and-conditions' || currentPage === 'terms') {
-    return <TermsAndConditionsPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={(p) => setCurrentPage(p)} />;
-  }
-
-  if (currentPage === 'blog' || currentPage === 'blogs') {
-    return <BlogPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
-  }
-
-  if (currentPage === 'blog-detail') {
-    return <BlogDetailPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} articleId={selectedArticleId} />;
-  }
-
-  if (currentPage === 'careers' || currentPage === 'career') {
-    return <CareersPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
-  }
-
-  if (currentPage === 'blog-admin' || currentPage === 'admin/blog') {
-    return <BlogAdminPanel onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
-  }
-
-  if (currentPage === 'careers-admin' || currentPage === 'admin/careers' || currentPage === 'admin') {
-    return <CareersAdminPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
-  }
-
-  return (
-    <div className="min-h-screen bg-white font-sans text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-hidden">
-
-      {/* 1. RECONSTRUCTED TOP CONTACT UTILITY BAR - CYLINDER SHAPE (DESKTOP ONLY) */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-muted-text">
-              {/* Orange/gold node icon */}
-              <div className="w-5 h-5 rounded-full bg-accent-gold/15 flex items-center justify-center text-accent-gold">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Investments - Insurance · Financing</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-accent-gold bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              All through one trusted relationship
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to an Expert
-            </button>
-
-            <div className="flex items-center gap-3 sm:gap-4 text-[#EBE8EF]/80 text-xs">
-              <span className="text-[#EBE8EF]/20">|</span>
-              <a href="#partner-login" className="hover:text-white transition-colors flex items-center gap-1 font-medium">
-                <svg className="w-3.5 h-3.5 text-muted-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                Partner Login
-              </a>
-              <span className="text-[#EBE8EF]/20">|</span>
-              <a href="#investor-login" className="hover:text-white transition-colors flex items-center gap-1 font-medium">
-                <svg className="w-3.5 h-3.5 text-muted-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Investor Login
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. RECONSTRUCTED FLOATING NAVBAR & MOBILE MENU OVERLAY */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-brand-border shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.08)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-
-          {/* Top gradient border line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary-purple via-accent-pink to-accent-gold rounded-t-full"></div>
-
-          {/* Logo */}
-          <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <img
-              src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png"
-              className="w-[128px] h-[40px] lg:w-auto lg:h-[32px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-              alt="PROSPERi5 Logo"
-            />
-          </div>
-
-          {/* Links - Desktop */}
-          <div className="hidden lg:flex items-center justify-center gap-x-6 font-medium text-heading-ink text-sm px-6 flex-1">
-            <a href="#home" onClick={() => setCurrentPage('home')} className="whitespace-nowrap text-heading-ink relative py-1 font-semibold after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-0.5 after:bg-accent-pink after:rounded-full">Home</a>
-            <a
-              href="#about"
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage('about');
-              }}
-              className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
-            >
-              About Us
-            </a>
-
-            {/* SOLUTIONS DROPDOWN - WHITE WEBSITE THEME */}
-            <div className="relative group py-1">
-              <button className="whitespace-nowrap hover:text-primary-purple transition-colors flex items-center gap-1 font-semibold cursor-pointer py-1">
-                Solutions
-                <svg className="w-3.5 h-3.5 text-heading-ink/80 group-hover:text-primary-purple transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white/98 backdrop-blur-md border border-[#EBE8EF] rounded-[22px] p-3 shadow-[0_15px_40px_rgba(30,27,46,0.12)] w-[285px] space-y-1.5 animate-in fade-in slide-in-from-top-2 z-[9999] overflow-hidden">
-                {/* Top accent gradient line */}
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary-purple via-accent-pink to-accent-gold"></div>
-
-                {/* Option 0: Grow Page */}
-                <button
-                  onClick={() => setCurrentPage('grow')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#7C1FAB] text-white flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 transition-all">
-                    🌱
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#7C1FAB] transition-colors block">Grow</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">SIP, Mutual Funds & Wealth Growth</span>
-                  </div>
-                </button>
-
-                {/* Option 0.5: Protect Page */}
-                <button
-                  onClick={() => setCurrentPage('protect')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#7C1FAB] text-white flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 transition-all">
-                    🛡️
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#7C1FAB] transition-colors block">Protect</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Health, Life & Property Security</span>
-                  </div>
-                </button>
-
-                {/* Option 1: Investment Page */}
-                <button
-                  onClick={() => setCurrentPage('investment')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-purple-surface border border-purple-200 text-[#7C1FAB] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FAB] group-hover/item:text-white transition-all">
-                    📈
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FAB] transition-colors block">Investment</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">SIP, Mutual Funds, Stocks</span>
-                  </div>
-                </button>
-
-                {/* Option 2: Insurance Page */}
-                <button
-                  onClick={() => setCurrentPage('insurance')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-pink-surface border border-pink-200 text-[#C81E8C] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#C81E8C] group-hover/item:text-white transition-all">
-                    🛡️
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#C81E8C] transition-colors block">Insurance</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Health, Life, Motor & Property</span>
-                  </div>
-                </button>
-
-                {/* Option 3: Financing Page */}
-                <button
-                  onClick={() => setCurrentPage('financing')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#FFF4DE] border border-[#F5A623]/30 text-[#F5A623] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#F5A623] group-hover/item:text-white transition-all">
-                    💰
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#D49300] transition-colors block">Financing</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Business Loans, LAP & Capital</span>
-                  </div>
-                </button>
-
-                {/* Option 4: Borrow Page */}
-                <button
-                  onClick={() => navigateToPage('borrow')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-purple-surface border border-purple-200 text-[#7C1FA8] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FA8] group-hover/item:text-white transition-all">
-                    💸
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FA8] transition-colors block">Borrow</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Instant Loans, Micro Credit & LAP</span>
-                  </div>
-                </button>
-
-                {/* Option 5: Tools Page */}
-                <button 
-                  onClick={() => navigateToPage('tools')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-surface/80 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#FAF5FD] border border-purple-200 text-[#7C1FAB] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 group-hover/item:bg-[#7C1FAB] group-hover/item:text-white transition-all">
-                    🧮
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FAB] transition-colors block">Smart Tools</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Calculators & Future Planning</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => navigateToPage('tools')} 
-              className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
-            >
-              Tools
-            </button>
-
-            <button 
-              onClick={() => navigateToPage('blog')} 
-              className="whitespace-nowrap hover:text-primary-purple transition-colors py-1 font-semibold cursor-pointer"
-            >
-              Blog
-            </button>
-
-            <a href="#why-us" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">Why Us</a>
-            <a href="#how-it-works" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">How It Works</a>
-            <a href="#faqs" className="whitespace-nowrap hover:text-primary-purple transition-colors py-1">FAQs</a>
-          </div>
-
-          {/* Nav Right (Toggles & Action Buttons) - Desktop Only */}
-          <div className="hidden lg:flex items-center gap-5">
-            {/* Explore as Switch */}
-            <div className="flex items-center gap-2">
-              <span className="text-muted-text font-semibold text-xs whitespace-nowrap">Explore as</span>
-              <div className="bg-purple-surface/50 rounded-[14px] p-1 border border-brand-border flex items-center text-[11px]">
-                <button
-                  onClick={() => {
-                    setActiveTab('partners');
-                    setCurrentPage('home');
-                  }}
-                  className={`px-3.5 py-1.5 rounded-[10px] font-bold transition-all duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'partners' ? 'bg-pink-surface text-accent-pink shadow-sm' : 'text-muted-text hover:text-heading-ink'}`}
-                >
-                  {activeTab === 'partners' && <span className="w-1.5 h-1.5 rounded-full bg-accent-pink"></span>}
-                  For Partners
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab('investors');
-                    setCurrentPage('investors');
-                  }}
-                  className={`px-3.5 py-1.5 rounded-[10px] font-bold transition-all duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'investors' ? 'bg-purple-surface text-primary-purple shadow-sm' : 'text-muted-text hover:text-heading-ink'}`}
-                >
-                  {activeTab === 'investors' && <span className="w-1.5 h-1.5 rounded-full bg-primary-purple"></span>}
-                  For Investors
-                </button>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex items-center gap-2">
-              <a href="#login" className="border border-brand-border hover:border-primary-purple text-primary-purple hover:bg-purple-surface/30 px-5 py-1.5 rounded-[14px] font-bold text-sm transition-all duration-300 flex items-center justify-center h-[38px] whitespace-nowrap">
-                Login
-              </a>
-              <a href="#signup" className="bg-primary-purple hover:bg-deep-purple text-white font-bold text-sm px-5 py-1.5 rounded-[14px] shadow-md shadow-purple-100 transition-all flex items-center gap-1 hover:translate-x-0.5 duration-200 h-[38px] whitespace-nowrap">
-                Signup
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Drawer Overlay */}
-        <div className={`fixed inset-0 bg-[#FAF6FC] z-[100] p-4 sm:p-6 overflow-y-auto lg:hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-4'}`}>
-          <div className="max-w-[350px] mx-auto flex flex-col gap-3 font-sans pb-6">
-
-            {/* Drawer Top Header (Logo + Close X) */}
-            <div className="flex items-center justify-between pb-2">
-              <img
-                src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png"
-                className="w-[128px] h-[40px] object-contain"
-                alt="PROSPERi5 Logo"
-              />
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-full bg-[#F5EEFA] text-[#5E1083] flex items-center justify-center transition-all cursor-pointer hover:bg-purple-100 active:scale-95"
-              >
-                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* 7 Numbered Mobile Nav Cards (Hover background: #7C1FA8, hover text: white/gold) */}
-            <div className="flex flex-col gap-3.5 mt-1">
-
-              {/* 01 Home (Height: 58px, Rounded: 16px) */}
-              <a
-                href="#home"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">01</span>
-                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Home</span>
-              </a>
-
-              {/* 02 About Us */}
-              <button
-                onClick={() => { setMobileMenuOpen(false); setCurrentPage('about'); }}
-                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">02</span>
-                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">About Us</span>
-              </button>
-
-              {/* 03 Tools */}
-              <button
-                onClick={() => { setMobileMenuOpen(false); setCurrentPage('tools'); }}
-                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">03</span>
-                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Tools & Calculators</span>
-              </button>
-
-              {/* 04 Blog */}
-              <button
-                onClick={() => { setMobileMenuOpen(false); setCurrentPage('blog'); }}
-                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">04</span>
-                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Blog & Insights</span>
-              </button>
-
-              {/* 05 Investors */}
-              <button
-                onClick={() => { setMobileMenuOpen(false); setCurrentPage('investors'); }}
-                className="w-full h-[58px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">05</span>
-                <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] group-hover:text-white transition-colors">Investors</span>
-              </button>
-
-              {/* 03 Who We Serve (Height: 68px, Border: 1px, Rounded: 16px) */}
-              <a
-                href="#who-we-serve"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[68px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">03</span>
-                <div className="flex flex-col">
-                  <h4 className="font-bold text-sm text-[#1E1B2E] group-hover:text-white leading-tight transition-colors">Who We Serve</h4>
-                  <p className="text-[11px] text-[#8E8A9D] group-hover:text-white/80 font-medium mt-0.5 transition-colors">Investor and partner journeys</p>
-                </div>
-              </a>
-
-              {/* 04 Solutions (Height: 68px, Border: 1px, Rounded: 16px) */}
-              <a
-                href="#solutions"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full h-[68px] bg-white hover:bg-[#7C1FA8] text-[#1E1B2E] hover:text-white rounded-[16px] border border-[#EBE3F5] hover:border-[#7C1FA8] px-5 flex items-center gap-4 shadow-sm transition-all duration-200 active:scale-[0.99] shrink-0 group cursor-pointer"
-              >
-                <span className="text-[#7C1FAB] group-hover:text-[#F5A623] font-extrabold text-sm sm:text-base font-display transition-colors">04</span>
-                <div className="flex flex-col">
-                  <h4 className="font-bold text-sm text-[#1E1B2E] group-hover:text-white leading-tight transition-colors">Solutions</h4>
-                  <p className="text-[11px] text-[#8E8A9D] group-hover:text-white/80 font-medium mt-0.5 transition-colors">Investments · Insurance · Financing</p>
-                </div>
-              </a>
-
-
-
-            </div>
-
-
-            {/* Bottom Dark CTA Card */}
-            <div className="bg-[#180A29] text-white rounded-[22px] p-4 sm:p-5 border border-white/10 shadow-xl mt-6 flex flex-col">
-              <span className="text-[#F5A623] text-[10px] font-extrabold uppercase tracking-wider font-sans mb-1">
-                READY TO BEGIN?
-              </span>
-              <h3 className="text-white font-bold text-sm sm:text-[15px] leading-snug font-sans">
-                Choose your next financial journey.
-              </h3>
-              <div className="flex items-center gap-2.5 mt-4">
-                <a
-                  href="#signup"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="bg-[#7C1FAB] hover:bg-[#6b1991] text-white text-xs font-bold px-4 py-2.5 rounded-full flex items-center justify-center gap-1.5 flex-1 shadow-sm transition-all"
-                >
-                  <span>Talk To an Expert</span>
-                  <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </a>
-                <a
-                  href="#login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="bg-white hover:bg-gray-100 text-[#5E1083] text-xs font-bold px-5 py-2.5 rounded-full flex items-center justify-center shrink-0 shadow-sm transition-all"
-                >
-                  Login
-                </a>
-              </div>
-            </div>
-
-            {/* Bottom Tagline */}
-            <p className="text-[#7C1FAB] text-[10px] font-extrabold tracking-widest text-center mt-2 uppercase font-sans">
-              INVESTMENTS · INSURANCE · FINANCING
-            </p>
-
-          </div>
-        </div>
-      </nav>
+  const renderPageContent = () => {
+    switch (currentPage) {
+      case 'protect':
+        return <ProtectPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'investment':
+        return <InvestmentPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'insurance':
+        return <InsurancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'financing':
+        return <FinancingPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'investors':
+        return <InvestorsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'about':
+        return <AboutPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'loan':
+      case 'loans':
+        return <LoanPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'borrow':
+        return <BorrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'grow':
+        return <GrowPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'knowledge':
+        return <KnowledgeCenterPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'partner':
+      case 'partner-b2b':
+        return <PartnerB2BPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'personal-finance':
+      case 'personalfinance':
+      case 'finance':
+        return <PersonalFinancePage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'tax':
+      case 'tax-solutions':
+      case 'taxsolutions':
+        return <TaxSolutionsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'insights':
+      case 'market-insights':
+      case 'marketinsights':
+      case 'market':
+        return <MarketInsightsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'tools':
+        return <ToolsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'sip-calculator':
+        return <SipCalculatorPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'emi-calculator':
+        return <EmiCalculatorPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'term-insurance-calculator':
+        return <TermInsuranceCalculatorPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'loan-against-securities':
+      case 'las-calculator':
+        return <LoanAgainstSecuritiesPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'privacy-policy':
+      case 'privacy':
+        return <PrivacyPolicyPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'terms-and-conditions':
+      case 'terms':
+        return <TermsAndConditionsPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={(p) => navigateToPage(p)} />;
+      case 'blog':
+      case 'blogs':
+        return <BlogPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={handleNavigatePage} />;
+      case 'blog-detail':
+        return <BlogDetailPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={handleNavigatePage} articleId={selectedArticleId} />;
+      case 'careers':
+      case 'career':
+        return <CareersPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={handleNavigatePage} />;
+      case 'careers-admin':
+      case 'admin/careers':
+      case 'admin':
+        return <CareersAdminPage onNavigateHome={() => navigateToPage('home')} onNavigatePage={handleNavigatePage} />;
+      case 'blog-admin':
+      case 'admin/blog':
+        return <BlogAdminPanel onNavigateHome={() => navigateToPage('home')} onNavigatePage={handleNavigatePage} />;
+      case 'home':
+      default:
+        return renderHomepageSections();
+    }
+  };
+
+  const renderHomepageSections = () => (
+    <>
 
       {/* 3. HERO CONTAINER */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-6 lg:pt-8 pb-4 lg:pb-8 z-10 relative">
+      <main className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-6 lg:pt-8 pb-4 lg:pb-8 z-10 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
           {/* LEFT CONTENT COLUMN */}
-          <div className="lg:col-span-6 flex flex-col items-center lg:items-start z-10 max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
+          <ScrollReveal animation="left" delay={40} className="lg:col-span-6 flex flex-col items-center lg:items-start z-10 max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
             {/* Hero Main Heading: Plus Jakarta Sans, 600 SemiBold, 36px / 44px, tracking -5%, text-center */}
             <h1 className="font-sans text-[36px] leading-[44px] lg:text-[48px] lg:leading-[54px] font-semibold text-heading-ink text-center lg:text-left tracking-[-0.05em] max-w-[640px]">
               The Multi-Asset Wealth Management<br className="hidden lg:block" /> Platform for Every Partner
@@ -818,13 +452,13 @@ function App() {
 
             {/* Desktop CTA BUTTONS ROW */}
             <div className="hidden lg:flex items-center w-[387px] h-[52px] gap-[14px] mt-6 select-none">
-              <button onClick={() => setSelectedModal(true)} className="flex-1 h-full bg-primary-purple hover:bg-deep-purple text-white font-semibold rounded-xl shadow-lg shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
+              <button onClick={() => navigateToPage('grow')} className="flex-1 h-full bg-primary-purple hover:bg-deep-purple text-white font-semibold rounded-xl shadow-lg shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
                 Start Growing
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </button>
-              <button className="flex-1 h-full border border-primary-purple hover:border-deep-purple text-primary-purple hover:bg-purple-surface/30 font-semibold rounded-xl bg-white transition-all cursor-pointer text-sm flex items-center justify-center gap-2">
+              <button onClick={() => navigateToPage('about')} className="flex-1 h-full border border-primary-purple hover:border-deep-purple text-primary-purple hover:bg-purple-surface/30 font-semibold rounded-xl bg-white transition-all cursor-pointer text-sm flex items-center justify-center gap-2">
                 Explore PROSPERi5
               </button>
             </div>
@@ -832,7 +466,7 @@ function App() {
             {/* Mobile CTA BUTTONS STACK (Width: 197px, Height: 52px, Rounded: 500px pill) */}
             <div className="flex lg:hidden flex-col items-center gap-3.5 mt-6 select-none mx-auto">
               {/* Button 1: Start Growing ↗ */}
-              <button onClick={() => setSelectedModal(true)} className="w-[197px] h-[52px] bg-primary-purple hover:bg-deep-purple text-white font-bold rounded-full shadow-md shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
+              <button onClick={() => navigateToPage('grow')} className="w-[197px] h-[52px] bg-primary-purple hover:bg-deep-purple text-white font-bold rounded-full shadow-md shadow-purple-100 hover:shadow-purple-200 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 duration-200 cursor-pointer text-sm">
                 <span>Start Growing</span>
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
@@ -840,7 +474,7 @@ function App() {
               </button>
 
               {/* Button 2: Explore PROSPERi5 → */}
-              <button className="w-[197px] h-[52px] border-[1.5px] border-primary-purple text-primary-purple hover:bg-purple-surface/30 font-bold rounded-full bg-white transition-all cursor-pointer text-sm flex items-center justify-center gap-2">
+              <button onClick={() => navigateToPage('about')} className="w-[197px] h-[52px] border-[1.5px] border-primary-purple text-primary-purple hover:bg-purple-surface/30 font-bold rounded-full bg-white transition-all cursor-pointer text-sm flex items-center justify-center gap-2">
                 <span>Explore PROSPERi5</span>
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -848,8 +482,8 @@ function App() {
               </button>
             </div>
 
-            {/* Desktop Value bullets (Left-aligned with separating dots - 1 Single Row) */}
-            <div className="hidden lg:flex flex-nowrap items-center gap-x-3.5 sm:gap-x-4 gap-y-2 mt-6 text-xs sm:text-sm font-semibold text-heading-ink w-full whitespace-nowrap">
+            {/* Desktop Value bullets (Left-aligned with separating dots) */}
+            <div className="hidden lg:flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-sm font-semibold text-heading-ink w-full">
               <div className="flex items-center gap-1">
                 <span className="text-primary-purple text-base font-bold">✓</span>
                 <span>Trusted guidance</span>
@@ -866,56 +500,19 @@ function App() {
               </div>
             </div>
 
-            {/* Store Badges - Pure Code Components */}
-            <div className="flex items-center gap-3 mt-5 justify-center lg:justify-start w-full sm:w-auto">
-              
-              {/* Google Play Button */}
-              <button
-                onClick={() => setSelectedModal(true)}
-                className="bg-white hover:bg-gray-50 text-[#1E1B2E] border border-[#1E1B2E] rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-2xs transition-all cursor-pointer active:scale-95"
-              >
-                <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
-                  <path d="M3.609 1.814C3.232 2.21 3 2.784 3 3.525v16.95c0 .741.232 1.315.609 1.711l.09.088L13.15 12.82v-.226L3.7 1.725l-.091.089z" fill="#00D2FF"/>
-                  <path d="M16.3 15.975l-3.15-3.151v-.226l3.15-3.15.09.052 3.733 2.122c1.066.606 1.066 1.6 0 2.207l-3.733 2.121-.09.025z" fill="#FFC900"/>
-                  <path d="M16.39 15.95L13.15 12.71 3.609 22.25c.355.378.947.424 1.616.044l11.165-6.344z" fill="#FF3A44"/>
-                  <path d="M16.39 8.05L5.225 1.706C4.556 1.326 3.964 1.372 3.609 1.75L13.15 11.29l3.24-3.24z" fill="#00E676"/>
-                </svg>
-
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#1E1B2E] leading-none block">
-                    GET IT ON
-                  </span>
-                  <span className="text-sm font-extrabold text-[#1E1B2E] leading-tight block tracking-tight">
-                    Google Play
-                  </span>
-                </div>
-              </button>
-
-              {/* App Store Button */}
-              <button
-                onClick={() => setSelectedModal(true)}
-                className="bg-white hover:bg-gray-50 text-[#1E1B2E] border border-[#1E1B2E] rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-2xs transition-all cursor-pointer active:scale-95"
-              >
-                <svg className="w-5 h-5 shrink-0 fill-current text-[#1E1B2E]" viewBox="0 0 24 24">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.87c.68-.83 1.14-1.99.99-3.14-.99.04-2.18.67-2.88 1.49-.63.73-1.18 1.92-1.03 3.05 1.1.09 2.24-.56 2.92-1.4" />
-                </svg>
-
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-bold text-[#1E1B2E] leading-none block">
-                    Download on the
-                  </span>
-                  <span className="text-sm font-extrabold text-[#1E1B2E] leading-tight block tracking-tight">
-                    App Store
-                  </span>
-                </div>
-              </button>
-
+            {/* Store badges: Width 250px, Height 40px, Gap 10px on mobile */}
+            <div className="flex items-center gap-[10px] mt-4 justify-center lg:justify-start w-full sm:w-auto">
+              <img
+                src="/app-badges.png"
+                className="w-[250px] h-[40px] lg:w-auto lg:h-[42px] object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                alt="App Store Badges"
+              />
             </div>
 
-          </div>
+          </ScrollReveal>
 
           {/* RIGHT HERO VISUAL (Width: 383px, Height: 320px on mobile) */}
-          <div className="lg:col-span-6 flex items-center justify-center lg:justify-end w-full pt-0 lg:pt-0 select-none overflow-visible z-10">
+          <ScrollReveal animation="right" delay={120} className="lg:col-span-6 flex items-center justify-center lg:justify-end w-full pt-0 lg:pt-0 select-none overflow-visible z-10">
             <div className="relative w-full flex justify-center lg:justify-end">
               <img
                 src="/Right Side.png"
@@ -923,13 +520,10 @@ function App() {
                 alt="PROSPERi5 Advisor Growth Ecosystem"
               />
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Value bullets (Shifted UP with -mt-3.5 and bottom gap mb-2) */}
-          <div
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="flex lg:hidden flex-nowrap items-center justify-center gap-x-2.5 sm:gap-x-3 -mt-3.5 mb-2 text-[10px] sm:text-[11px] font-medium text-[#1E1B2E] tracking-[0.002em] w-full max-w-[360px] mx-auto whitespace-nowrap"
-          >
+          <ScrollReveal animation="up" delay={80} className="flex lg:hidden flex-nowrap items-center justify-center gap-x-2.5 sm:gap-x-3 -mt-3.5 mb-2 text-[10px] sm:text-[11px] font-medium text-[#1E1B2E] tracking-[0.002em] w-full max-w-[360px] mx-auto whitespace-nowrap">
             <div className="flex items-center gap-1 shrink-0">
               <span className="text-primary-purple text-xs font-bold">✓</span>
               <span>Trusted guidance</span>
@@ -942,7 +536,7 @@ function App() {
               <span className="text-primary-purple text-xs font-bold">✓</span>
               <span>Long-term relationships</span>
             </div>
-          </div>
+          </ScrollReveal>
 
         </div>
       </main>
@@ -959,113 +553,127 @@ function App() {
       >
         <div className="max-w-7xl mx-auto">
           {/* Category heading */}
-          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-2 inline-block font-sans">
-            PARTNER VALUE AT A GLANCE
-          </span>
+          <ScrollReveal animation="up" delay={30}>
+            <h2 className="text-[#7C1FA8] text-xs font-bold tracking-widest uppercase mb-4 lg:mb-5 font-sans">
+              Partner Value at a Glance
+            </h2>
+          </ScrollReveal>
 
           {/* Symmetric Cards Grid (4 equal columns) with Deep Purple default and Hover background transition to #7C1FA8 and text color #F5A623 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
 
             {/* Card 01: Up to 30% */}
-            <div
-              onMouseEnter={() => setHoveredPartnerCard(0)}
-              onMouseLeave={() => setHoveredPartnerCard(null)}
-              style={{
-                background: hoveredPartnerCard === 0
-                  ? '#7C1FA8'
-                  : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
-              }}
-              className="col-span-1 rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 h-[240px] sm:h-[265px] lg:h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
-            >
-              <div>
-                <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 0 ? 'text-[#F5A623]' : 'text-white'}`}>
-                  Up to 30%
-                </h3>
-                <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
-                  More revenue potential
-                </p>
-                <div className="w-9 h-1 bg-[#F5A623] rounded-full mt-2.5"></div>
-              </div>
+            <ScrollReveal animation="up" delay={50} className="col-span-1 h-full">
+              <div
+                onClick={() => navigateToPage('partner')}
+                onMouseEnter={() => setHoveredPartnerCard(0)}
+                onMouseLeave={() => setHoveredPartnerCard(null)}
+                style={{
+                  background: hoveredPartnerCard === 0
+                    ? '#7C1FA8'
+                    : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
+                }}
+                className="w-full h-full rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 min-h-[240px] sm:min-h-[265px] lg:min-h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
+              >
+                <div>
+                  <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 0 ? 'text-[#F5A623]' : 'text-white'}`}>
+                    Up to 30%
+                  </h3>
+                  <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
+                    More revenue potential
+                  </p>
+                  <div className="w-9 h-1 bg-[#F5A623] rounded-full mt-2.5"></div>
+                </div>
 
-              <div className="w-full flex justify-center items-center mt-auto pt-1">
-                <img src="/image 10.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="Up to 30% graphic" />
+                <div className="w-full flex justify-center items-center mt-auto pt-1">
+                  <img src="/image 10.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="Up to 30% graphic" />
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Card 02: 50+ Financial products */}
-            <div
-              onMouseEnter={() => setHoveredPartnerCard(1)}
-              onMouseLeave={() => setHoveredPartnerCard(null)}
-              style={{
-                background: hoveredPartnerCard === 1
-                  ? '#7C1FA8'
-                  : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
-              }}
-              className="col-span-1 rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 h-[240px] sm:h-[265px] lg:h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
-            >
-              <div>
-                <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 1 ? 'text-[#F5A623]' : 'text-white'}`}>
-                  50+
-                </h3>
-                <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
-                  Financial products
-                </p>
-              </div>
+            <ScrollReveal animation="up" delay={120} className="col-span-1 h-full">
+              <div
+                onClick={() => navigateToPage('tools')}
+                onMouseEnter={() => setHoveredPartnerCard(1)}
+                onMouseLeave={() => setHoveredPartnerCard(null)}
+                style={{
+                  background: hoveredPartnerCard === 1
+                    ? '#7C1FA8'
+                    : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
+                }}
+                className="w-full h-full rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 min-h-[240px] sm:min-h-[265px] lg:min-h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
+              >
+                <div>
+                  <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 1 ? 'text-[#F5A623]' : 'text-white'}`}>
+                    50+
+                  </h3>
+                  <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
+                    Financial products
+                  </p>
+                </div>
 
-              <div className="w-full flex justify-center items-center mt-auto pt-1">
-                <img src="/image 11.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="50+ Financial products" />
+                <div className="w-full flex justify-center items-center mt-auto pt-1">
+                  <img src="/image 11.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="50+ Financial products" />
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Card 03: Timely Reliable partner payouts */}
-            <div
-              onMouseEnter={() => setHoveredPartnerCard(2)}
-              onMouseLeave={() => setHoveredPartnerCard(null)}
-              style={{
-                background: hoveredPartnerCard === 2
-                  ? '#7C1FA8'
-                  : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
-              }}
-              className="col-span-1 rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 h-[240px] sm:h-[265px] lg:h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
-            >
-              <div>
-                <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 2 ? 'text-[#F5A623]' : 'text-white'}`}>
-                  Timely
-                </h3>
-                <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
-                  Reliable partner payouts
-                </p>
-              </div>
+            <ScrollReveal animation="up" delay={190} className="col-span-1 h-full">
+              <div
+                onClick={() => navigateToPage('partner')}
+                onMouseEnter={() => setHoveredPartnerCard(2)}
+                onMouseLeave={() => setHoveredPartnerCard(null)}
+                style={{
+                  background: hoveredPartnerCard === 2
+                    ? '#7C1FA8'
+                    : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
+                }}
+                className="w-full h-full rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 min-h-[240px] sm:min-h-[265px] lg:min-h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
+              >
+                <div>
+                  <h3 className={`font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none transition-colors duration-300 ${hoveredPartnerCard === 2 ? 'text-[#F5A623]' : 'text-white'}`}>
+                    Timely
+                  </h3>
+                  <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
+                    Reliable partner payouts
+                  </p>
+                </div>
 
-              <div className="w-full flex justify-center items-center mt-auto pt-1">
-                <img src="/image 13.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="Timely payouts" />
+                <div className="w-full flex justify-center items-center mt-auto pt-1">
+                  <img src="/image 13.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="Timely payouts" />
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Card 04: ₹0 Joining fee */}
-            <div
-              onMouseEnter={() => setHoveredPartnerCard(3)}
-              onMouseLeave={() => setHoveredPartnerCard(null)}
-              style={{
-                background: hoveredPartnerCard === 3
-                  ? '#7C1FA8'
-                  : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
-              }}
-              className="col-span-1 rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 h-[240px] sm:h-[265px] lg:h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
-            >
-              <div>
-                <h3 className="text-[#F5A623] font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none">
-                  ₹0
-                </h3>
-                <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
-                  Joining fee
-                </p>
-              </div>
+            <ScrollReveal animation="up" delay={260} className="col-span-1 h-full">
+              <div
+                onClick={() => navigateToPage('partner')}
+                onMouseEnter={() => setHoveredPartnerCard(3)}
+                onMouseLeave={() => setHoveredPartnerCard(null)}
+                style={{
+                  background: hoveredPartnerCard === 3
+                    ? '#7C1FA8'
+                    : 'linear-gradient(135deg, #461065 0%, #2E0A44 100%)'
+                }}
+                className="w-full h-full rounded-[24px] p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 min-h-[240px] sm:min-h-[265px] lg:min-h-[280px] relative overflow-hidden border border-white/10 text-white shadow-md hover:border-purple-300/50 hover:shadow-[0_15px_35px_rgba(124,31,168,0.6)] hover:-translate-y-1.5"
+              >
+                <div>
+                  <h3 className="text-[#F5A623] font-extrabold text-3xl sm:text-4xl font-display tracking-tight leading-none">
+                    ₹0
+                  </h3>
+                  <p className="text-white/90 text-xs sm:text-sm font-medium font-sans mt-1.5">
+                    Joining fee
+                  </p>
+                </div>
 
-              <div className="w-full flex justify-center items-center mt-auto pt-1">
-                <img src="/coins.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="₹0 Joining fee" />
+                <div className="w-full flex justify-center items-center mt-auto pt-1">
+                  <img src="/coins.png" className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] object-contain filter drop-shadow-md" alt="₹0 Joining fee" />
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
           </div>
         </div>
@@ -1083,16 +691,19 @@ function App() {
       >
         <div className="max-w-[360px] mx-auto flex flex-col items-center">
           {/* Centered category heading */}
-          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-2 inline-block text-center font-sans">
+          <h2 className="text-[#7C1FA8] text-xs font-black tracking-widest uppercase mb-5 text-center font-sans">
             PARTNER VALUE AT A GLANCE
-          </span>
+          </h2>
 
           {/* Stacked overlapping cards deck (Container: 360px x 376px) */}
           <div ref={mobilePartnerCardsRef} className="w-full max-w-[360px] h-[376px] flex flex-col items-center relative select-none">
 
             {/* Fourth Card (Back-most): ₹0 (Width: 308px, Height: 112px, Background: #FFF4DE, Radius: 20px) */}
-            <div className={`w-[308px] h-[112px] bg-[#FFF4DE] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-0 shrink-0 transition-all duration-500 ease-out ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-30 scale-95'
-              }`}>
+            <div
+              onClick={() => navigateToPage('partner')}
+              className={`w-[308px] h-[112px] bg-[#FFF4DE] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-0 shrink-0 transition-all duration-500 ease-out cursor-pointer hover:scale-[1.02] active:scale-95 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-30 scale-95'
+              }`}
+            >
               <div>
                 <h3 style={{ fontFamily: "'Inter', sans-serif" }} className="text-[#1E1135] font-semibold text-[27px] leading-[32px] tracking-normal">
                   ₹0
@@ -1106,8 +717,11 @@ function App() {
             </div>
 
             {/* Third Card: Timely (Width: 326px, Height: 100px, Background: #FCE9F4, Radius: 20px) */}
-            <div className={`w-[326px] h-[100px] bg-[#FCE9F4] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-10 -mt-[58px] shrink-0 transition-all duration-500 ease-out delay-100 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-30 scale-95'
-              }`}>
+            <div
+              onClick={() => navigateToPage('partner')}
+              className={`w-[326px] h-[100px] bg-[#FCE9F4] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-10 -mt-[58px] shrink-0 transition-all duration-500 ease-out delay-100 cursor-pointer hover:scale-[1.02] active:scale-95 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-30 scale-95'
+              }`}
+            >
               <div>
                 <h3 style={{ fontFamily: "'Inter', sans-serif" }} className="text-[#1E1135] font-semibold text-[27px] leading-[32px] tracking-normal">
                   Timely
@@ -1121,8 +735,11 @@ function App() {
             </div>
 
             {/* Second Card: Up to 30% (Width: 344px, Height: 112px, Background: #F5EEFB, Radius: 20px) */}
-            <div className={`w-[344px] h-[112px] bg-[#F5EEFB] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-20 -mt-[48px] shrink-0 transition-all duration-500 ease-out delay-200 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-14 opacity-30 scale-95'
-              }`}>
+            <div
+              onClick={() => navigateToPage('partner')}
+              className={`w-[344px] h-[112px] bg-[#F5EEFB] rounded-[20px] p-[14px] px-[18px] flex justify-between items-start border border-black/5 shadow-sm relative z-20 -mt-[48px] shrink-0 transition-all duration-500 ease-out delay-200 cursor-pointer hover:scale-[1.02] active:scale-95 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-14 opacity-30 scale-95'
+              }`}
+            >
               <div>
                 <h3 style={{ fontFamily: "'Inter', sans-serif" }} className="text-[#1E1135] font-semibold text-[27px] leading-[32px] tracking-normal">
                   Up to 30%
@@ -1137,8 +754,9 @@ function App() {
 
             {/* First Card (Front-most): 50+ (Width: 360px, Height: 184px, Gradient: #5E1683 to #7C1FA8, Radius: 22px) */}
             <div
+              onClick={() => navigateToPage('tools')}
               style={{ background: 'linear-gradient(90deg, #5E1683 0%, #7C1FA8 100%)' }}
-              className={`w-[360px] max-w-full h-[184px] rounded-[22px] p-5 flex flex-col justify-between border border-white/10 shadow-lg relative z-30 -mt-[52px] shrink-0 text-white transition-all duration-500 ease-out delay-300 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-18 opacity-30 scale-95'
+              className={`w-[360px] max-w-full h-[184px] rounded-[22px] p-5 flex flex-col justify-between border border-white/10 shadow-lg relative z-30 -mt-[52px] shrink-0 text-white transition-all duration-500 ease-out delay-300 cursor-pointer hover:scale-[1.02] active:scale-95 ${mobilePartnerCardsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-18 opacity-30 scale-95'
                 }`}
             >
               <div className="pt-8">
@@ -1169,7 +787,7 @@ function App() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           {/* Section Heading: Centered on Mobile & Desktop */}
-          <div className="text-center mb-5 lg:mb-5 w-[342px] max-w-full lg:w-full lg:max-w-5xl mx-auto flex flex-col items-center px-4 lg:px-0">
+          <ScrollReveal animation="up" delay={30} className="text-center mb-5 lg:mb-5 w-[342px] max-w-full lg:w-full lg:max-w-5xl mx-auto flex flex-col items-center px-4 lg:px-0">
             <h2 className="font-sans font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] tracking-[-0.5px] text-heading-ink text-center lg:max-w-none max-w-[760px] mx-auto whitespace-normal lg:whitespace-nowrap">
               A Complete Financial Ecosystem For Your Clients
             </h2>
@@ -1184,13 +802,13 @@ function App() {
                 PROSPERi5 helps you become the first call for every financial need—deepening relationships and keeping more of each client’s financial journey with you.
               </span>
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Two Column Layout: Arc Visual + Service Cards (Compact desktop spacing) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-center">
 
             {/* LEFT: Arc Donut Visual with 360 Continuous Outer Ring Rotation */}
-            <div className="lg:col-span-6 flex items-center justify-center px-4 lg:px-4">
+            <ScrollReveal animation="left" delay={70} className="lg:col-span-6 flex items-center justify-center px-4 lg:px-4">
               <div className="relative w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] lg:w-[400px] lg:h-[400px] flex items-center justify-center mx-auto">
                 {/* 360 Rotating Outer Ring Image */}
                 <img
@@ -1201,7 +819,7 @@ function App() {
 
                 {/* Stationary Center Text Mask Container */}
                 <div className="absolute inset-0 m-auto w-[54%] h-[54%] rounded-full bg-white flex flex-col items-center justify-center text-center p-2 z-10 shadow-sm pointer-events-none">
-                  <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1 inline-block font-sans">
+                  <span className="text-[#F5A623] font-bold text-[10px] sm:text-[11px] lg:text-[12px] tracking-wider uppercase mb-1 font-sans">
                     ONE PLATFORM
                   </span>
                   <h3
@@ -1212,19 +830,19 @@ function App() {
                   </h3>
                   <span
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="font-medium text-[9.5px] sm:text-[10.5px] lg:text-[11.5px] tracking-tight text-[#544F66] mt-1 block leading-tight"
+                    className="font-medium text-[9.5px] sm:text-[10.5px] lg:text-[11.5px] tracking-tight text-[#544F66] mt-1"
                   >
-                    Investments · Insurance <br /> Financing
+                    Investments · Insurance · Financing
                   </span>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* RIGHT: Three numbered service cards (Matching uniform subtext width across all points) */}
             <div className="lg:col-span-6 flex flex-col gap-4 lg:gap-5 px-4 lg:px-4 w-full max-w-xl lg:w-full mx-auto lg:mx-0 mt-6 lg:mt-0">
 
               {/* 1. Investment Card */}
-              <div className="flex items-start gap-4 lg:gap-5 pb-4 lg:pb-4 border-b border-gray-200">
+              <ScrollReveal animation="right" delay={80} className="flex items-start gap-4 lg:gap-5 pb-4 lg:pb-4 border-b border-gray-200">
                 {/* Circle Badge 1 */}
                 <div className="w-[36px] h-[36px] lg:w-[44px] lg:h-[44px] rounded-full border border-purple-400/60 lg:border-2 lg:border-[#7C1FA8] bg-purple-50 lg:bg-white text-[#7C1FA8] flex items-center justify-center font-bold text-sm lg:text-[18px] shrink-0 mt-0.5">
                   1
@@ -1253,10 +871,10 @@ function App() {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </ScrollReveal>
 
               {/* 2. Insurance Card */}
-              <div className="flex items-start gap-4 lg:gap-5 pb-4 lg:pb-4 border-b border-gray-200">
+              <ScrollReveal animation="right" delay={150} className="flex items-start gap-4 lg:gap-5 pb-4 lg:pb-4 border-b border-gray-200">
                 {/* Circle Badge 2 */}
                 <div className="w-[36px] h-[36px] lg:w-[44px] lg:h-[44px] rounded-full border border-pink-400/60 lg:border-2 lg:border-[#C81E8C] bg-pink-50 lg:bg-white text-[#C81E8C] flex items-center justify-center font-bold text-sm lg:text-[18px] shrink-0 mt-0.5">
                   2
@@ -1285,10 +903,10 @@ function App() {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </ScrollReveal>
 
               {/* 3. Financing Card */}
-              <div className="flex items-start gap-4 lg:gap-5 pb-1">
+              <ScrollReveal animation="right" delay={220} className="flex items-start gap-4 lg:gap-5 pb-1">
                 {/* Circle Badge 3 */}
                 <div className="w-[36px] h-[36px] lg:w-[44px] lg:h-[44px] rounded-full border border-amber-400/60 lg:border-2 lg:border-[#F5A623] bg-amber-50 lg:bg-white text-[#F5A623] flex items-center justify-center font-bold text-sm lg:text-[18px] shrink-0 mt-0.5">
                   3
@@ -1317,7 +935,7 @@ function App() {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </ScrollReveal>
 
             </div>
           </div>
@@ -1328,14 +946,19 @@ function App() {
 
       {/* 4.5 FIVE REASONS PARTNERS SWITCH TO PROSPERi5 SECTION */}
       <section id="why-us" ref={reasonsRef} className="bg-[#FAF7FC] w-full py-4 sm:py-5 lg:py-5 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-4xl lg:max-w-[840px] mx-auto">
 
           {/* Centered Header: Exact Mobile & Desktop Specs */}
-          <div className="mb-4 sm:mb-5 text-center flex flex-col items-center mx-auto w-[342px] max-w-full lg:w-full lg:max-w-5xl">
+          <ScrollReveal animation="up" delay={30} className="mb-4 sm:mb-5 text-center flex flex-col items-center mx-auto w-[342px] max-w-full lg:w-full lg:max-w-5xl">
             {/* Badge Wrapper: WHY PARTNERS SWITCH */}
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
-              WHY PARTNERS SWITCH
-            </span>
+            <div className="bg-[#F5A623] text-heading-ink rounded-[15px] px-[14px] py-[6px] h-[29px] w-[191px] flex items-center justify-center mb-3 shadow-sm select-none">
+              <span
+                style={{ fontFamily: "'Inter', sans-serif" }}
+                className="font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase whitespace-nowrap text-center text-[#1E1135]"
+              >
+                WHY PARTNERS SWITCH
+              </span>
+            </div>
 
             {/* Main Heading: Five Reasons Partners Switch To PROSPERi5 */}
             <h2 className="font-sans font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] text-heading-ink tracking-[-0.5px] mb-2 text-center w-[342px] max-w-full lg:w-full lg:max-w-none whitespace-normal lg:whitespace-nowrap mx-auto">
@@ -1349,7 +972,7 @@ function App() {
             >
               Expand your advisory suite, retain client ownership and become the trusted expert your clients call first.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Compact Timeline & Cards Layout */}
           <div className="relative pl-2 sm:pl-4">
@@ -1472,59 +1095,54 @@ function App() {
               ].map((reason, index) => {
                 const isHovered = hoveredReason === index;
                 return (
-                  <div
-                    key={index}
-                    onMouseEnter={() => setHoveredReason(index)}
-                    onMouseLeave={() => setHoveredReason(null)}
-                    style={{
-                      transitionDelay: sectionVisible ? '0ms' : `${index * 150}ms`
-                    }}
-                    className={`flex items-center gap-3.5 sm:gap-5 group cursor-pointer transition-all duration-200 ease-out relative z-10 ${sectionVisible
-                      ? 'opacity-100 translate-y-0'
-                      : 'opacity-0 translate-y-8'
-                      }`}
-                  >
-                    {/* Step Number Circle */}
-                    <div className={`reason-circle-desktop w-7.5 h-7.5 sm:w-9 sm:h-9 lg:w-[40px] lg:h-[40px] rounded-full flex items-center justify-center text-xs sm:text-[13px] lg:text-[15px] font-bold shrink-0 transition-all duration-200 relative z-10 ${isHovered
-                      ? 'bg-[#7C1FA8] text-white border-none shadow-md scale-105'
-                      : 'bg-white text-[#7C1FA8] border-2 border-[#7C1FA8]'
-                      }`}>
-                      {reason.step}
-                    </div>
-
-                    {/* Reason Card */}
+                  <ScrollReveal key={index} animation="up" delay={index * 50}>
                     <div
-                      className={`reason-card-desktop flex-1 rounded-[16px] lg:rounded-[18px] p-3.5 sm:p-4 lg:py-[16px] lg:px-[28px] h-[112px] lg:h-auto lg:min-h-[80px] flex items-center justify-between gap-3 transition-all duration-200 border ${reason.isShifted ? 'ml-0 lg:ml-[72px]' : 'ml-0'
-                        } ${isHovered
-                          ? 'bg-[#7C1FA8] border-purple-800/40 text-white shadow-lg -translate-y-0.5'
-                          : `${reason.defaultBg} ${reason.defaultBorder} text-heading-ink shadow-xs hover:shadow-md`
-                        }`}
+                      onMouseEnter={() => setHoveredReason(index)}
+                      onMouseLeave={() => setHoveredReason(null)}
+                      className="flex items-center gap-3.5 sm:gap-5 group cursor-pointer transition-all duration-200 ease-out relative z-10 opacity-100 translate-y-0"
                     >
-                      <div className="flex-1 min-w-0 max-w-[220px] lg:max-w-none">
-                        <h3 className={`reason-card-title-desktop font-semibold text-sm sm:text-base leading-snug mb-1 lg:mb-[2px] lg:font-semibold lg:text-[20px] lg:leading-[120%] lg:tracking-[0px] lg:min-h-[24px] transition-colors ${isHovered ? 'text-white' : 'text-[#1E1135]'
-                          }`}>
-                          {reason.title}
-                        </h3>
-                        <p
-                          className={`reason-card-subtext-desktop font-semibold text-[13px] sm:text-[14px] leading-[17px] sm:leading-[18px] tracking-[-0.5px] lg:font-['Inter',sans-serif] lg:font-semibold lg:text-[15px] lg:leading-[120%] lg:tracking-[-0.5px] lg:min-h-[18px] lg:mt-[2px] transition-colors ${isHovered ? 'text-white/95' : 'text-[#544F66]'
-                            }`}
-                        >
-                          {reason.description}
-                        </p>
+                      {/* Step Number Circle */}
+                      <div className={`reason-circle-desktop w-7.5 h-7.5 sm:w-9 sm:h-9 lg:w-[40px] lg:h-[40px] rounded-full flex items-center justify-center text-xs sm:text-[13px] lg:text-[15px] font-bold shrink-0 transition-all duration-200 relative z-10 ${isHovered
+                        ? 'bg-[#7C1FA8] text-white border-none shadow-md scale-105'
+                        : 'bg-white text-[#7C1FA8] border-2 border-[#7C1FA8]'
+                        }`}>
+                        {reason.step}
                       </div>
-                      <div className="shrink-0">
-                        {reason.icon(isHovered)}
+
+                      {/* Reason Card */}
+                      <div
+                        className={`reason-card-desktop flex-1 rounded-[16px] lg:rounded-[18px] p-3.5 sm:p-4 lg:py-[16px] lg:px-[28px] h-[112px] lg:h-auto lg:min-h-[80px] flex items-center justify-between gap-3 transition-all duration-200 border ${reason.isShifted ? 'ml-0 lg:ml-[72px]' : 'ml-0'
+                          } ${isHovered
+                            ? 'bg-[#7C1FA8] border-purple-800/40 text-white shadow-lg -translate-y-0.5'
+                            : `${reason.defaultBg} ${reason.defaultBorder} text-heading-ink shadow-xs hover:shadow-md`
+                          }`}
+                      >
+                        <div className="flex-1 min-w-0 max-w-[220px] lg:max-w-none">
+                          <h3 className={`reason-card-title-desktop font-semibold text-sm sm:text-base leading-snug mb-1 lg:mb-[2px] lg:font-semibold lg:text-[20px] lg:leading-[120%] lg:tracking-[0px] lg:min-h-[24px] transition-colors ${isHovered ? 'text-white' : 'text-[#1E1135]'
+                            }`}>
+                            {reason.title}
+                          </h3>
+                          <p
+                            className={`reason-card-subtext-desktop font-semibold text-[13px] sm:text-[14px] leading-[17px] sm:leading-[18px] tracking-[-0.5px] lg:font-['Inter',sans-serif] lg:font-semibold lg:text-[15px] lg:leading-[120%] lg:tracking-[-0.5px] lg:min-h-[18px] lg:mt-[2px] transition-colors ${isHovered ? 'text-white/95' : 'text-[#544F66]'
+                              }`}
+                          >
+                            {reason.description}
+                          </p>
+                        </div>
+                        <div className="shrink-0">
+                          {reason.icon(isHovered)}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </ScrollReveal>
                 );
               })}
             </div>
 
             {/* Proof Rail Banner Box */}
-            <div className="mt-8 sm:mt-10 w-full flex justify-center mx-auto">
+            <ScrollReveal animation="scale" delay={80} className="mt-8 sm:mt-10 w-full flex justify-center lg:-mx-16 lg:w-[calc(100%+128px)] lg:max-w-[968px] mx-auto">
               {/* Desktop Version: HTML Interactive Banner */}
-              <div className="w-full max-w-7xl hidden lg:flex items-center justify-between rounded-[22px] bg-[#5E1683] shadow-[0px_12px_28px_rgba(18,8,26,0.15)] px-8 py-5.5 text-white select-none transition-transform duration-300 hover:scale-[1.01]">
+              <div className="w-full max-w-[968px] hidden lg:flex items-center justify-between rounded-[22px] bg-[#5E1683] shadow-[0px_12px_28px_rgba(18,8,26,0.15)] px-8 py-5.5 text-white select-none transition-transform duration-300 hover:scale-[1.01]">
                 {/* Left Section: 50+ Financial products... */}
                 <div className="flex items-center gap-4">
                   <span className="font-sans font-bold text-[38px] leading-none tracking-[-0.5px] text-[#F5A623]">
@@ -1559,8 +1177,9 @@ function App() {
 
                 {/* Right Section: Interactive CTA Button */}
                 <a
-                  href="#signup"
+                  href="/partner-b2b"
                   onClick={(e) => {
+                    e.preventDefault();
                     setPartnerCtaClicked(!partnerCtaClicked);
                     const el = document.getElementById('signup');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -1612,8 +1231,9 @@ function App() {
 
                 {/* Become a Partner ↗ CTA Button */}
                 <a
-                  href="#signup"
+                  href="/partner-b2b"
                   onClick={(e) => {
+                    e.preventDefault();
                     setPartnerCtaClicked(!partnerCtaClicked);
                     const el = document.getElementById('signup');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -1629,7 +1249,7 @@ function App() {
                   </svg>
                 </a>
               </div>
-            </div>
+            </ScrollReveal>
 
           </div>
 
@@ -1643,10 +1263,10 @@ function App() {
         <div className="absolute -bottom-10 -left-10 w-[300px] h-[300px] bg-purple-200/30 rounded-full filter blur-[90px] pointer-events-none"></div>
         <div className="absolute top-2 right-0 w-[250px] h-[250px] bg-pink-200/20 rounded-full filter blur-[80px] pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10">
 
           {/* Section Header (Centered & Compact) */}
-          <div className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
+          <ScrollReveal animation="up" delay={30} className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
             <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block font-sans">
               HOW IT WORKS
             </span>
@@ -1656,11 +1276,10 @@ function App() {
             <p className="font-medium text-[14px] leading-[20px] lg:text-[16px] lg:leading-[24px] tracking-[-0.5px] text-[#544F66] text-center max-w-3xl lg:max-w-[700px] mx-auto">
               Identify the need and connect us with the client. Our experts deliver the right solution while you retain the relationship and earn the revenue share.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Stepper Timeline Header Row with 5 Numbered Purple Circles */}
-          <div className="hidden lg:grid grid-cols-5 gap-3.5 sm:gap-4 mb-5 relative max-w-7xl mx-auto">
-
+          <ScrollReveal animation="scale" delay={50} className="hidden lg:grid grid-cols-5 gap-3.5 sm:gap-4 mb-5 relative max-w-6xl mx-auto">
             {/* Horizontal Background Line (Simple Solid Line) */}
             <div className="absolute top-1/2 left-[10%] right-[10%] -translate-y-1/2 h-[2px] bg-purple-200 pointer-events-none z-0"></div>
 
@@ -1674,17 +1293,17 @@ function App() {
                   }`}
               >
                 <div className={`w-7.5 h-7.5 rounded-full flex items-center justify-center text-xs font-extrabold transition-all duration-200 ${activeStep === idx
-                  ? 'bg-[#7C1FA8] text-white scale-125 ring-4 ring-purple-300/80 shadow-md border-2 border-white'
+                  ? 'bg-[#7C1FA8] text-[#F5A623] scale-125 ring-4 ring-[#F5A623]/50 shadow-md border-2 border-[#F5A623]'
                   : 'bg-[#7C1FAB] text-white shadow-sm border-2 border-white'
                   }`}>
                   {num}
                 </div>
               </div>
             ))}
-          </div>
+          </ScrollReveal>
 
           {/* 5 Horizontal Process Cards Grid (White by default, Gold #F5A623 on Hover) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 relative max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 relative max-w-6xl mx-auto">
             {[
               {
                 step: '01',
@@ -1709,7 +1328,7 @@ function App() {
                     className="w-14 h-14 object-contain transition-all duration-200"
                     style={{
                       filter: isHovered 
-                        ? 'brightness(0) invert(1)'
+                        ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
                         : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
                     }}
                   />
@@ -1754,44 +1373,58 @@ function App() {
               },
             ].map((card, index) => {
               const isHovered = activeStep === index;
+              const stepPages = ['tools', 'partner', 'grow', 'protect', 'partner'];
 
               return (
-                <div
-                  key={index}
-                  onMouseEnter={() => setActiveStep(index)}
-                  onMouseLeave={() => setActiveStep(null)}
-                  style={{
-                    transitionDelay: howItWorksVisible ? '0ms' : `${index * 160}ms`,
-                  }}
-                  className={`rounded-[22px] p-5 sm:p-5.5 flex flex-col justify-between transition-all duration-300 ease-out min-h-[220px] cursor-pointer group ${howItWorksVisible
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
-                    } ${isHovered
-                      ? 'bg-[#7C1FA8] text-white shadow-xl -translate-y-1.5 border border-[#5E1083]'
-                      : 'bg-white text-[#1E1B2E] border border-purple-100/60 shadow-sm hover:shadow-md'
-                    }`}
-                >
-                  <div>
-                    <span className={`text-xl font-extrabold font-display block mb-2.5 transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#7C1FAB]'
-                      }`}>
-                      {card.step}
-                    </span>
-                    <h3 className={`font-bold text-sm sm:text-[14.5px] leading-snug transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#1E1B2E]'
-                      }`}>
-                      {card.title}
-                    </h3>
-                    <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-white/90' : 'text-[#544F66]'
-                      }`}>
-                      {card.description}
-                    </p>
-                  </div>
-                  <div className="flex justify-end mt-4">
-                    <div className={`transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#7C1FAB]'
-                      }`}>
-                      {typeof card.icon === 'function' ? card.icon(isHovered) : card.icon}
+                <ScrollReveal key={index} animation="up" delay={index * 60} className="h-full">
+                  <div
+                    onClick={() => navigateToPage(stepPages[index] || 'partner')}
+                    onMouseEnter={() => setActiveStep(index)}
+                    onMouseLeave={() => setActiveStep(null)}
+                    style={{
+                      transitionDelay: howItWorksVisible ? '0ms' : `${index * 160}ms`,
+                    }}
+                    className={`rounded-[22px] p-5 sm:p-5.5 flex flex-col justify-between transition-all duration-300 ease-out min-h-[220px] cursor-pointer group ${howItWorksVisible
+                      ? 'opacity-100 translate-y-0 scale-100'
+                      : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
+                      } ${isHovered
+                        ? 'bg-[#7C1FA8] text-[#F5A623] shadow-xl -translate-y-1.5 border border-[#5E1083]'
+                        : 'bg-white text-[#1E1B2E] border border-purple-100/60 shadow-sm hover:shadow-md'
+                      }`}
+                  >
+                    <div>
+                      <span className={`text-xl font-extrabold font-display block mb-2.5 transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#7C1FAB]'
+                        }`}>
+                        {card.step}
+                      </span>
+                      <h3 className={`font-bold text-sm sm:text-[14.5px] leading-snug transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#1E1B2E]'
+                        }`}>
+                        {card.title}
+                      </h3>
+                      <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-[#F5A623]/95' : 'text-[#544F66]'
+                        }`}>
+                        {card.description}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between items-end mt-4 pt-2">
+                      <div className={`transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#7C1FAB]'
+                        }`}>
+                        {typeof card.icon === 'function' ? card.icon(isHovered) : card.icon}
+                      </div>
+
+                      {/* Direction ↗ Circle Icon Button */}
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${isHovered
+                        ? 'bg-[#F5A623] text-[#7C1FA8] shadow-md scale-105'
+                        : 'bg-purple-50 text-[#7C1FAB] group-hover:bg-[#F5A623] group-hover:text-[#7C1FA8]'
+                        }`}>
+                        <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ScrollReveal>
               );
             })}
           </div>
@@ -1805,8 +1438,11 @@ function App() {
 
           {/* Section Header (Mobile View Specs) */}
           <div id="about" className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
-            {/* Top Badge: WHY PARTNERS CHOOSE US */}
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
+            {/* Top Badge: WHY PARTNERS CHOOSE US (Inter 600 SemiBold 14px -0.5px tracking) */}
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#7C1FA8] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
+            >
               WHY PARTNERS CHOOSE US
             </span>
 
@@ -2114,152 +1750,161 @@ function App() {
       <section id="how-it-works-mobile" className="block lg:hidden bg-[#F5EEFA] w-full py-6 px-4 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
         <div className="max-w-[401px] mx-auto flex flex-col items-center">
           {/* Category Header: HOW IT WORKS */}
-          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
-            HOW IT WORKS
-          </span>
+          <ScrollReveal animation="up" delay={30} className="w-full flex flex-col items-center">
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#7C1FA8] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase text-center block w-[342px] max-w-full mb-3"
+            >
+              HOW IT WORKS
+            </span>
 
-          {/* Main Heading: You Don’t Need to Master Every Financial Product */}
-          <h2 className="font-sans font-semibold text-[32px] leading-[40px] tracking-[-0.5px] text-[#1E1B2E] text-center w-[350px] max-w-full mb-3">
-            You Don’t Need to Master Every Financial Product
-          </h2>
+            {/* Main Heading: You Don’t Need to Master Every Financial Product */}
+            <h2 className="font-sans font-semibold text-[32px] leading-[40px] tracking-[-0.5px] text-[#1E1B2E] text-center w-[350px] max-w-full mb-3">
+              You Don’t Need to Master Every Financial Product
+            </h2>
 
-          {/* Subtitle Paragraph */}
-          <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="font-medium text-[14px] leading-[17px] tracking-[-0.5px] text-[#544F66] text-center w-[342px] max-w-full mb-6"
-          >
-            Identify the need and connect us with the client. Our experts deliver the right solution while you retain the relationship and earn the revenue share.
-          </p>
+            {/* Subtitle Paragraph */}
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="font-medium text-[14px] leading-[17px] tracking-[-0.5px] text-[#544F66] text-center w-[342px] max-w-full mb-6"
+            >
+              Identify the need and connect us with the client. Our experts deliver the right solution while you retain the relationship and earn the revenue share.
+            </p>
+          </ScrollReveal>
 
           {/* Step Chips (01 to 05) */}
-          <div className="flex items-center justify-center gap-[11px] w-[354px] max-w-full mb-6 overflow-x-auto no-scrollbar py-1">
-            {['01', '02', '03', '04', '05'].map((chip, idx) => (
-              <button
-                key={chip}
-                onClick={() => handleMobileStepClick(idx)}
-                className={`w-[62px] h-[40px] rounded-[20px] font-bold text-sm flex items-center justify-center transition-all cursor-pointer shrink-0 ${activeMobileStep === idx
-                  ? 'bg-[#7C1FA8] text-white shadow-md'
-                  : 'bg-[#F5EEFB] border border-[#EBE3F5] text-[#7C1FA8] hover:bg-purple-100'
-                  }`}
-              >
-                {chip}
-              </button>
-            ))}
-          </div>
-
-          {/* Horizontal Scroll Cards (Width: 240px, Height: 240px, Radius: 16px) */}
-          <div
-            ref={mobileStepCarouselRef}
-            onScroll={handleMobileStepScroll}
-            className="w-full flex items-center gap-3.5 overflow-x-auto snap-x snap-mandatory px-4 pb-4 no-scrollbar scroll-smooth"
-          >
-            {[
-              {
-                step: '01',
-                title: 'Identify the Client Need',
-                description: 'Recognise a requirement outside your current area of expertise.',
-                icon: (
-                  <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    <circle cx="17" cy="17" r="3" strokeWidth="1.5" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 19l2 2" />
-                  </svg>
-                )
-              },
-              {
-                step: '02',
-                title: 'Refer the Opportunity',
-                description: 'Introduce the client or share the lead with PROSPERi5.',
-                icon: (isActive) => (
-                  <img 
-                    src="/hugeicons_direction-left-01.png" 
-                    alt="Refer the Opportunity direction icon" 
-                    className="w-[70px] h-[70px] object-contain transition-all duration-200"
-                    style={{
-                      filter: isActive 
-                        ? 'brightness(0) invert(1)'
-                        : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
-                    }}
-                  />
-                )
-              },
-              {
-                step: '03',
-                title: 'Solutioning by Experts',
-                description: 'Our specialists understand the requirement and recommend a suitable solution.',
-                icon: (
-                  <div className="relative">
-                    <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                    <svg className="w-5 h-5 fill-current absolute -top-1 -right-1" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </div>
-                )
-              },
-              {
-                step: '04',
-                title: 'Client Requirement Fulfilled',
-                description: 'The client receives the right product and a seamless service experience.',
-                icon: (
-                  <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
-                  </svg>
-                )
-              },
-              {
-                step: '05',
-                title: 'Earn Revenue & Retain Relationship',
-                description: 'You earn your share while continuing to own and strengthen the relationship.',
-                icon: (
-                  <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0L21.75 8" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h4.75V12.75" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18" />
-                  </svg>
-                )
-              }
-            ].map((card, idx) => {
-              const isActive = activeMobileStep === idx;
-              return (
-                <div
-                  key={card.step}
+          <ScrollReveal animation="up" delay={60} className="w-full flex justify-center">
+            <div className="flex items-center justify-center gap-[11px] w-[354px] max-w-full mb-6 overflow-x-auto no-scrollbar py-1">
+              {['01', '02', '03', '04', '05'].map((chip, idx) => (
+                <button
+                  key={chip}
                   onClick={() => handleMobileStepClick(idx)}
-                  className={`w-[240px] h-[240px] rounded-[16px] p-5 shrink-0 snap-center transition-all duration-300 flex flex-col justify-between cursor-pointer ${isActive
-                    ? 'bg-[#7C1FA8] text-white shadow-xl scale-[1.02]'
-                    : 'bg-white text-[#1E1B2E] border border-purple-100/90 shadow-sm'
+                  className={`w-[62px] h-[40px] rounded-[20px] font-bold text-sm flex items-center justify-center transition-all cursor-pointer shrink-0 ${activeMobileStep === idx
+                    ? 'bg-[#7C1FA8] text-white shadow-md'
+                    : 'bg-[#F5EEFB] border border-[#EBE3F5] text-[#7C1FA8] hover:bg-purple-100'
                     }`}
                 >
-                  <div className="flex justify-between items-start w-full">
-                    <div className={`mt-1.5 ${isActive ? 'text-white' : 'text-[#7C1FA8]'}`}>
-                      {typeof card.icon === 'function' ? card.icon(isActive) : card.icon}
-                    </div>
-                    <span className={`font-extrabold text-sm ${isActive ? 'text-white' : 'text-[#7C1FA8]'}`}>
-                      {card.step}
-                    </span>
-                  </div>
+                  {chip}
+                </button>
+              ))}
+            </div>
+          </ScrollReveal>
 
-                  <div className="flex flex-col mt-auto">
-                    <h3
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-semibold text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-white' : 'text-[#1E1B2E]'
-                        }`}
-                    >
-                      {card.title}
-                    </h3>
-                    <p
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-medium text-[13px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-white/90' : 'text-[#544F66]'
-                        }`}
-                    >
-                      {card.description}
-                    </p>
+          {/* Horizontal Scroll Cards (Width: 240px, Height: 240px, Radius: 16px) */}
+          <ScrollReveal animation="scale" delay={80} className="w-full">
+            <div
+              ref={mobileStepCarouselRef}
+              onScroll={handleMobileStepScroll}
+              className="w-full flex items-center gap-3.5 overflow-x-auto snap-x snap-mandatory px-4 pb-4 no-scrollbar scroll-smooth"
+            >
+              {[
+                {
+                  step: '01',
+                  title: 'Identify the Client Need',
+                  description: 'Recognise a requirement outside your current area of expertise.',
+                  icon: (
+                    <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      <circle cx="17" cy="17" r="3" strokeWidth="1.5" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 19l2 2" />
+                    </svg>
+                  )
+                },
+                {
+                  step: '02',
+                  title: 'Refer the Opportunity',
+                  description: 'Introduce the client or share the lead with PROSPERi5.',
+                  icon: (isActive) => (
+                    <img 
+                      src="/hugeicons_direction-left-01.png" 
+                      alt="Refer the Opportunity direction icon" 
+                      className="w-[70px] h-[70px] object-contain transition-all duration-200"
+                      style={{
+                        filter: isActive 
+                          ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
+                          : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
+                      }}
+                    />
+                  )
+                },
+                {
+                  step: '03',
+                  title: 'Solutioning by Experts',
+                  description: 'Our specialists understand the requirement and recommend a suitable solution.',
+                  icon: (
+                    <div className="relative">
+                      <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      </svg>
+                      <svg className="w-5 h-5 fill-current absolute -top-1 -right-1 text-[#F5A623]" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    </div>
+                  )
+                },
+                {
+                  step: '04',
+                  title: 'Client Requirement Fulfilled',
+                  description: 'The client receives the right product and a seamless service experience.',
+                  icon: (
+                    <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: '05',
+                  title: 'Earn Revenue & Retain Relationship',
+                  description: 'You earn your share while continuing to own and strengthen the relationship.',
+                  icon: (
+                    <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0L21.75 8" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h4.75V12.75" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18" />
+                    </svg>
+                  )
+                }
+              ].map((card, idx) => {
+                const isActive = activeMobileStep === idx;
+                return (
+                  <div
+                    key={card.step}
+                    onClick={() => handleMobileStepClick(idx)}
+                    className={`w-[240px] h-[240px] rounded-[16px] p-5 shrink-0 snap-center transition-all duration-300 flex flex-col justify-between cursor-pointer ${isActive
+                      ? 'bg-[#7C1FA8] text-[#F5A623] shadow-xl scale-[1.02]'
+                      : 'bg-white text-[#1E1B2E] border border-purple-100/90 shadow-sm'
+                      }`}
+                  >
+                    <div className="flex justify-between items-start w-full">
+                      <div className={`mt-1.5 ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
+                        {typeof card.icon === 'function' ? card.icon(isActive) : card.icon}
+                      </div>
+                      <span className={`font-extrabold text-sm ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
+                        {card.step}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col mt-auto">
+                      <h3
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                        className={`font-semibold text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-[#F5A623]' : 'text-[#1E1B2E]'
+                          }`}
+                      >
+                        {card.title}
+                      </h3>
+                      <p
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                        className={`font-medium text-[13px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-[#F5A623]/95' : 'text-[#544F66]'
+                          }`}
+                      >
+                        {card.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -2271,12 +1916,15 @@ function App() {
         <div className="absolute top-10 left-10 w-[300px] h-[300px] bg-pink-100/30 rounded-full filter blur-[90px] pointer-events-none"></div>
         <div className="absolute -bottom-10 right-10 w-[300px] h-[300px] bg-purple-200/30 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10">
 
           {/* Section Header (Exact Mobile View Specs) */}
-          <div className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
-            {/* Top Badge: STRENGTHENED BY RELATIONSHIPS */}
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
+          <ScrollReveal animation="up" delay={30} className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
+            {/* Top Badge: STRENGTHENED BY RELATIONSHIPS (Inter 600 14px -0.5px tracking) */}
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#C81E8C] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
+            >
               STRENGTHENED BY RELATIONSHIPS
             </span>
 
@@ -2292,10 +1940,10 @@ function App() {
             >
               Understand what you gain when you choose PROSPERi5 over other distribution models.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Testimonials Horizontal Scroll Carousel (Shown on < lg) */}
-          <div className="block lg:hidden w-full max-w-[576px] mx-auto mb-6">
+          <ScrollReveal animation="scale" delay={60} className="block lg:hidden w-full max-w-[576px] mx-auto mb-6">
             <div
               ref={testimonialCarouselRef}
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 pb-2 scrollbar-none"
@@ -2484,13 +2132,13 @@ function App() {
                 </svg>
               </button>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Testimonial Cards Grid (Desktop View Only: hidden on mobile) */}
           <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 mb-5 items-start">
 
             {/* COLUMN 1 */}
-            <div className="flex flex-col gap-3.5 sm:gap-4">
+            <ScrollReveal animation="up" delay={50} className="flex flex-col gap-3.5 sm:gap-4">
               {/* Card 1: Featured Dark Card (Ananya Sen) */}
               <div className="bg-[#1D042B] text-white rounded-[22px] p-5 sm:p-5.5 flex flex-col justify-between min-h-[245px] shadow-lg border border-white/10 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
                 <div>
@@ -2542,10 +2190,10 @@ function App() {
                   </span>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* COLUMN 2 */}
-            <div className="flex flex-col gap-3.5 sm:gap-4">
+            <ScrollReveal animation="up" delay={120} className="flex flex-col gap-3.5 sm:gap-4">
               {/* Card 3: Light Card (Vikram Rao) */}
               <div className="bg-white text-heading-ink rounded-[20px] p-4 sm:p-4.5 flex flex-col justify-between border border-purple-100/80 shadow-sm hover:shadow-md transition-all duration-300 font-sans">
                 <p className="font-body-spec text-heading-ink text-xs sm:text-[13.5px] font-medium leading-relaxed mb-4">
@@ -2591,10 +2239,10 @@ function App() {
                   </span>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* COLUMN 3 */}
-            <div className="flex flex-col gap-3.5 sm:gap-4">
+            <ScrollReveal animation="up" delay={190} className="flex flex-col gap-3.5 sm:gap-4">
               {/* Card 5: Light Card (Shreya Gupta Top) */}
               <div className="bg-white text-heading-ink rounded-[20px] p-4 sm:p-4.5 flex flex-col justify-between border border-purple-100/80 shadow-sm hover:shadow-md transition-all duration-300 font-sans">
                 <p className="font-body-spec text-heading-ink text-xs sm:text-[13.5px] font-medium leading-relaxed mb-4">
@@ -2646,7 +2294,7 @@ function App() {
                   </span>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
           </div>
 
@@ -2656,11 +2304,14 @@ function App() {
       {/* 7. FAQ SECTION (Questions Every Serious Advisor Asks Us) */}
       <section className="mesh-bg bg-white w-full py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/40 font-sans">
         {/* MOBILE VIEW (< lg) */}
-        <div className="lg:hidden max-w-7xl mx-auto">
+        <div className="lg:hidden max-w-6xl mx-auto">
           {/* Centered Header for mobile */}
-          <div className="text-center flex flex-col items-center mx-auto mb-6">
+          <ScrollReveal animation="up" delay={30} className="text-center flex flex-col items-center mx-auto mb-6">
             {/* Top Badge: FREQUENTLY ASKED QUESTIONS */}
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#C81E8C] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
+            >
               FREQUENTLY ASKED QUESTIONS
             </span>
 
@@ -2676,7 +2327,7 @@ function App() {
             >
               Everything partners usually want to know about client ownership, fees, product expertise, onboarding & payouts.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Accordion List (Shown on < lg: 342px cards, 124px open card, 64px closed card) */}
           <div className="w-full max-w-4xl mx-auto flex flex-col gap-2.5 my-2">
@@ -2714,83 +2365,87 @@ function App() {
             ].map((faq, index) => {
               const isOpen = openFaq === index;
               return (
-                <div
-                  key={index}
-                  onClick={() => setOpenFaq(isOpen ? null : index)}
-                  className={`w-[342px] max-w-full mx-auto rounded-[16px] transition-all duration-300 cursor-pointer select-none ${isOpen
-                    ? 'min-h-[124px] bg-[#7C1FA8] text-white p-4 shadow-md border border-purple-800/40'
-                    : 'h-[64px] min-h-[64px] bg-white text-[#1E1135] border border-purple-100/80 p-4 flex items-center justify-between shadow-xs hover:border-purple-200'
-                    }`}
-                >
-                  {isOpen ? (
-                    <div className="flex flex-col justify-between h-full">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2.5">
+                <ScrollReveal key={index} animation="up" delay={index * 40}>
+                  <div
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className={`w-[342px] max-w-full mx-auto rounded-[16px] transition-all duration-300 cursor-pointer select-none ${isOpen
+                      ? 'min-h-[124px] bg-[#7C1FA8] text-white p-4 shadow-md border border-purple-800/40'
+                      : 'h-[64px] min-h-[64px] bg-white text-[#1E1135] border border-purple-100/80 p-4 flex items-center justify-between shadow-xs hover:border-purple-200'
+                      }`}
+                  >
+                    {isOpen ? (
+                      <div className="flex flex-col justify-between h-full">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2.5">
+                            <span
+                              style={{ fontFamily: "'Inter', sans-serif" }}
+                              className="w-[30px] font-medium text-[16px] leading-none tracking-[-0.5px] text-white shrink-0 pt-0.5"
+                            >
+                              {faq.step}
+                            </span>
+                            <span
+                              style={{ fontFamily: "'Inter', sans-serif" }}
+                              className="w-[240px] max-w-full font-medium text-[16px] leading-snug tracking-[-0.5px] text-white"
+                            >
+                              {faq.question}
+                            </span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenFaq(null);
+                            }}
+                            className="text-white hover:text-white/80 shrink-0 p-1"
+                            aria-label="Close FAQ"
+                          >
+                            <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <p
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          className="w-[260px] max-w-full font-medium text-[14px] leading-[18px] tracking-[-0.5px] text-white/90 mt-2 pl-[32px]"
+                        >
+                          {faq.answer}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2.5">
                           <span
                             style={{ fontFamily: "'Inter', sans-serif" }}
-                            className="w-[30px] font-medium text-[16px] leading-none tracking-[-0.5px] text-white shrink-0 pt-0.5"
+                            className="w-[30px] font-medium text-[16px] leading-none tracking-[-0.5px] text-[#7C1FA8] shrink-0"
                           >
                             {faq.step}
                           </span>
                           <span
                             style={{ fontFamily: "'Inter', sans-serif" }}
-                            className="w-[240px] max-w-full font-medium text-[16px] leading-snug tracking-[-0.5px] text-white"
+                            className="w-[244px] max-w-full font-medium text-[16px] leading-snug tracking-[-0.5px] text-[#1E1135]"
                           >
                             {faq.question}
                           </span>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenFaq(null);
-                          }}
-                          className="text-white hover:text-white/80 shrink-0 p-1"
-                          aria-label="Close FAQ"
-                        >
-                          <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
+                        <div className="text-gray-800 font-bold text-lg shrink-0">
+                          +
+                        </div>
                       </div>
-                      <p
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                        className="w-[260px] max-w-full font-medium text-[14px] leading-[18px] tracking-[-0.5px] text-white/90 mt-2 pl-[32px]"
-                      >
-                        {faq.answer}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          style={{ fontFamily: "'Inter', sans-serif" }}
-                          className="w-[30px] font-medium text-[16px] leading-none tracking-[-0.5px] text-[#7C1FA8] shrink-0"
-                        >
-                          {faq.step}
-                        </span>
-                        <span
-                          style={{ fontFamily: "'Inter', sans-serif" }}
-                          className="w-[244px] max-w-full font-medium text-[16px] leading-snug tracking-[-0.5px] text-[#1E1135]"
-                        >
-                          {faq.question}
-                        </span>
-                      </div>
-                      <div className="text-gray-800 font-bold text-lg shrink-0">
-                        +
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                </ScrollReveal>
               );
             })}
           </div>
         </div>
 
         {/* DESKTOP VIEW (>= lg: 2-Column Side-by-Side Layout) */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center max-w-6xl mx-auto">
           {/* Left Header Content */}
-          <div className="lg:col-span-5 flex flex-col justify-center text-left my-auto">
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block font-sans">
+          <ScrollReveal animation="left" delay={40} className="lg:col-span-5 flex flex-col justify-center text-left my-auto">
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#D81B60] text-xs font-bold tracking-wider uppercase mb-2 inline-block font-sans"
+            >
               FREQUENTLY ASKED QUESTIONS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-[32px] lg:leading-[38px] font-bold text-heading-ink tracking-tight mb-2.5 text-left max-w-md">
@@ -2802,7 +2457,7 @@ function App() {
             >
               Everything partners usually want to know about client ownership, fees, product expertise, onboarding and payouts.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Right Accordion List (6 Compact Interactive Items) */}
           <div className="lg:col-span-7 flex flex-col gap-2 sm:gap-2.5">
@@ -2840,46 +2495,47 @@ function App() {
             ].map((faq, index) => {
               const isOpen = openFaq === index;
               return (
-                <div
-                  key={index}
-                  className={`bg-white rounded-[16px] border transition-all duration-300 overflow-hidden ${isOpen
-                    ? 'border-purple-200 shadow-md ring-1 ring-purple-100'
-                    : 'border-gray-200/80 shadow-sm hover:border-purple-200'
-                    }`}
-                >
-                  {/* FAQ Question Bar */}
-                  <button
-                    onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="w-full p-2.5 px-3.5 sm:p-3 sm:px-4 flex items-center justify-between gap-3 text-left cursor-pointer select-none"
+                <ScrollReveal key={index} animation="right" delay={index * 45}>
+                  <div
+                    className={`bg-white rounded-[16px] border transition-all duration-300 overflow-hidden ${isOpen
+                      ? 'border-purple-200 shadow-md ring-1 ring-purple-100'
+                      : 'border-gray-200/80 shadow-sm hover:border-purple-200'
+                      }`}
                   >
-                    <div className="flex items-center gap-3">
-                      {/* Number Circle */}
-                      <div className="w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full bg-[#5E1683] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
-                        {faq.step}
+                    {/* FAQ Question Bar */}
+                    <button
+                      onClick={() => setOpenFaq(isOpen ? null : index)}
+                      className="w-full p-2.5 px-3.5 sm:p-3 sm:px-4 flex items-center justify-between gap-3 text-left cursor-pointer select-none"
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* Number Circle */}
+                        <div className="w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full bg-[#5E1683] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                          {faq.step}
+                        </div>
+                        {/* Question Text */}
+                        <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] leading-snug">
+                          {faq.question}
+                        </span>
                       </div>
-                      {/* Question Text */}
-                      <span className="font-bold text-sm sm:text-[15px] text-[#1E1B2E] leading-snug">
-                        {faq.question}
-                      </span>
-                    </div>
 
-                    {/* Expand / Collapse Toggle Circle */}
-                    <div className={`w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 transition-colors ${isOpen
-                      ? 'bg-pink-50 text-[#D81B60] border border-pink-200'
-                      : 'bg-gray-50 text-gray-400 border border-gray-200/80'
+                      {/* Expand / Collapse Toggle Circle */}
+                      <div className={`w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 transition-colors ${isOpen
+                        ? 'bg-pink-50 text-[#D81B60] border border-pink-200'
+                        : 'bg-gray-50 text-gray-400 border border-gray-200/80'
+                        }`}>
+                        {isOpen ? '−' : '+'}
+                      </div>
+                    </button>
+
+                    {/* FAQ Answer Content (Animated) */}
+                    <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100 pb-3 px-3.5 sm:px-4 pl-12 sm:pl-13' : 'max-h-0 opacity-0 pb-0 px-3.5 sm:px-4 pl-12 sm:pl-13 overflow-hidden'
                       }`}>
-                      {isOpen ? '−' : '+'}
+                      <p className="text-xs sm:text-[13.5px] lg:text-[14px] text-[#544F66] font-medium leading-relaxed">
+                        {faq.answer}
+                      </p>
                     </div>
-                  </button>
-
-                  {/* FAQ Answer Content (Animated) */}
-                  <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100 pb-3 px-3.5 sm:px-4 pl-12 sm:pl-13' : 'max-h-0 opacity-0 pb-0 px-3.5 sm:px-4 pl-12 sm:pl-13 overflow-hidden'
-                    }`}>
-                    <p className="text-xs sm:text-[13.5px] lg:text-[14px] text-[#544F66] font-medium leading-relaxed">
-                      {faq.answer}
-                    </p>
                   </div>
-                </div>
+                </ScrollReveal>
               );
             })}
           </div>
@@ -2888,12 +2544,15 @@ function App() {
 
       {/* 8. LET'S BEGIN / GET STARTED FORM SECTION (Compact Layout) */}
       <section id="signup" className="bg-[#FAF6FC] w-full py-4 sm:py-5 lg:py-6 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-6xl mx-auto">
 
           {/* Section Header (Mobile View Specs + Desktop) */}
-          <div className="text-center flex flex-col items-center mx-auto lg:max-w-5xl mb-8 lg:mb-10">
-            {/* Top Badge: LET’S BEGIN */}
-            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
+          <ScrollReveal animation="up" delay={30} className="text-center flex flex-col items-center mx-auto lg:max-w-5xl mb-8 lg:mb-10">
+            {/* Top Badge: LET’S BEGIN (Inter 500 Medium 14px -0.5px tracking) */}
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[#7C1FA8] font-medium text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
+            >
               LET’S BEGIN
             </span>
 
@@ -2909,107 +2568,104 @@ function App() {
             >
               Choose the journey that fits you. Partners get a broader product ecosystem and operational support.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Specific Form Experience Card (Shown on < lg) */}
-          <div
-            style={{
-              backgroundImage: "url('/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-            className="block lg:hidden w-[358px] max-w-full h-[524px] min-h-[524px] mx-auto rounded-[24px] bg-[#3A0954] text-white p-5 flex flex-col justify-between shadow-xl relative overflow-hidden border border-purple-900/40"
-          >
-            {/* Ambient Background Glow */}
-            <div className="absolute top-0 right-0 w-[240px] h-[240px] bg-purple-600/20 rounded-full filter blur-[60px] pointer-events-none"></div>
+          <ScrollReveal animation="scale" delay={50} className="block lg:hidden w-[358px] max-w-full mx-auto">
+            <div
+              style={{
+                backgroundImage: "url('/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+              className="w-full h-[524px] min-h-[524px] rounded-[24px] bg-[#3A0954] text-white p-5 flex flex-col justify-between shadow-xl relative overflow-hidden border border-purple-900/40"
+            >
+              {/* Ambient Background Glow */}
+              <div className="absolute top-0 right-0 w-[240px] h-[240px] bg-purple-600/20 rounded-full filter blur-[60px] pointer-events-none"></div>
 
-            {/* Top Text Content */}
-            <div className="relative z-10 pt-5 sm:pt-7">
-              <span
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[#F5A623] font-medium text-[14px] leading-none tracking-[-0.5px] uppercase block mb-1.5"
-              >
-                GET STARTED — ZERO FEE
-              </span>
-              <h3
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="font-semibold text-[24px] leading-[30px] text-white tracking-normal w-[350px] max-w-full mb-1"
-              >
-                Start your partner journey
-              </h3>
-              <p
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="font-medium text-[14px] leading-snug tracking-[-0.5px] text-white/80"
-              >
-                Share a few details. A partner specialist will guide you through the next step.
-              </p>
-            </div>
-
-            {/* Inner White Form Container Box (Rectangle 328px x 358px) */}
-            <div className="w-[328px] max-w-full h-[358px] mx-auto rounded-[24px] bg-white p-4 flex flex-col justify-center shadow-lg relative z-10">
-              <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-2.5 my-auto">
-                {/* Field 1: Your Name */}
-                <input
-                  type="text"
-                  placeholder="Your Name"
+              {/* Top Text Content */}
+              <div className="relative z-10 pt-5 sm:pt-7">
+                <span
                   style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-5 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
-                />
+                  className="text-[#F5A623] font-medium text-[14px] leading-none tracking-[-0.5px] uppercase block mb-1.5"
+                >
+                  GET STARTED — ZERO FEE
+                </span>
+                <h3
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  className="font-semibold text-[24px] leading-[30px] text-white tracking-normal w-[350px] max-w-full mb-1"
+                >
+                  Start your partner journey
+                </h3>
+                <p
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  className="font-medium text-[14px] leading-snug tracking-[-0.5px] text-white/80"
+                >
+                  Share a few details. A partner specialist will guide you through the next step.
+                </p>
+              </div>
 
-                {/* Field 2: Mobile Number */}
-                <div className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-4 flex items-center focus-within:border-purple-500 transition-all">
-                  <select className="bg-transparent pr-1 text-xs font-bold text-[#1E1135] outline-none border-r border-purple-200/80 cursor-pointer">
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+971">🇦🇪 +971</option>
-                    <option value="+65">🇸🇬 +65</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+49">🇩🇪 +49</option>
-                    <option value="+1">🇨🇦 +1</option>
-                  </select>
+              {/* Inner White Form Container Box (Rectangle 328px x 358px) */}
+              <div className="w-[328px] max-w-full h-[358px] mx-auto rounded-[24px] bg-white p-4 flex flex-col justify-center shadow-lg relative z-10">
+                <form onSubmit={handlePartnerSubmit1} className="flex flex-col gap-2.5 my-auto">
+                  {/* Field 1: Your Name */}
                   <input
-                    type="tel"
-                    placeholder="Mobile Number"
+                    type="text"
+                    required
+                    value={partnerForm1.name}
+                    onChange={(e) => setPartnerForm1({ ...partnerForm1, name: e.target.value })}
+                    placeholder="Enter your full name"
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="w-full pl-2 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none bg-transparent"
+                    className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-5 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
                   />
-                </div>
 
-                {/* Field 3: Your ARN Number */}
-                <input
-                  type="text"
-                  placeholder="Your ARN Number"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-5 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
-                />
+                  {/* Field 2: Mobile Number */}
+                    <PhoneInput
+                      value={partnerForm1.phone}
+                      countryCode={partnerForm1.countryCode}
+                      onCountryCodeChange={(code) => setPartnerForm1((f) => ({ ...f, countryCode: code }))}
+                      onChange={(val) => setPartnerForm1((f) => ({ ...f, phone: val }))}
+                      placeholder="Enter mobile number"
+                      className="w-[294px] max-w-full mx-auto"
+                    />
 
-                {/* Submit Button */}
-                <div className="flex flex-col items-center gap-1.5 mt-0.5">
-                  <button
-                    type="submit"
+                  {/* Field 3: Your ARN Number */}
+                  <input
+                    type="text"
+                    value={partnerForm1.arn}
+                    onChange={(e) => setPartnerForm1({ ...partnerForm1, arn: e.target.value })}
+                    placeholder="e.g. ARN-123456"
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] bg-[#7C1FA8] hover:bg-[#68198f] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
-                  >
-                    <span>Get Started — Zero Fee</span>
-                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                    </svg>
-                  </button>
+                    className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] border border-purple-100/90 bg-[#FAF6FD] px-5 text-[14px] font-medium text-[#1E1135] placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
+                  />
 
-                  <span
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="text-[10px] text-gray-400 font-medium text-center tracking-tight"
-                  >
-                    No joining fee · No platform charge · You remain in control
-                  </span>
-                </div>
-              </form>
+                  {/* Submit Button */}
+                  <div className="flex flex-col items-center gap-1.5 mt-0.5">
+                    <button
+                      type="submit"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className="w-[294px] max-w-full h-[54px] mx-auto rounded-[27px] bg-[#7C1FA8] hover:bg-[#68198f] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
+                    >
+                      <span>Get Started — Zero Fee</span>
+                      <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                      </svg>
+                    </button>
+
+                    <span
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className="text-[10px] text-gray-400 font-medium text-center tracking-tight"
+                    >
+                      No joining fee · No platform charge · You remain in control
+                    </span>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Specific Partner Story Card (Shown on < lg right after Form Card) */}
-          <div className="block lg:hidden w-[360px] max-w-full min-h-[525px] mx-auto mt-5 rounded-[24px] border border-purple-100/90 bg-[#FAF6FD] p-[20px] flex flex-col justify-between shadow-sm">
+          <ScrollReveal animation="scale" delay={70} className="block lg:hidden w-[360px] max-w-full min-h-[525px] mx-auto mt-5 rounded-[24px] border border-purple-100/90 bg-[#FAF6FD] p-[20px] flex flex-col justify-between shadow-sm">
             <div>
               {/* Partner Badge */}
               <div className="w-[130px] h-[34px] rounded-[17px] bg-[#F5A623] text-[#1E1B2E] font-extrabold text-[12px] uppercase tracking-wider flex items-center justify-center mb-3 shadow-xs font-sans">
@@ -3102,10 +2758,10 @@ function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Mobile Specific Journey Switch Card (Shown on < lg) */}
-          <div className="block lg:hidden w-[360px] max-w-full h-[168px] min-h-[168px] mx-auto mt-4 rounded-[16px] border border-purple-100/80 bg-white p-4.5 flex flex-col justify-between shadow-xs">
+          <ScrollReveal animation="up" delay={80} className="block lg:hidden w-[360px] max-w-full h-[168px] min-h-[168px] mx-auto mt-4 rounded-[16px] border border-purple-100/80 bg-white p-4.5 flex flex-col justify-between shadow-xs">
             {/* Block 1: For Investors */}
             <div className="flex flex-col gap-1">
               <span
@@ -3137,10 +2793,10 @@ function App() {
                 A broader product ecosystem with operational support.
               </p>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Desktop Main Container Card (Shown on lg) */}
-          <div className="hidden lg:block bg-white rounded-[26px] p-3 sm:p-4.5 border border-purple-100/80 shadow-xl max-w-[1248px] mx-auto">
+          <ScrollReveal animation="scale" delay={60} className="hidden lg:block bg-white rounded-[26px] p-3 sm:p-4.5 border border-purple-100/80 shadow-xl max-w-[1248px] mx-auto">
             <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 sm:gap-5">
 
               {/* Left Box (Compact Light Card Box) */}
@@ -3220,35 +2876,32 @@ function App() {
                 <div className="pt-20 sm:pt-24">
                   {/* White Form Card */}
                   <div className="bg-white rounded-[20px] p-3.5 sm:p-4 text-body-text shadow-xl mb-3">
-                    <form onSubmit={(e) => e.preventDefault()} className="space-y-2.5">
+                    <form onSubmit={handlePartnerSubmit2} className="space-y-2.5">
                       <div>
                         <input
                           type="text"
-                          placeholder="Your Name"
+                          required
+                          value={partnerForm2.name}
+                          onChange={(e) => setPartnerForm2({ ...partnerForm2, name: e.target.value })}
+                          placeholder="Enter your full name"
                           className="w-full bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-4 py-2.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all font-sans"
                         />
                       </div>
                       <div className="flex items-center bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-3 py-1 focus-within:ring-2 focus-within:ring-purple-500/40 transition-all">
-                        <select className="bg-transparent pl-1 pr-1 py-1 text-xs font-bold text-[#1E1B2E] outline-none border-r border-[#E7DEEE] cursor-pointer">
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+1">🇨🇦 +1</option>
-                        </select>
-                        <input
-                          type="tel"
-                          placeholder="Mobile Number"
-                          className="w-full bg-transparent px-2 py-1.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none font-sans"
+                        <PhoneInput
+                          value={partnerForm2.phone}
+                          countryCode={partnerForm2.countryCode}
+                          onCountryCodeChange={(code) => setPartnerForm2((f) => ({ ...f, countryCode: code }))}
+                          onChange={(val) => setPartnerForm2((f) => ({ ...f, phone: val }))}
+                          placeholder="Enter mobile number"
                         />
                       </div>
                       <div>
                         <input
                           type="text"
-                          placeholder="Your ARN Number"
+                          value={partnerForm2.arn}
+                          onChange={(e) => setPartnerForm2({ ...partnerForm2, arn: e.target.value })}
+                          placeholder="e.g. ARN-123456"
                           className="w-full bg-[#F8F5FB] border border-[#E7DEEE] rounded-full px-4 py-2.5 text-xs sm:text-[13px] text-[#1E1B2E] placeholder:text-[#9A8DAA] focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all font-sans"
                         />
                       </div>
@@ -3257,7 +2910,7 @@ function App() {
                       <div className="pt-1 flex flex-col sm:flex-row items-start sm:items-center gap-2.5">
                         <button
                           type="submit"
-                          className="bg-[#5E1683] hover:bg-[#7C1FAB] text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-md transition-all duration-300 flex items-center gap-1.5 cursor-pointer shrink-0 hover:scale-[1.02]"
+                          className="bg-[#5E1683] hover:bg-[#7C1FAB] text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-md transition-all duration-300 flex items-center gap-1.5 cursor-pointer shrink-0 hover:scale-[1.02] active:scale-95"
                         >
                           <span>Get Started With Zero Fees</span>
                           <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3280,8 +2933,12 @@ function App() {
                   <div className="flex items-center gap-2 sm:gap-2.5">
                     {/* Option 1: Watch 2-Min Demo */}
                     <button 
-                      onClick={() => setSelectedModal(true)}
-                      className="bg-[#5E1683] hover:bg-[#7C1FAB] border border-white/20 text-white px-3.5 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] shadow-sm whitespace-nowrap"
+                      onClick={() => {
+                        const el = document.getElementById('how-it-works');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        else navigateToPage('home');
+                      }}
+                      className="bg-[#5E1683] hover:bg-[#7C1FAB] border border-white/20 text-white px-3.5 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] shadow-sm whitespace-nowrap active:scale-95"
                     >
                       <span className="font-semibold text-xs">Watch 2-Min Demo</span>
                       <svg className="w-3 h-3 text-white stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3291,8 +2948,8 @@ function App() {
 
                     {/* Option 2: Partner Brochure */}
                     <button 
-                      onClick={() => setSelectedModal(true)}
-                      className="bg-white hover:bg-purple-50 text-[#6B1F8C] px-3.5 py-1.5 rounded-full shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] whitespace-nowrap"
+                      onClick={() => navigateToPage('partner')}
+                      className="bg-white hover:bg-purple-50 text-[#6B1F8C] px-3.5 py-1.5 rounded-full shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] whitespace-nowrap active:scale-95"
                     >
                       <span className="font-bold text-xs">Partner Brochure</span>
                       <svg className="w-3 h-3 text-[#6B1F8C] stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3305,246 +2962,72 @@ function App() {
               </div>
 
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Bottom Dual Bar (Hidden on mobile) */}
-          <div className="hidden lg:flex bg-white rounded-full p-3 px-6 sm:px-7 border border-purple-100/80 shadow-sm flex-row items-center justify-between gap-2.5 text-xs max-w-7xl mx-auto mt-3.5">
-            <div className="flex items-center gap-2.5 text-center sm:text-left">
-              <span className="text-[#5E1683] font-bold text-xs sm:text-[13.5px] whitespace-nowrap">For Investors</span>
+          <ScrollReveal animation="up" delay={80} className="hidden lg:flex bg-white rounded-full p-3 px-6 sm:px-7 border border-purple-100/80 shadow-sm flex-row items-center justify-between gap-2.5 text-xs max-w-[1248px] mx-auto mt-3.5">
+            <div
+              onClick={() => navigateToPage('investors')}
+              className="flex items-center gap-2.5 text-center sm:text-left cursor-pointer group"
+            >
+              <span className="text-[#5E1683] group-hover:text-[#7C1FA8] font-bold text-xs sm:text-[13.5px] whitespace-nowrap transition-colors">For Investors</span>
               <span className="text-gray-300 hidden sm:inline">•</span>
-              <span className="text-[#544F66] text-xs sm:text-[13.5px] font-medium">
+              <span className="text-[#544F66] group-hover:text-[#1E1B2E] text-xs sm:text-[13.5px] font-medium transition-colors">
                 Complete financial guidance across investments, insurance and financing.
               </span>
             </div>
 
             <div className="hidden sm:block h-4 w-[1px] bg-gray-200 shrink-0"></div>
 
-            <div className="flex items-center gap-2.5 text-center sm:text-left">
-              <span className="text-[#D81B60] font-bold text-xs sm:text-[13.5px] whitespace-nowrap">For Partners</span>
+            <div
+              onClick={() => navigateToPage('partner')}
+              className="flex items-center gap-2.5 text-center sm:text-left cursor-pointer group"
+            >
+              <span className="text-[#D81B60] group-hover:text-[#C81E8C] font-bold text-xs sm:text-[13.5px] whitespace-nowrap transition-colors">For Partners</span>
               <span className="text-gray-300 hidden sm:inline">•</span>
-              <span className="text-[#544F66] text-xs sm:text-[13.5px] font-medium">
+              <span className="text-[#544F66] group-hover:text-[#1E1B2E] text-xs sm:text-[13.5px] font-medium transition-colors">
                 A broader product ecosystem with operational support.
               </span>
-              <a
-                href="#signup"
+              <button
+                onClick={(e) => { e.stopPropagation(); navigateToPage('partner'); }}
                 aria-label="Become a Partner Signup"
                 className="w-8 h-8 rounded-full bg-pink-50 hover:bg-[#D81B60] text-[#D81B60] hover:text-white flex items-center justify-center transition-all duration-200 shrink-0 shadow-xs hover:scale-110 active:scale-95 cursor-pointer ml-1"
               >
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
-              </a>
+              </button>
             </div>
-          </div>
+          </ScrollReveal>
 
         </div>
       </section>
+    </>
+  );
 
-      {/* 9. FOOTER SECTION - MOBILE VIEW ONLY */}
-      <footer id="footer-mobile" className="block lg:hidden bg-[#130B24] text-white py-8 px-4 border-t border-purple-900/40 font-sans select-none">
-        <div className="max-w-[360px] mx-auto flex flex-col items-center">
+  const isAdminPage = ['careers-admin', 'blog-admin', 'admin'].includes(currentPage);
 
-          {/* Logo */}
-          <img
-            src="/PROPSERI 5 LOGO.png"
-            className="h-10 w-auto object-contain mb-4 filter drop-shadow-sm"
-            alt="PROSPERi5 Logo"
-          />
+  return (
+    <div className="min-h-screen bg-white font-sans text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-clip flex flex-col justify-between">
+      {!isAdminPage && (
+        <Navbar
+          currentPage={currentPage}
+          onNavigatePage={handleNavigatePage}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      )}
 
-          {/* Tagline Paragraph */}
-          <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="font-medium text-[18px] leading-[22px] tracking-[-0.5px] text-white text-center w-[350px] max-w-full mb-5"
-          >
-            Investments, insurance and financing through one trusted relationship.
-          </p>
+      <div className="w-full flex-1">
+        {renderPageContent()}
+      </div>
 
-          {/* Pill Badge (Width: 283px, Height: 44px, Radius: 22px) */}
-          <div className="w-[283px] max-w-full h-[44px] rounded-[22px] bg-[#7C1FA8] text-white text-xs sm:text-[13px] font-medium flex items-center justify-center text-center px-4 mb-8 shadow-md">
-            One relationship · Complete financial ecosystem
-          </div>
-
-          {/* 4 Link Columns Grid (2x2) */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-7 w-full max-w-[340px] mb-8 text-left px-2">
-
-            {/* Column 1: SOLUTIONS */}
-            <div className="flex flex-col gap-2">
-              <h4
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[#F5A623] text-[14px] font-medium tracking-[-0.5px] leading-none mb-1"
-              >
-                SOLUTIONS
-              </h4>
-              <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><a href="#investments" className="hover:text-white transition-colors">Investments</a></li>
-                <li><a href="#insurance" className="hover:text-white transition-colors">Insurance</a></li>
-                <li><a href="#financing" className="hover:text-white transition-colors">Financing</a></li>
-                <li><a href="#tools" className="hover:text-white transition-colors">Financial Tools</a></li>
-              </ul>
-            </div>
-
-            {/* Column 2: FOR INVESTORS */}
-            <div className="flex flex-col gap-2">
-              <h4
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[#F5A623] text-[14px] font-medium tracking-[-0.5px] leading-none mb-1"
-              >
-                FOR INVESTORS
-              </h4>
-              <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><a href="#investor-overview" className="hover:text-white transition-colors">Investor Overview</a></li>
-                <li><a href="#expert" className="hover:text-white transition-colors">Talk To an Expert</a></li>
-                <li><a href="#knowledge" className="hover:text-white transition-colors">Knowledge Centre</a></li>
-                <li><a href="#faqs" className="hover:text-white transition-colors">FAQs</a></li>
-              </ul>
-            </div>
-
-            {/* Column 3: FOR PARTNERS */}
-            <div className="flex flex-col gap-2">
-              <h4
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[#F5A623] text-[14px] font-medium tracking-[-0.5px] leading-none mb-1"
-              >
-                FOR PARTNERS
-              </h4>
-              <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><a href="#partner-overview" className="hover:text-white transition-colors">Partner Overview</a></li>
-                <li><a href="#become-partner" className="hover:text-white transition-colors">Become a Partner</a></li>
-                <li><a href="#partner-login" className="hover:text-white transition-colors">Partner Login</a></li>
-                <li><a href="#partner-brochure" className="hover:text-white transition-colors">Partner Brochure</a></li>
-              </ul>
-            </div>
-
-            {/* Column 4: COMPANY */}
-            <div className="flex flex-col gap-2">
-              <h4
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[#F5A623] text-[14px] font-medium tracking-[-0.5px] leading-none mb-1"
-              >
-                COMPANY
-              </h4>
-              <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#why-prosperi5" className="hover:text-white transition-colors">Why PROSPERi5</a></li>
-                <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
-                <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
-              </ul>
-            </div>
-
-          </div>
-
-          {/* Divider Line */}
-          <div className="w-[350px] max-w-full h-[1px] bg-white/10 my-4"></div>
-
-          {/* Ready to start conversation block */}
-          <div className="flex flex-col items-center text-center w-full max-w-[340px] my-4">
-            {/* Dotted decorative node header */}
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-[1px] bg-[#F5A623]/40"></div>
-              <span className="text-[#F5A623] text-[11px] font-extrabold tracking-wider uppercase">
-                READY TO START A CONVERSATION?
-              </span>
-              <div className="w-8 h-[1px] bg-[#F5A623]/40"></div>
-            </div>
-
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="font-medium text-[14px] leading-tight tracking-[-0.5px] text-white/90 mb-4"
-            >
-              Talk to a financial expert or partner specialist.
-            </p>
-
-            <a
-              href="#contact"
-              className="w-[160px] h-[44px] rounded-full bg-[#7C1FA8] hover:bg-[#9B26D4] text-white font-medium text-[14px] tracking-[-0.5px] flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer mb-6"
-            >
-              <span>Contact Us</span>
-              <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-              </svg>
-            </a>
-
-            {/* Direct Contact info & Social Follow Us (Left-Aligned) */}
-            <div className="flex flex-col items-start text-left w-full pl-2 mb-6">
-              <a
-                href="mailto:hello@prosperi5.com"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="font-medium text-[14px] tracking-[-0.5px] text-white hover:text-[#F5A623] transition-colors block mb-1"
-              >
-                hello@prosperi5.com
-              </a>
-              <p
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="font-medium text-[14px] tracking-[-0.5px] text-white/80 block mb-5"
-              >
-                +91 00000 00000
-              </p>
-
-              <span className="text-[#F5A623] text-[11px] font-extrabold tracking-wider uppercase mb-2.5 block">
-                FOLLOW
-              </span>
-              <div className="flex items-center gap-3">
-                <a href="#facebook" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-                  <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                </a>
-                <a href="#youtube" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-                  <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                  </svg>
-                </a>
-                <a href="#x" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Copyright & Legal (Left-Aligned on Mobile, Back to Top on Right Corner) */}
-          <div className="w-full flex flex-col items-start text-left pl-2 mt-4 pt-4 border-t border-white/10 relative">
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="font-medium text-[11px] tracking-[0.002em] text-white/70 mb-2"
-            >
-              © 2026 PROSPERi5. All rights reserved.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-start gap-2 text-[#F5A623] text-[11px] font-medium mb-3 text-left w-full pr-2">
-              <a href="#privacy" className="hover:underline">Privacy Policy</a>
-              <span>·</span>
-              <a href="#terms" className="hover:underline">Terms & Conditions</a>
-              <span>·</span>
-              <a href="#disclaimer" className="hover:underline">Disclaimer</a>
-              <span>·</span>
-              <a href="#grievance" className="hover:underline">Grievance Redressal</a>
-            </div>
-
-            <p className="text-[10px] text-white/50 leading-tight mb-4 text-left max-w-[340px]">
-              Investment products are subject to market risks. Insurance and financing solutions are subject to provider terms, eligibility and applicable regulations.
-            </p>
-
-            {/* Back to top (Right Corner Side) */}
-            <div className="w-full flex justify-end pr-2 pt-1">
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="text-[#F5A623] text-xs font-semibold flex items-center justify-end gap-1.5 hover:underline cursor-pointer py-1"
-              >
-                <span>Back to top</span>
-                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </footer>
-
-      {/* 9. HOMEPAGE FLOATING FOOTER */}
-      <Footer onNavigatePage={(p) => setCurrentPage(p)} />
+      {!isAdminPage && (
+        <Footer
+          currentPage={currentPage}
+          onNavigatePage={handleNavigatePage}
+        />
+      )}
     </div>
   );
 }
