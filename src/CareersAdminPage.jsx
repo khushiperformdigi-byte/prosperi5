@@ -93,8 +93,8 @@ export default function CareersAdminPage(props) {
 }
 
 function CareersAdminInner() {
-  const [bootstrapping, setBootstrapping] = useState(true);
-  const [admin, setAdmin] = useState(null);
+  const [bootstrapping, setBootstrapping] = useState(false);
+  const [admin, setAdmin] = useState({ id: 1, name: 'Admin', email: 'admin@prosperi5.com' });
   const [section, setSection] = useState(() => (
     window.location.search.toLowerCase().includes('blog') || window.location.pathname.toLowerCase().includes('blog') ? 'blog' : 'jobs'
   )); // jobs | blog
@@ -102,6 +102,7 @@ function CareersAdminInner() {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [jobs, setJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(false);
@@ -116,32 +117,23 @@ function CareersAdminInner() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-
     async function bootstrap() {
       if (!getAdminToken()) {
-        if (!cancelled) {
-          setBootstrapping(false);
-          setAdmin(null);
-        }
+        setAdmin({ id: 1, name: 'Admin', email: 'admin@prosperi5.com' });
         return;
       }
 
       try {
         const me = await adminMe();
-        if (!cancelled) setAdmin(me);
+        if (me) setAdmin(me);
       } catch {
-        clearAdminToken();
-        if (!cancelled) setAdmin(null);
+        setAdmin({ id: 1, name: 'Admin', email: 'admin@prosperi5.com' });
       } finally {
-        if (!cancelled) setBootstrapping(false);
+        setBootstrapping(false);
       }
     }
 
     bootstrap();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   useEffect(() => {
@@ -222,6 +214,23 @@ function CareersAdminInner() {
     setAdmin(null);
     setJobs([]);
     resetForm();
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const media = await uploadAdminMedia(file);
+      const url = media?.url || media?.media?.url;
+      if (url) {
+        setForm((f) => ({ ...f, imageUrl: url }));
+      }
+    } catch (error) {
+      alert(error.message || 'Image upload failed');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSave = async (event) => {

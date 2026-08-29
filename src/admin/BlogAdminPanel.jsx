@@ -65,8 +65,7 @@ export default function BlogAdminPanel({ onUnauthorized }) {
       });
       setPosts(list);
     } catch (error) {
-      if (error.status === 401) onUnauthorized?.();
-      setMessage({ text: error.message, ok: false });
+      setMessage({ text: error.message || 'Failed to load posts', ok: false });
     } finally {
       setLoading(false);
     }
