@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Footer from './Footer';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 
 export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedPlanModal, setSelectedPlanModal] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [quoteForm, setQuoteForm] = useState({ name: '', phone: '', countryCode: '+91' });
 
   const protectionPlans = [
     {
@@ -61,200 +64,42 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
     }
   ];
 
-  const filteredPlans = activeCategory === 'all' 
-    ? protectionPlans 
+  const filteredPlans = activeCategory === 'all'
+    ? protectionPlans
     : protectionPlans.filter(p => p.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#FDFBFD] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FAB] overflow-x-hidden">
-      
-      {/* 1. TOP CONTACT UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Protect What Matters · Complete Financial Security</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              50,000+ Families Protected · 99.4% Settlement
-            </span>
-          </div>
+    <div className="w-full bg-[#FDFBFD] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FAB] overflow-x-hidden">
 
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => setSelectedPlanModal({ title: 'Talk to a Protection Advisor' })}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to an Advisor
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* 3. HERO SECTION - USING ChatGPT Image Aug 25, 2026, 05_41_16 PM.png */}
+      <section className="w-full bg-[#180A2A] relative overflow-hidden border-b border-purple-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative w-full">
+            <img
+              src="/ChatGPT Image Aug 25, 2026, 05_41_16 PM.png"
+              alt="Protection today, confidence always - PROSPERi5"
+              className="w-full h-auto block object-cover max-h-[580px] lg:max-h-[620px]"
+            />
 
-      {/* 2. FLOATING NAVBAR */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
-            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#1E1B2E]">
-            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('protect')} className="text-[#7C1FA8] font-bold cursor-pointer">Protect</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Insurance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Financing</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Tools</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('blog')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Blog</button>
-          </div>
-
-          {/* Desktop CTA & Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSelectedPlanModal({ title: 'Explore Protection Plans' })}
-              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer"
-            >
-              Get Protected
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
-            >
-              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* 3. HERO SECTION (PROTECT WHAT MATTERS) */}
-      <section className="w-full bg-[#160628] bg-gradient-to-r from-[#19062D] via-[#140426] to-[#200A38] relative overflow-hidden border-b border-purple-900/50 pt-2.5 sm:pt-3 lg:pt-3.5 pb-2.5 sm:pb-3 lg:pb-3.5 px-4 sm:px-6 lg:px-8 font-sans">
-        {/* Soft Ambient Background Glows */}
-        <div className="absolute top-0 right-1/4 w-[450px] h-[450px] bg-purple-600/20 rounded-full filter blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-10 w-[350px] h-[350px] bg-pink-600/15 rounded-full filter blur-[100px] pointer-events-none"></div>
-
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center relative z-10">
-          
-          {/* LEFT COLUMN: Title, Subtitle, CTA & Social Proof */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left">
-            {/* Top Category Badge */}
-            <span className="text-purple-300/90 text-xs font-extrabold tracking-widest uppercase mb-1.5 inline-block font-sans">
-              PROTECT WHAT MATTERS
-            </span>
-
-            {/* Main Title */}
-            <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[50px] lg:text-[50px] lg:leading-[58px] tracking-[-0.03em] text-white mb-2.5">
-              Protection today, <br />
-              <span className="text-[#C084FC]">confidence</span> <br />
-              always.
-            </h1>
-
-            {/* Subtitle Paragraph */}
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="font-medium text-[14.5px] sm:text-[15.5px] leading-[22px] sm:leading-[25px] text-purple-100/80 mb-5 max-w-[500px]"
-            >
-              Comprehensive protection plans that safeguard your loved ones, your health and your future.
-            </p>
-
-            {/* CTA Buttons Row */}
-            <div className="flex flex-wrap items-center gap-3.5 mb-6">
-              <button
-                onClick={() => setSelectedPlanModal({ title: 'Explore Protection Plans' })}
-                className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-[16px] bg-[#7C1FA8] hover:bg-[#68198f] text-white font-bold text-sm sm:text-base shadow-lg shadow-purple-950/60 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>Explore Protection</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </button>
-              
-              <button
-                onClick={() => {
-                  const elem = document.getElementById('why-choose-protect');
-                  if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-[16px] bg-white/5 border border-white/20 hover:bg-white/10 text-white font-bold text-sm sm:text-base transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>How it Works</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Social Proof Row */}
-            <div className="flex items-center gap-4 pt-0.5">
-              {/* 3 Purple Icon Badges */}
-              <div className="flex items-center gap-1.5">
-                <div className="w-8 h-8 rounded-full bg-purple-900/60 border border-purple-500/30 text-purple-200 flex items-center justify-center shadow-xs">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-purple-900/60 border border-purple-500/30 text-purple-200 flex items-center justify-center shadow-xs">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
-                  </svg>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-purple-900/60 border border-purple-500/30 text-purple-200 flex items-center justify-center shadow-xs">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Text & 5 Stars */}
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-purple-100/90 font-sans">
-                  Trusted by <span className="font-extrabold text-white">50,000+</span> Families across PROSPERi5
-                </span>
-                <div className="flex items-center gap-1 text-[#F5A623] text-xs mt-0.5">
-                  ★★★★★
+            {/* Interactive Click Hotspots over Hero Banner */}
+            <div className="absolute inset-0 flex items-center">
+              <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 w-full">
+                <div className="max-w-xl text-left hidden sm:block opacity-0 pointer-events-auto">
+                  {/* Invisible structural hotspot helper */}
                 </div>
               </div>
             </div>
           </div>
-
-          {/* RIGHT COLUMN: 3D Shield Podium Graphic */}
-          <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end mt-2 lg:mt-0 w-full">
-            {/* Background Soft Purple Circle Glow */}
-            <div className="absolute w-[420px] h-[420px] sm:w-[500px] sm:h-[500px] lg:w-[580px] lg:h-[580px] bg-gradient-to-tr from-purple-600/30 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
-
-            {/* Custom User 3D Metallic Shield Podium Image */}
-            <div className="relative z-10 w-full max-w-[420px] sm:max-w-[500px] lg:max-w-[560px] flex justify-center lg:justify-end lg:-translate-y-2">
-              <img
-                src="/ChatGPT Image Aug 29, 2026, 02_55_13 PM.png"
-                alt="Protection today confidence always - 3D Shield Podium"
-                className="w-full h-auto max-h-[360px] sm:max-h-[400px] lg:max-h-[420px] object-contain drop-shadow-2xl select-none pointer-events-none"
-              />
-            </div>
-          </div>
-
         </div>
       </section>
 
       {/* 4. WHY CHOOSE PROSPERI5 - MORE THAN JUST PROTECTION SECTION */}
-      <section 
-        id="why-choose-protect"
+      <section
         className="w-full relative bg-cover bg-center bg-no-repeat py-12 lg:py-16 border-b border-[#EBE3F5]"
         style={{ backgroundImage: "url('/ChatGPT Image Aug 25, 2026, 11_06_32 PM.png')" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12 relative z-10">
-          
+
           {/* Left Text Block */}
           <div className="w-full lg:w-[32%] text-left">
             <span className="text-[#7C1FAB] font-extrabold text-xs tracking-[0.18em] uppercase mb-2.5 block">
@@ -271,7 +116,7 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
           {/* Right 4 Columns Card Container */}
           <div className="w-full lg:w-[68%] bg-white/90 backdrop-blur-md border border-[#EBE0F7] rounded-[28px] lg:rounded-[32px] p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-[#EBE0F7]">
-              
+
               {/* Col 1: Trusted by Thousands */}
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:px-6 first:lg:pl-0 last:lg:pr-0 pt-4 sm:pt-0 group">
                 <div className="w-16 h-16 rounded-full bg-[#F3E8FF] text-[#7C1FAB] flex items-center justify-center mb-5 shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -340,12 +185,12 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 6. BE PREPARED ALWAYS & HOW GETTING PROTECTED WORKS SECTION */}
       <section className="w-full bg-[#FAF8FC] pt-8 lg:pt-12 pb-6 sm:pb-8 border-t border-[#EBE3F5]">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 lg:space-y-10">
-          
+        <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-10 space-y-8 lg:space-y-10">
+
           {/* PART 1: BE PREPARED, ALWAYS (Full width layout, no box card wrapper) */}
           <div className="w-full">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-              
+
               {/* Left Column: Armchair graphic */}
               <div className="w-full lg:w-5/12 flex justify-center shrink-0">
                 <div className="relative rounded-[20px] overflow-hidden max-w-[380px] lg:max-w-none shadow-sm border border-purple-100/50 bg-[#F3E8FF]/30">
@@ -438,9 +283,9 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
             </h2>
 
             {/* 4 Steps Flex Row with clear gaps & equal card sizes */}
-            <div className="w-full max-w-7xl mx-auto mt-6">
+            <div className="w-full max-w-5xl mx-auto mt-6">
               <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-3.5">
-                
+
                 {/* Step 01 */}
                 <div className="w-full lg:w-[210px] min-h-[145px] shrink-0 bg-white/95 backdrop-blur-sm rounded-[20px] p-4 border border-[#EBE3F5] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group text-left">
                   <div className="flex items-center justify-between w-full mb-2.5">
@@ -559,47 +404,46 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </section>
 
-      {/* 7. READY TO PROTECT CTA BANNER (Brand Purple #7C1FA8 Gradient, Compact Height) */}
-      <section className="w-full bg-[#FAF8FC] py-4 sm:py-5 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-r from-[#7C1FA8] via-[#6B1991] to-[#521172] border border-purple-400/40 rounded-[22px] lg:rounded-[26px] p-3.5 sm:p-4.5 lg:p-5 shadow-xl shadow-purple-900/30 relative overflow-hidden group">
-            
-            {/* Background Ambient Glow */}
-            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+      {/* 7. READY TO PROTECT CTA BANNER (Card Form, Deep Purple Homepage Color, Enhanced Umbrella Icon, Decreased Width) */}
+      <section className="w-full bg-[#FAF8FC] py-8 lg:py-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-gradient-to-r from-[#200A38] via-[#1B0B2E] to-[#160826] border border-[#3D1A5C]/80 rounded-[26px] lg:rounded-[30px] p-5 sm:p-7 lg:p-8 shadow-[0_16px_40px_rgba(24,10,42,0.35)] relative overflow-hidden group">
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6">
-              
+            {/* Background Ambient Glow */}
+            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-[#7C1FAB]/20 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-5 lg:gap-8">
+
               {/* Left side: Improved Umbrella Icon & Text */}
-              <div className="flex items-center gap-3.5 text-center md:text-left">
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-[16px] bg-white/15 border border-white/25 flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
-                  <img 
-                    src="/card_umbrella_clean.png" 
-                    alt="Umbrella Protection" 
-                    className="w-7 h-7 object-contain drop-shadow-md brightness-0 invert"
+              <div className="flex items-center gap-4 text-center md:text-left">
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-[20px] bg-gradient-to-br from-[#7C1FAB] to-[#4A1069] border border-purple-400/40 flex items-center justify-center shrink-0 shadow-lg shadow-purple-950/60 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src="/card_umbrella_clean.png"
+                    alt="Umbrella Protection"
+                    className="w-9 h-9 object-contain drop-shadow-md"
                   />
                 </div>
                 <div>
-                  <h3 className="font-sans font-extrabold text-base sm:text-lg lg:text-xl text-white tracking-tight leading-snug">
+                  <h3 className="font-sans font-extrabold text-lg sm:text-xl lg:text-[22px] text-white tracking-tight leading-snug">
                     Protect today. Secure tomorrow.
                   </h3>
-                  <p className="text-purple-100/90 text-xs sm:text-[13px] font-medium mt-0.5">
+                  <p className="text-[#D3C4E5] text-xs sm:text-sm font-medium mt-1">
                     Take the first step towards a worry-free future for you and your loved ones.
                   </p>
                 </div>
               </div>
 
-              {/* Right side: 2 Buttons (Pill shape matching reference image) */}
+              {/* Right side: 2 Buttons */}
               <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto justify-center">
                 <button
                   onClick={() => setSelectedPlanModal({ title: 'Explore Protection Plans' })}
-                  className="bg-white hover:bg-purple-50 text-[#7C1FA8] font-extrabold text-xs sm:text-sm px-5 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                  className="bg-white hover:bg-purple-50 text-[#1E1B2E] font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>Explore Plans</span>
-                  <span className="text-base leading-none text-[#7C1FA8]">→</span>
+                  Explore Plans <span className="text-base leading-none text-[#7C1FAB]">→</span>
                 </button>
                 <button
                   onClick={() => setSelectedPlanModal({ title: 'Talk to a Protection Expert' })}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-bold text-xs sm:text-sm px-5 py-2 sm:py-2.5 rounded-full transition-all duration-300 active:scale-95 cursor-pointer"
+                  className="bg-transparent hover:bg-white/10 text-white border border-white/30 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 cursor-pointer"
                 >
                   Talk to an Expert
                 </button>
@@ -610,14 +454,13 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <Footer onNavigatePage={onNavigatePage} />
+
 
       {/* MODAL DIALOG */}
       {selectedPlanModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setSelectedPlanModal(null)}>
-          <div 
-            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
+          <div
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
             onClick={e => e.stopPropagation()}
           >
@@ -634,28 +477,43 @@ export default function ProtectPage({ onNavigateHome, onNavigatePage }) {
                 </button>
               </div>
               <p className="text-[#544F66] font-medium mb-6 text-sm">Enter your contact details to receive a customized quote & policy consultation.</p>
-              <div className="space-y-4">
-                <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FAB] transition-colors shadow-2xs" />
-                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FAB] transition-colors shadow-2xs">
-                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+971">🇦🇪 +971</option>
-                    <option value="+65">🇸🇬 +65</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+49">🇩🇪 +49</option>
-                    <option value="+1">🇨🇦 +1</option>
-                  </select>
-                  <input type="tel" placeholder="Mobile Number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
-                </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  sendWhatsAppEnquiry({
+                    formName: `Protection Plan Consultation (${selectedPlanModal ? selectedPlanModal.title : 'Insurance Quote'})`,
+                    name: quoteForm.name,
+                    phone: `${quoteForm.countryCode} ${quoteForm.phone}`,
+                    service: selectedPlanModal ? selectedPlanModal.title : 'Insurance Protection'
+                  });
+                  alert('Thank you! Your quote request details have been sent via WhatsApp.');
+                  setSelectedPlanModal(null);
+                  setQuoteForm({ name: '', phone: '', countryCode: '+91' });
+                }}
+                className="space-y-4"
+              >
+                <input
+                  type="text"
+                  required
+                  value={quoteForm.name}
+                  onChange={(e) => setQuoteForm({ ...quoteForm, name: e.target.value })}
+                  placeholder="Enter your name"
+                  className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FAB] transition-colors shadow-2xs"
+                />
+                <PhoneInput
+                  value={quoteForm.phone}
+                  countryCode={quoteForm.countryCode}
+                  onCountryCodeChange={(code) => setQuoteForm((f) => ({ ...f, countryCode: code }))}
+                  onChange={(val) => setQuoteForm((f) => ({ ...f, phone: val }))}
+                  placeholder="Enter phone number"
+                />
                 <button
-                  onClick={() => setSelectedPlanModal(null)}
+                  type="submit"
                   className="w-full bg-[#7C1FAB] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
                 >
                   Submit Request
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
