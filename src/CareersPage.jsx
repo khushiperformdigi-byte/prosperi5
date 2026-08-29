@@ -3,6 +3,50 @@ import Footer from './Footer';
 import { fetchPublishedJobs, submitJobApplication } from './api/careers';
 import { sendWhatsAppEnquiry } from './utils/whatsapp';
 import PhoneInput from './components/PhoneInput';
+
+function JobImage({ url, title = '', department = '' }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (url && !imgError) {
+    return (
+      <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shrink-0 shadow-md group-hover:scale-[1.02] transition-transform flex items-center justify-center">
+        <img
+          src={url}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      </div>
+    );
+  }
+
+  // Department / Category-based 3D style badge fallbacks
+  const getBadgeStyle = (dept = '', jobTitle = '') => {
+    const text = (dept + ' ' + jobTitle).toLowerCase();
+    if (text.includes('tech') || text.includes('software') || text.includes('engineer') || text.includes('developer') || text.includes('full stack')) {
+      return { icon: '💻', bg: 'bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600', label: 'Tech & Product' };
+    }
+    if (text.includes('market') || text.includes('media') || text.includes('creative') || text.includes('social') || text.includes('design')) {
+      return { icon: '🎨', bg: 'bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-600', label: 'Creative & Media' };
+    }
+    if (text.includes('wealth') || text.includes('finance') || text.includes('invest') || text.includes('manager')) {
+      return { icon: '💼', bg: 'bg-gradient-to-br from-purple-700 via-indigo-700 to-purple-900', label: 'Wealth Advisory' };
+    }
+    if (text.includes('partner') || text.includes('b2b') || text.includes('growth') || text.includes('sales')) {
+      return { icon: '🚀', bg: 'bg-gradient-to-br from-amber-500 via-purple-600 to-purple-800', label: 'Growth & Sales' };
+    }
+    return { icon: '🌟', bg: 'bg-gradient-to-br from-[#7C1FA8] to-[#C81E8C]', label: 'Prosperi5 Team' };
+  };
+
+  const badge = getBadgeStyle(department, title);
+
+  return (
+    <div className={`w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl ${badge.bg} text-white shrink-0 shadow-md flex flex-col items-center justify-center p-3 group-hover:scale-[1.02] transition-transform text-center`}>
+      <span className="text-3xl sm:text-4xl lg:text-5xl drop-shadow-sm">{badge.icon}</span>
+      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider mt-1.5 opacity-95 leading-tight">{badge.label}</span>
+    </div>
+  );
+}
 const DEFAULT_FALLBACK_JOBS = [
   {
     id: 'job-1',
@@ -488,15 +532,11 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
                     <div className="flex flex-col sm:flex-row items-start gap-5 sm:gap-6">
                       
                       {/* PROMINENT FEATURED JOB IMAGE */}
-                      {job.imageUrl && (
-                        <div className="w-full sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shrink-0 shadow-md group-hover:scale-[1.02] transition-transform">
-                          <img
-                            src={job.imageUrl}
-                            alt={job.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
+                      <JobImage
+                        url={job.imageUrl}
+                        title={job.title}
+                        department={job.department}
+                      />
 
                       {/* Job Info Container */}
                       <div className="flex-1 min-w-0 w-full">
