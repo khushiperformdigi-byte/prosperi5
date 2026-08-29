@@ -22,7 +22,9 @@ import PrivacyPolicyPage from './PrivacyPolicyPage';
 import TermsAndConditionsPage from './TermsAndConditionsPage';
 import BlogPage from './BlogPage';
 import BlogDetailPage from './BlogDetailPage';
+import BlogAdminPanel from './admin/BlogAdminPanel';
 import CareersPage from './CareersPage';
+import CareersAdminPage from './CareersAdminPage';
 import Footer from './Footer';
 
 function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
@@ -368,6 +370,14 @@ function App() {
 
   if (currentPage === 'careers' || currentPage === 'career') {
     return <CareersPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
+  }
+
+  if (currentPage === 'blog-admin' || currentPage === 'admin/blog') {
+    return <BlogAdminPanel onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
+  }
+
+  if (currentPage === 'careers-admin' || currentPage === 'admin/careers' || currentPage === 'admin') {
+    return <CareersAdminPage onNavigateHome={() => setCurrentPage('home')} onNavigatePage={handleNavigatePage} />;
   }
 
   return (

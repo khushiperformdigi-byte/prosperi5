@@ -23,6 +23,8 @@ export const PAGE_ROUTES = {
   'loan-against-securities': '/tools/loan-against-securities',
   'blog': '/blog',
   'blog-detail': '/blog/detail',
+  'blog-admin': '/blog-admin',
+  'admin': '/admin',
   'careers': '/careers',
   'careers-admin': '/careers-admin',
   'privacy-policy': '/privacy-policy',
@@ -52,6 +54,8 @@ export const PAGE_TITLES = {
   'loan-against-securities': 'Loan Against Securities Calculator - LAS Eligibility | Prosperi5',
   'blog': 'Financial Blog & Industry News - Prosperi5',
   'blog-detail': 'Blog Article - Prosperi5',
+  'blog-admin': 'Blog Admin Panel - Prosperi5',
+  'admin': 'Admin Portal - Prosperi5',
   'careers': 'Careers & Open Roles - Prosperi5',
   'careers-admin': 'Careers Admin - Prosperi5',
   'privacy-policy': 'Privacy Policy - Prosperi5',
@@ -165,11 +169,19 @@ export const getPageFromUrl = () => {
     case 'blog-detail':
       targetPage = 'blog-detail';
       break;
+    case 'blog-admin':
+    case 'admin/blog':
+      targetPage = 'blog-admin';
+      break;
+    case 'admin':
+      targetPage = 'careers-admin';
+      break;
     case 'careers':
     case 'career':
       targetPage = 'careers';
       break;
     case 'careers-admin':
+    case 'admin/careers':
       targetPage = 'careers-admin';
       break;
     case 'privacy-policy':
