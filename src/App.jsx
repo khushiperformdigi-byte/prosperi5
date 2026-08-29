@@ -397,9 +397,13 @@ function App() {
         return <CareersAdminPage />;
       case 'home':
       default:
-        return renderHomepageSections();
+        return null;
     }
   };
+
+  if (currentPage !== 'home') {
+    return renderPageContent();
+  }
 
   const renderHomepageSections = () => (
     <>
