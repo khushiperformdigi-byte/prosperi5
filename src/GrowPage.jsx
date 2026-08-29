@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
 import Testimonials from './Testimonials';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 
 export default function GrowPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,140 +64,28 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: `Investment Plan (${modalOption.title || 'Wealth Grow Plan'})`,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      service: formData.productInterest,
+      extra: {
+        'Monthly Investment': formData.amount ? `₹${formData.amount}` : ''
+      }
+    });
     setFormSubmitted(true);
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBFD] font-body text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-hidden">
-      
-      {/* 1. TOP CONTACT UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                ⚡
-              </div>
-              <span className="font-medium text-white/90 text-xs">Grow Your Wealth</span>
-            </div>
-            <span className="text-white/20 hidden md:inline">|</span>
-            <span className="text-xs text-[#F5A623] font-semibold hidden md:inline-block">
-              Expert Curated Portfolios & 100% Transparent Returns
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => handleOpenApplyModal('Talk to Wealth Expert', 'Get a personalized investment plan built for your financial goals.')}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1 rounded-full text-xs transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              Talk to Expert
-            </button>
-            <span className="text-white/20">|</span>
-            <button onClick={onNavigateHome} className="text-white/80 hover:text-white transition-colors text-xs font-semibold">
-              Home
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FLOATING NAVBAR */}
-      <nav className="sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all z-50">
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-purple-200/60 shadow-sm h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          
-          {/* Top gradient border line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#7C1FA8] via-[#C81E8C] to-[#F5A623] rounded-t-full"></div>
-
-          {/* Logo */}
-          <div className="flex items-center cursor-pointer group" onClick={onNavigateHome}>
-            <img 
-              src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" 
-              className="w-[128px] h-[40px] lg:w-auto lg:h-[32px] object-contain transition-transform duration-300 group-hover:scale-[1.02]" 
-              alt="PROSPERi5 Logo" 
-            />
-          </div>
-
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center justify-center gap-x-6 font-medium text-[#1E1B2E] text-sm px-6 flex-1">
-            <button onClick={onNavigateHome} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">
-              Home
-            </button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">
-              About Us
-            </button>
-            
-            {/* SOLUTIONS DROPDOWN */}
-            <div className="relative group py-1">
-              <button className="whitespace-nowrap text-[#7C1FA8] hover:text-[#7C1FA8] transition-colors flex items-center gap-1 font-semibold cursor-pointer py-1">
-                Solutions
-                <svg className="w-3.5 h-3.5 text-[#7C1FA8] transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white/98 backdrop-blur-md border border-[#EBE8EF] rounded-[22px] p-3 shadow-xl w-[285px] space-y-1.5 z-[9999] overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#7C1FA8] via-[#C81E8C] to-[#F5A623]"></div>
-                
-                <button 
-                  onClick={() => onNavigatePage && onNavigatePage('grow')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] bg-purple-50 border border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#7C1FA8] text-white flex items-center justify-center font-bold text-base shrink-0">
-                    🌱
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#7C1FA8] block">Grow</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">SIP, Mutual Funds & Wealth Growth</span>
-                  </div>
-                </button>
-
-                <button 
-                  onClick={() => onNavigatePage && onNavigatePage('borrow')}
-                  className="flex items-center gap-3.5 p-3 rounded-[16px] hover:bg-purple-50 border border-transparent hover:border-purple-200 text-left transition-all cursor-pointer group/item shadow-2xs"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#7C1FA8] flex items-center justify-center font-bold text-base shrink-0 group-hover/item:scale-110 transition-all">
-                    💸
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-sm text-[#1E1B2E] group-hover/item:text-[#7C1FA8] transition-colors block">Borrow</span>
-                    <span className="text-[11px] text-[#8E8A9D] block font-medium">Instant Loans, Business Credit & LAP</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Nav Right CTA */}
-          <div className="hidden lg:flex items-center gap-4">
-            <button 
-              onClick={() => handleOpenApplyModal('Start Wealth Journey', 'Begin your SIP & portfolio growth with expert guidance.')}
-              className="bg-[#7C1FA8] hover:bg-[#63148B] text-white font-bold px-5 py-2 rounded-full text-xs transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              Start Investing
-            </button>
-          </div>
-
-          {/* Mobile Hamburger Button */}
-          <div className="lg:hidden flex items-center">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-[#1E1B2E] hover:bg-purple-50 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </button>
-          </div>
-
-        </div>
-      </nav>
+    <div className="w-full bg-[#FAF8FC] font-sans text-[#544F66] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
 
       {/* 3. HERO SECTION (REDUCED HEIGHT FULL WIDTH BANNER) */}
       <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
         <div className="w-full relative max-w-[1920px] mx-auto">
           {/* Main Hero Banner Image with Compact Height */}
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 10_22_49 AM.png" 
+          <img
+            src="/ChatGPT Image Aug 26, 2026, 10_22_49 AM.png"
             alt="Grow Your Wealth - Smart decisions. Stronger future."
             className="w-full h-auto max-h-[460px] sm:max-h-[500px] object-cover object-center block"
           />
@@ -204,7 +94,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
           <div className="absolute inset-0 pointer-events-none">
             {/* Start Investing Hotspot Button */}
             <a
-              href="#start-investing"
+              href="/grow"
               onClick={(e) => {
                 e.preventDefault();
                 handleOpenApplyModal('Start Investing Today', 'Access expert curated portfolios and start building wealth with Prosperi5.');
@@ -216,7 +106,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
             {/* Explore Funds Hotspot Button */}
             <a
-              href="#invest-solutions"
+              href="/grow"
               onClick={(e) => {
                 e.preventDefault();
                 const elem = document.getElementById('invest-solutions');
@@ -243,14 +133,14 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
         {/* 2 Grid Lines Form (3 in 1st line, 3 in 2nd line) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          
+
           {/* Card 1: Mutual Funds */}
           <div className="bg-white border border-[#EBE8EF] rounded-2xl p-5 shadow-2xs">
             <div className="bg-[#F7F3FC] rounded-xl overflow-hidden flex items-center justify-center h-44 mb-4 p-1">
-              <img 
-                src="/grow_card_mutual_funds.jpg" 
+              <img
+                src="/grow_card_mutual_funds.jpg"
                 alt="Mutual Funds 3D Growth"
-                className="w-full h-full object-cover rounded-xl" 
+                className="w-full h-full object-cover rounded-xl"
               />
             </div>
             <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] mb-1.5">Mutual Funds</h3>
@@ -262,10 +152,10 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
           {/* Card 2: SIP */}
           <div className="bg-white border border-[#EBE8EF] rounded-2xl p-5 shadow-2xs">
             <div className="bg-[#F7F3FC] rounded-xl overflow-hidden flex items-center justify-center h-44 mb-4 p-1">
-              <img 
-                src="/grow_card_sip.jpg" 
+              <img
+                src="/grow_card_sip.jpg"
                 alt="SIP 3D Calendar Growth"
-                className="w-full h-full object-cover rounded-xl" 
+                className="w-full h-full object-cover rounded-xl"
               />
             </div>
             <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] mb-1.5">SIP</h3>
@@ -277,10 +167,10 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
           {/* Card 3: Index Funds */}
           <div className="bg-white border border-[#EBE8EF] rounded-2xl p-5 shadow-2xs">
             <div className="bg-[#F7F3FC] rounded-xl overflow-hidden flex items-center justify-center h-44 mb-4 p-1">
-              <img 
-                src="/grow_card_index_funds.jpg" 
+              <img
+                src="/grow_card_index_funds.jpg"
                 alt="Index Funds 3D Chart"
-                className="w-full h-full object-cover rounded-xl" 
+                className="w-full h-full object-cover rounded-xl"
               />
             </div>
             <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] mb-1.5">Index Funds</h3>
@@ -368,10 +258,10 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 4.5 WHY INVEST WITH PROSPERI5? SECTION (ENHANCED TEXT SIZE & HEIGHT) */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans select-none">
-        
+
         {/* Top Header & 5 Benefit Badges Row */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
-          
+
           {/* Left Title Block (4 cols) */}
           <div className="lg:col-span-4 space-y-2">
             <h2 className="text-2xl sm:text-[32px] font-extrabold text-[#1E1B2E] leading-tight tracking-tight">
@@ -384,7 +274,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
           {/* Right 5 Benefit Badges (8 cols, 5-col grid on md/lg) */}
           <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-            
+
             {/* 1. Expert Curated Funds */}
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full bg-[#F3E8FF] text-[#7C1FA8] flex items-center justify-center mb-3 shadow-2xs transition-transform hover:scale-105">
@@ -445,10 +335,10 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
         {/* Bottom 2 Grid Cards Row */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          
+
           {/* Left Card: Market Snapshot (Color #7C1FA8 with Uncut Glowing Graph Line) */}
           <div className="lg:col-span-6 bg-[#7C1FA8] bg-gradient-to-br from-[#7C1FA8] via-[#65178B] to-[#4A0B66] text-white rounded-3xl p-6 sm:p-7 border border-[#9D2BB8]/40 shadow-xl flex flex-col justify-between space-y-4 relative overflow-hidden">
-            
+
             {/* Ambient Background Glow Circles */}
             <div className="absolute top-0 right-0 w-52 h-52 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-12 -mt-12"></div>
             <div className="absolute bottom-0 left-0 w-52 h-52 bg-black/20 rounded-full blur-3xl pointer-events-none -ml-12 -mb-12"></div>
@@ -457,7 +347,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
               <span className="text-purple-200 text-[11px] font-bold uppercase tracking-wider block mb-1">
                 Market Snapshot
               </span>
-              
+
               <div className="flex justify-between items-baseline mb-3">
                 <div>
                   <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Nifty 50</h3>
@@ -547,7 +437,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
           </div>
 
           {/* Right Card: Prosperi5 by the numbers (With User Uploaded Background Image) */}
-          <div 
+          <div
             className="lg:col-span-6 border border-[#EBE8EF] rounded-3xl p-6 sm:p-7 shadow-sm flex flex-col justify-between relative overflow-hidden bg-cover bg-center"
             style={{ backgroundImage: 'url("/ChatGPT Image Aug 12, 2026, 09_15_25 PM.png")' }}
           >
@@ -565,7 +455,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
             {/* 2x2 Metric Grid */}
             <div className="grid grid-cols-2 gap-4 relative z-10">
-              
+
               {/* Metric 1: Assets on Platform */}
               <div className="bg-[#FAF7FD] border border-[#F0E6F7] rounded-2xl p-4.5 flex items-center gap-3.5">
                 <div className="w-11 h-11 rounded-xl bg-[#F3E8FF] text-[#7C1FA8] flex items-center justify-center shrink-0">
@@ -630,18 +520,18 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
       {/* 7.5 READY TO GROW YOUR WEALTH CTA BANNER (PLACED AFTER TESTIMONIALS WITH SEMI-BOLD TEXT) */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 my-10 font-sans select-none">
         <div className="bg-[#1A0826] bg-gradient-to-r from-[#280A3D] via-[#1C072A] to-[#11031C] rounded-2xl py-4 sm:py-5 px-6 sm:px-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-purple-900/40 relative overflow-hidden">
-          
+
           {/* Left Graphic + Title Block */}
           <div className="flex items-center gap-4 sm:gap-6">
             {/* 3D Growth Graphic Box */}
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#2C0A45] p-1 flex items-center justify-center border border-purple-400/30 shadow-lg shrink-0">
-              <img 
-                src="/grow_card_index_funds.jpg" 
-                alt="3D Growth Chart" 
+              <img
+                src="/grow_card_index_funds.jpg"
+                alt="3D Growth Chart"
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
-            
+
             <div>
               <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-1">
                 Ready to grow your wealth?
@@ -660,7 +550,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
             >
               Start Investing
             </button>
-            
+
             <button
               onClick={() => handleOpenApplyModal("Talk to Expert", "Schedule a 1-on-1 session with our certified financial planner.")}
               className="bg-transparent hover:bg-white/10 text-white font-bold text-xs sm:text-sm px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-white/40 transition-all active:scale-95 cursor-pointer whitespace-nowrap"
@@ -675,7 +565,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
       {/* 8. WEALTH INQUIRY MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div 
+          <div
             className="bg-white bg-cover bg-center rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 overflow-hidden border border-purple-100/80"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
           >
@@ -705,7 +595,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Rahul Sharma"
+                        placeholder="Enter your name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full bg-white/95 border border-gray-200/90 rounded-xl py-3 px-4 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -714,26 +604,13 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
 
                     <div>
                       <label className="block font-extrabold text-[#1E1B2E] mb-1.5">Mobile Number</label>
-                      <div className="flex items-center bg-white/95 border border-gray-200/90 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] focus-within:ring-1 focus-within:ring-[#7C1FA8] transition-all shadow-2xs">
-                        <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-bold text-[#1E1B2E] outline-none border-r border-gray-200/90 cursor-pointer">
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+1">🇨🇦 +1</option>
-                        </select>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="98765 43210"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="w-full bg-transparent py-3 px-3 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none"
-                        />
-                      </div>
+                      <PhoneInput
+                        value={formData.phone}
+                        countryCode={formData.countryCode || '+91'}
+                        onCountryCodeChange={(code) => setFormData((f) => ({ ...f, countryCode: code }))}
+                        onChange={(val) => setFormData((f) => ({ ...f, phone: val }))}
+                        placeholder="Enter mobile number"
+                      />
                     </div>
 
                     <div>
@@ -741,7 +618,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
                       <input
                         type="email"
                         required
-                        placeholder="rahul@example.com"
+                        placeholder="Enter your email address"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full bg-white/95 border border-gray-200/90 rounded-xl py-3 px-4 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -752,7 +629,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
                       <label className="block font-extrabold text-[#1E1B2E] mb-1.5">Target Monthly Investment</label>
                       <input
                         type="text"
-                        placeholder="e.g. ₹10,000 / month"
+                        placeholder="Enter investment amount"
                         value={formData.amount}
                         onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                         className="w-full bg-white/95 border border-gray-200/90 rounded-xl py-3 px-4 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -790,8 +667,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 9. FOOTER INTEGRATION */}
-      <Footer onNavigateHome={onNavigateHome} onNavigatePage={onNavigatePage} />
+
 
     </div>
   );

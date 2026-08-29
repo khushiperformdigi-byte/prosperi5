@@ -1,5 +1,175 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Footer from './Footer';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import { fetchPublishedPosts, resolveMediaUrl } from './api/blog';
+import PhoneInput from './components/PhoneInput';
+
+function formatDate(value) {
+  if (!value) return '';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function mapPost(post) {
+  return {
+    id: post.id,
+    slug: post.slug,
+    category: (post.category || 'Blog').toUpperCase(),
+    categoryFilter: post.category || 'All',
+    title: post.title,
+    excerpt: post.excerpt || '',
+    image: resolveMediaUrl(post.featuredImageUrl) || '/blog_featured_mountain.jpg',
+    date: formatDate(post.publishedAt || post.createdAt),
+    readTime: post.readTime || `${post.readTimeMinutes || 5} min read`,
+    readTimeMinutes: post.readTimeMinutes || 5,
+    author: {
+      name: post.authorName || 'Admin',
+      role: post.authorRole || '',
+      avatar: '👤',
+    },
+    isPopular: Boolean(post.isPopular),
+    content: post.content || '',
+  };
+}
+
+const DEFAULT_9_BLOGS = [
+  {
+    id: 1,
+    slug: 'mastering-asset-allocation-2026',
+    category: 'WEALTH STRATEGY',
+    categoryFilter: 'Wealth Strategy',
+    title: 'Mastering Asset Allocation in 2026: A Complete Guide to Wealth Preservation',
+    excerpt: 'Discover how structured multi-asset planning shields your portfolio from inflation while compounding long-term returns.',
+    image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 28, 2026',
+    readTime: '5 min read',
+    readTimeMinutes: 5,
+    author: { name: 'Prosperi5 Research', role: 'Wealth Advisory', avatar: '👤' },
+    isPopular: true,
+    content: 'In volatile global markets, relying on a single asset class increases capital risk. Modern portfolio strategy requires balancing equity, fixed income, and collateralized liquidity options like Loan Against Securities (LAS).'
+  },
+  {
+    id: 2,
+    slug: 'loan-against-securities-liquidity-guide',
+    category: 'LIQUIDITY & LAS',
+    categoryFilter: 'Liquidity & LAS',
+    title: 'How Loan Against Securities (LAS) Unlocks Liquidity Without Selling Equity',
+    excerpt: 'Learn how to leverage your existing stock and mutual fund investments to access immediate cash without triggering capital gains taxes.',
+    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 27, 2026',
+    readTime: '6 min read',
+    readTimeMinutes: 6,
+    author: { name: 'Credit Solutions Team', role: 'LAS Advisory', avatar: '👤' },
+    isPopular: false,
+    content: 'Selling your equities for emergency funds means losing out on compounding wealth and paying high capital gains tax. A Loan Against Securities (LAS) allows you to pledge your mutual funds or shares at attractive interest rates.'
+  },
+  {
+    id: 3,
+    slug: 'sip-vs-lumpsum-investment-strategy',
+    category: 'INVESTMENT STRATEGY',
+    categoryFilter: 'Investment Strategy',
+    title: 'SIP vs Lumpsum Investment: Which Strategy Yields Higher Returns in 2026?',
+    excerpt: 'An in-depth comparative analysis of Systematic Investment Plans versus lump sum investing across different market cycles.',
+    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 26, 2026',
+    readTime: '4 min read',
+    readTimeMinutes: 4,
+    author: { name: 'Analytics Team', role: 'Quantitative Research', avatar: '👤' },
+    isPopular: false,
+    content: 'Systematic Investment Plans (SIPs) reduce the impact of market volatility through Rupee Cost Averaging, making them ideal for salaried investors.'
+  },
+  {
+    id: 4,
+    slug: 'tax-planning-strategies-hni-india',
+    category: 'TAX OPTIMIZATION',
+    categoryFilter: 'Tax Optimization',
+    title: 'Tax Planning Strategies for High Net Worth Individuals in India',
+    excerpt: 'Optimize your tax liability across capital gains, debt instruments, and corporate structures with expert strategies.',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 25, 2026',
+    readTime: '7 min read',
+    readTimeMinutes: 7,
+    author: { name: 'Tax Advisory Group', role: 'Tax Structuring', avatar: '👤' },
+    isPopular: false,
+    content: 'High net worth individuals face up to 39% peak tax brackets. Utilizing Section 80C exemptions, tax-loss harvesting, and holding securities through family trusts can legally optimize annual tax exposure.'
+  },
+  {
+    id: 5,
+    slug: 'understanding-term-insurance-coverage-guide',
+    category: 'PROTECTION & INSURANCE',
+    categoryFilter: 'Protection & Insurance',
+    title: 'Understanding Term Insurance: How Much Cover Do You Really Need?',
+    excerpt: 'Calculate your financial human life value (HLV) to ensure complete security for your family with adequate term insurance.',
+    image: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 24, 2026',
+    readTime: '5 min read',
+    readTimeMinutes: 5,
+    author: { name: 'Risk Management', role: 'Insurance Desk', avatar: '👤' },
+    isPopular: false,
+    content: 'A simple thumb rule is 15x to 20x your annual income. We outline how term insurance with critical illness riders guarantees peace of mind.'
+  },
+  {
+    id: 6,
+    slug: 'power-of-compounding-10-crore-portfolio',
+    category: 'PERSONAL FINANCE',
+    categoryFilter: 'Personal Finance',
+    title: 'The Power of Compounding: Building a 10 Crore Portfolio Starting Early',
+    excerpt: 'See the math behind compounding interest and how starting 5 years earlier cuts required monthly investment in half.',
+    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 23, 2026',
+    readTime: '4 min read',
+    readTimeMinutes: 4,
+    author: { name: 'Wealth Insights', role: 'Editorial Team', avatar: '👤' },
+    isPopular: false,
+    content: 'Compounding transforms small monthly investments into substantial fortunes. Starting a ₹20,000 monthly SIP at age 25 at 12% CAGR yields over ₹10 Crore by age 60.'
+  },
+  {
+    id: 7,
+    slug: 'navigating-fixed-income-interest-rates',
+    category: 'FIXED INCOME',
+    categoryFilter: 'Fixed Income',
+    title: 'Navigating Interest Rates & Fixed Income Securities in Market Volatility',
+    excerpt: 'Discover how corporate bonds, NCDs, and government securities provide capital stability during stock market drawdowns.',
+    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 22, 2026',
+    readTime: '5 min read',
+    readTimeMinutes: 5,
+    author: { name: 'Debt Desk', role: 'Fixed Income Advisory', avatar: '👤' },
+    isPopular: false,
+    content: 'Fixed income securities offer steady yields during stock market corrections. By diversifying 20-30% of your portfolio into sovereign gold bonds and AAA-rated corporate fixed deposits, you secure consistent passive income.'
+  },
+  {
+    id: 8,
+    slug: 'evaluating-mutual-fund-categories-guide',
+    category: 'MUTUAL FUNDS',
+    categoryFilter: 'Mutual Funds',
+    title: 'Evaluating Mutual Fund Categories: Large Cap, Mid Cap, and Flexi Cap',
+    excerpt: 'A complete comparison guide to mutual fund categories, risk-reward ratios, and optimal allocation for long-term growth.',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 21, 2026',
+    readTime: '6 min read',
+    readTimeMinutes: 6,
+    author: { name: 'Fund Research', role: 'Mutual Fund Analyst', avatar: '👤' },
+    isPopular: false,
+    content: 'Large-cap funds offer steady growth with lower volatility, mid-cap funds provide aggressive expansion opportunity, and flexi-cap funds allow fund managers dynamic sector rotation.'
+  },
+  {
+    id: 9,
+    slug: 'smart-debt-management-emi-optimization',
+    category: 'FINANCIAL PLANNING',
+    categoryFilter: 'Financial Planning',
+    title: 'Smart Debt Management: Optimizing Loans and EMI Payoffs for Financial Freedom',
+    excerpt: 'Strategies for prepayment, interest reduction, and consolidating high-cost credit debt into low-interest secured loans.',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop',
+    date: 'Aug 20, 2026',
+    readTime: '5 min read',
+    readTimeMinutes: 5,
+    author: { name: 'Financial Advisory', role: 'Planning Desk', avatar: '👤' },
+    isPopular: false,
+    content: 'Not all debt is equal. Replacing high-interest credit card debt or personal loans with low-cost Loan Against Securities (LAS) lowers monthly EMI burdens by up to 50%.'
+  }
+];
 
 export default function BlogPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -11,6 +181,39 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [talkAdvisorModal, setTalkAdvisorModal] = useState(false);
+  const [advisorForm, setAdvisorForm] = useState({ name: '', phone: '', countryCode: '+91', category: 'Mutual Funds & SIPs' });
+  const [blogPosts, setBlogPosts] = useState(DEFAULT_9_BLOGS);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postsError, setPostsError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setPostsLoading(true);
+      setPostsError('');
+      try {
+        const posts = await fetchPublishedPosts();
+        if (!cancelled) {
+          if (Array.isArray(posts) && posts.length > 0) {
+            setBlogPosts(posts.map(mapPost));
+          } else {
+            setBlogPosts(DEFAULT_9_BLOGS);
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setBlogPosts(DEFAULT_9_BLOGS);
+          setPostsError(error.message || 'Unable to load live blog posts.');
+        }
+      } finally {
+        if (!cancelled) setPostsLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (mobileMenuOpen || selectedArticle || talkAdvisorModal) {
@@ -23,210 +226,14 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
     };
   }, [mobileMenuOpen, selectedArticle, talkAdvisorModal]);
 
-  const categories = [
-    { id: 'All', label: 'All' },
-    { id: 'Invest', label: 'Invest' },
-    { id: 'Borrow', label: 'Borrow' },
-    { id: 'Protect', label: 'Protect' },
-    { id: 'Personal Finance', label: 'Personal Finance' },
-    { id: 'Tax', label: 'Tax' },
-    { id: 'Market Insights', label: 'Market Insights' },
-  ];
+  const categories = useMemo(() => {
+    const fromPosts = [...new Set(blogPosts.map((p) => p.categoryFilter).filter(Boolean))];
+    return [{ id: 'All', label: 'All' }, ...fromPosts.map((c) => ({ id: c, label: c }))];
+  }, [blogPosts]);
 
-  const featuredPost = {
-    id: 'featured-1',
-    category: 'FEATURED',
-    categoryFilter: 'Invest',
-    title: 'Where should you invest when markets are uncertain?',
-    excerpt: "Markets will always have ups and downs. Here's how to stay focused on long-term goals and make confident investment decisions.",
-    image: '/blog_featured_mountain.jpg',
-    date: 'May 24, 2025',
-    readTime: '6 min read',
-    author: {
-      name: 'Rajiv Mehta',
-      role: 'Head of Wealth Research',
-      avatar: '👨‍💼'
-    },
-    content: `
-      <h3>Navigating Market Volatility with Confidence</h3>
-      <p>Market uncertainty is an inevitable part of investing. Whether driven by geopolitical shifts, interest rate fluctuations, or economic cycles, short-term turbulence often tempts investors to react emotionally. However, history demonstrates that disciplined, patient investors achieve the best outcomes.</p>
-      
-      <h4>1. Maintain a Diversified Asset Allocation</h4>
-      <p>The single most reliable buffer against market volatility is a well-structured asset allocation. Spreading capital across equity, debt instruments, gold, and alternative assets ensures that downturns in one segment are cushioned by stability in another.</p>
-      
-      <h4>2. Continue Systematic Investment Plans (SIPs)</h4>
-      <p>When stock markets correct, your SIP purchases units at a discounted NAV (Rupee Cost Averaging). Halting SIPs during a downturn undermines the core compounding power of disciplined investing.</p>
-      
-      <h4>3. Rebalance Periodically</h4>
-      <p>Use periodic rebalancing to take profits from outperforming assets and allocate into undervalued opportunities without trying to time the peak or bottom.</p>
-
-      <blockquote>"The stock market is a device for transferring money from the impatient to the patient." – Warren Buffett</blockquote>
-    `
-  };
-
-  const blogPosts = [
-    {
-      id: 'post-1',
-      category: 'INVESTING',
-      categoryFilter: 'Invest',
-      title: 'SIP vs Lump Sum: Which Strategy Is Right for You?',
-      excerpt: 'Understand the difference between investing regularly and investing a larger amount at once.',
-      image: '/blog_sip_coins.jpg',
-      date: 'May 22, 2025',
-      readTime: '6 min read',
-      readTimeMinutes: 6,
-      author: { name: 'Arjun Nair', role: 'Fintech Strategist', avatar: '👨‍💻' },
-      content: `
-        <h3>Choosing the Optimal Entry Strategy</h3>
-        <p>A Systematic Investment Plan (SIP) allows you to invest fixed amounts at regular intervals, while Lump Sum investing involves deploying a significant sum in one transaction.</p>
-        <h4>When to Choose SIP:</h4>
-        <p>Ideal for salaried professionals with regular monthly cash flow, beginners seeking emotional discipline, and volatile markets where Rupee Cost Averaging lowers average acquisition cost.</p>
-        <h4>When to Choose Lump Sum:</h4>
-        <p>Best suited when you receive bonuses, property sale proceeds, or when market valuations are demonstrably attractive and historical multiples indicate low downside risk.</p>
-      `
-    },
-    {
-      id: 'post-2',
-      category: 'PERSONAL FINANCE',
-      categoryFilter: 'Personal Finance',
-      title: 'How to Build a Financial Plan That Actually Works',
-      excerpt: 'Simple principles to organize your income, expenses, savings and investments.',
-      image: '/blog_financial_plan.jpg',
-      date: 'May 20, 2025',
-      readTime: '5 min read',
-      readTimeMinutes: 5,
-      author: { name: 'Priya Sharma', role: 'Certified Financial Planner', avatar: '👩‍💼' },
-      content: `
-        <h3>A Step-by-Step Blueprint for Financial Independence</h3>
-        <p>A sound financial plan is not about deprivation; it is about creating intentionality with every rupee earned.</p>
-        <h4>1. The 50/30/20 Rule Refined</h4>
-        <p>Allocate 50% of net income to essentials, 30% to lifestyle and discretionary spending, and at least 20% toward aggressive wealth compounding and debt payoff.</p>
-        <h4>2. Build an Emergency Buffer First</h4>
-        <p>Keep 6 to 12 months of mandatory living expenses in high-yield liquid funds before deploying capital into long-term illiquid assets.</p>
-      `
-    },
-    {
-      id: 'post-3',
-      category: 'TAX',
-      categoryFilter: 'Tax',
-      title: 'Tax-Saving Investments You Should Know About',
-      excerpt: 'Explore common tax-saving options and understand how they fit into your plan.',
-      image: '/blog_tax_blocks.jpg',
-      date: 'May 18, 2025',
-      readTime: '7 min read',
-      readTimeMinutes: 7,
-      author: { name: 'Sneha Kapoor', role: 'Tax & Structuring Lead', avatar: '👩‍🏢' },
-      content: `
-        <h3>Maximizing Post-Tax Returns Legally</h3>
-        <p>Tax optimization shouldn't be an afterthought at the end of March. Planning early preserves substantial compounding gains over a 10–20 year horizon.</p>
-        <h4>ELSS vs PPF vs NPS</h4>
-        <p>Equity Linked Savings Schemes (ELSS) offer the shortest lock-in period (3 years) combined with potential equity upsides. NPS provides an additional deduction under Section 80CCD(1B) while securing retirement corpus.</p>
-      `
-    },
-    {
-      id: 'post-4',
-      category: 'LOANS',
-      categoryFilter: 'Borrow',
-      title: 'How to Choose the Right Loan for Your Financial Goal',
-      excerpt: 'Compare loan types, repayment considerations and what to evaluate before borrowing.',
-      image: '/blog_loan_house.jpg',
-      date: 'May 16, 2025',
-      readTime: '5 min read',
-      readTimeMinutes: 5,
-      author: { name: 'Vikram Joshi', role: 'Credit Solutions Director', avatar: '👨‍💼' },
-      content: `
-        <h3>Borrowing Smart: Good Debt vs High-Cost Liabilities</h3>
-        <p>Not all borrowing is created equal. Securing loans against existing assets (like Loan Against Securities or LAP) unlocks liquidity at interest rates often 40-60% lower than unsecured personal loans.</p>
-        <h4>Key Metrics to Evaluate:</h4>
-        <p>Always inspect the Total Effective APR, foreclosure charges, prepayment flexibility, and tenure alignment with your projected cash flow.</p>
-      `
-    },
-    {
-      id: 'post-5',
-      category: 'MARKET INSIGHTS',
-      categoryFilter: 'Market Insights',
-      title: 'What Market Trends Mean for Long-Term Investors',
-      excerpt: 'A simple look at market movements and what investors should focus on beyond short-term noise.',
-      image: '/blog_market_trends.jpg',
-      date: 'May 14, 2025',
-      readTime: '6 min read',
-      readTimeMinutes: 6,
-      author: { name: 'Rajiv Mehta', role: 'Head of Wealth Research', avatar: '👨‍💼' },
-      content: `
-        <h3>Decoding Sector Rotations & Structural Megatrends</h3>
-        <p>Daily headlines focus on noise, while generational wealth is created by participating in macroeconomic megatrends: digital transformation, renewable energy, and domestic manufacturing.</p>
-        <h4>Staying Grounded:</h4>
-        <p>Avoid chasing last quarter's hottest sector. Maintain diversified thematic exposure managed by seasoned asset managers with verifiable risk-adjusted alpha.</p>
-      `
-    },
-    {
-      id: 'post-6',
-      category: 'PROTECTION',
-      categoryFilter: 'Protect',
-      title: 'Why Financial Protection Should Be Part of Your Plan',
-      excerpt: 'Understand how insurance and financial protection can complement your wealth strategy.',
-      image: '/blog_protection_shield.jpg',
-      date: 'May 12, 2025',
-      readTime: '5 min read',
-      readTimeMinutes: 5,
-      author: { name: 'Priya Sharma', role: 'Certified Financial Planner', avatar: '👩‍💼' },
-      content: `
-        <h3>The Foundation of Every Resilient Wealth Strategy</h3>
-        <p>Investing without adequate insurance protection is like scoring goals without a goalkeeper. A single unexpected medical crisis or disability can erase years of disciplined compounding.</p>
-        <h4>Core Pillars of Protection:</h4>
-        <p>1. Pure Term Insurance covering at least 15–20x annual earnings.<br />2. Comprehensive Super Top-Up Health Coverage covering critical illnesses.</p>
-      `
-    },
-    // Supplementary posts for pagination / extensive categories
-    {
-      id: 'post-7',
-      category: 'INVESTING',
-      categoryFilter: 'Invest',
-      title: 'Understanding Debt Funds vs Fixed Deposits in Rising Rate Environments',
-      excerpt: 'How fixed income strategies have evolved and how to optimize yield with minimal duration risk.',
-      image: '/opp_fixed_income.png',
-      date: 'May 08, 2025',
-      readTime: '4 min read',
-      readTimeMinutes: 4,
-      author: { name: 'Arjun Nair', role: 'Fintech Strategist', avatar: '👨‍💻' },
-      content: `
-        <h3>Balancing Liquidity, Safety, and Yield</h3>
-        <p>Fixed income forms the ballast of any balanced portfolio. Exploring target maturity debt funds and corporate bond funds can provide predictable returns with high credit quality.</p>
-      `
-    },
-    {
-      id: 'post-8',
-      category: 'LOANS',
-      categoryFilter: 'Borrow',
-      title: 'Loan Against Mutual Funds: Instant Liquidity Without Selling Units',
-      excerpt: 'Keep your compounding intact while accessing short-term capital at competitive interest rates.',
-      image: '/fin_chart_clean.png',
-      date: 'May 05, 2025',
-      readTime: '5 min read',
-      readTimeMinutes: 5,
-      author: { name: 'Vikram Joshi', role: 'Credit Solutions Director', avatar: '👨‍💼' },
-      content: `
-        <h3>Preserve Your Compounding Journey</h3>
-        <p>Liquidating your equity mutual funds triggers capital gains tax and breaks your long-term compounding chain. Pledging your units for an overdraft facility gives you the liquidity you need while remaining fully invested in market upside.</p>
-      `
-    },
-    {
-      id: 'post-9',
-      category: 'PROTECTION',
-      categoryFilter: 'Protect',
-      title: 'Term Life Insurance: Key Clauses Every Policyholder Must Verify',
-      excerpt: 'Critical riders, claim settlement ratios, and disclosure practices to prevent claim rejections.',
-      image: '/card_umbrella_3d.jpg',
-      date: 'Apr 28, 2025',
-      readTime: '6 min read',
-      readTimeMinutes: 6,
-      author: { name: 'Priya Sharma', role: 'Certified Financial Planner', avatar: '👩‍💼' },
-      content: `
-        <h3>Securing Your Family's Financial Future</h3>
-        <p>When selecting term cover, always check the 3-year Section 45 insurance moratorium clause, critical illness riders, and ensure 100% full disclosure on all medical and lifestyle questionnaires.</p>
-      `
-    }
-  ];
+  const featuredPost = useMemo(() => {
+    return blogPosts.find((p) => p.isPopular) || blogPosts[0] || null;
+  }, [blogPosts]);
 
   // Filtering & Sorting
   const filteredPosts = useMemo(() => {
@@ -257,7 +264,7 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
     }
 
     return list;
-  }, [activeCategory, searchQuery, sortBy]);
+  }, [blogPosts, activeCategory, searchQuery, sortBy]);
 
   const postsPerPage = 6;
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage) || 1;
@@ -287,121 +294,7 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8FC] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
-
-      {/* 1. TOP CONTACT UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Knowledge & Insights · Smart Financial Decisions</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              Practical Guides · Market Insights · Tax Strategies
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => setTalkAdvisorModal(true)}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to an Advisor
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FLOATING NAVBAR */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
-            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-6 text-xs font-semibold text-[#1E1B2E]">
-            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('protect')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Protect</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Investment</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Insurance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Financing</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Tools</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investors')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer py-1">Investors</button>
-            {/* Active Blog tab indicator */}
-            <button className="text-[#7C1FA8] font-bold cursor-pointer py-1 relative after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-0.5 after:bg-[#C81E8C] after:rounded-full">
-              Blog
-            </button>
-          </div>
-
-          {/* Desktop CTA & Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setTalkAdvisorModal(true)}
-              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer"
-            >
-              Get Free Advice
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
-              aria-label="Open Menu"
-            >
-              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* MOBILE MENU DRAWER */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-[#FAF6FC] z-[100] p-4 overflow-y-auto">
-          <div className="max-w-[360px] mx-auto flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2">
-              <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] h-[40px] object-contain" alt="PROSPERi5 Logo" />
-              <button onClick={() => setMobileMenuOpen(false)} className="w-9 h-9 rounded-full bg-[#F5EEFA] text-[#5E1083] flex items-center justify-center cursor-pointer">
-                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            {[
-              { num: '01', label: 'Home', action: () => { setMobileMenuOpen(false); onNavigateHome && onNavigateHome(); } },
-              { num: '02', label: 'About Us', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('about'); } },
-              { num: '03', label: 'Blog', action: () => setMobileMenuOpen(false), active: true },
-              { num: '04', label: 'Protect', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('protect'); } },
-              { num: '05', label: 'Investment', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investment'); } },
-              { num: '06', label: 'Insurance', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('insurance'); } },
-              { num: '07', label: 'Financing', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('financing'); } },
-              { num: '08', label: 'Tools', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('tools'); } },
-              { num: '09', label: 'Investors', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investors'); } },
-            ].map((item) => (
-              <button
-                key={item.num}
-                onClick={item.action}
-                className={`w-full h-[52px] rounded-[16px] border px-5 flex items-center gap-4 shadow-sm transition-all duration-200 cursor-pointer text-left ${item.active ? 'bg-[#7C1FA8] border-[#7C1FA8] text-white' : 'bg-white border-[#EBE3F5] text-[#1E1B2E] hover:bg-[#7C1FA8] hover:text-white hover:border-[#7C1FA8]'}`}
-              >
-                <span className={`font-extrabold text-sm ${item.active ? 'text-[#F5A623]' : 'text-[#7C1FAB]'}`}>{item.num}</span>
-                <span className="font-bold text-sm">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+    <div className="w-full bg-[#FAF8FC] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
 
       {/* 3. HERO SECTION BANNER - FULL WIDTH */}
       <section className="w-full overflow-hidden bg-[#FAF5FD]">
@@ -486,8 +379,20 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
           </div>
         </div>
 
+        {postsLoading && (
+          <div className="mb-8 bg-white rounded-[24px] border border-[#EBE8EF] p-8 text-sm text-[#544F66]">
+            Loading articles...
+          </div>
+        )}
+
+        {!postsLoading && postsError && (
+          <div className="mb-8 bg-white rounded-[24px] border border-red-100 p-8 text-sm text-red-700">
+            {postsError}
+          </div>
+        )}
+
         {/* 5. FEATURED BLOG CARD */}
-        {activeCategory === 'All' && !searchQuery && currentPageNum === 1 && (
+        {!postsLoading && featuredPost && activeCategory === 'All' && !searchQuery && currentPageNum === 1 && (
           <div
             onClick={() => onNavigatePage ? onNavigatePage('blog-detail', featuredPost.id) : setSelectedArticle(featuredPost)}
             className="mb-12 bg-white rounded-[24px] border border-[#EBE8EF] overflow-hidden shadow-sm hover:shadow-[0_20px_45px_rgba(124,31,168,0.08)] hover:border-purple-200 transition-all duration-300 group cursor-pointer"
@@ -632,60 +537,49 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
         )}
 
         {/* 7. PAGINATION SECTION */}
-        <div className="flex items-center justify-center gap-2 mb-16 select-none">
-          {/* Previous Arrow */}
-          <button
-            onClick={() => handlePageChange(currentPageNum - 1)}
-            disabled={currentPageNum === 1}
-            className="w-10 h-10 rounded-xl border border-[#EBE8EF] bg-white flex items-center justify-center text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
-            aria-label="Previous Page"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mb-16 select-none">
+            {/* Previous Arrow */}
+            <button
+              onClick={() => handlePageChange(currentPageNum - 1)}
+              disabled={currentPageNum === 1}
+              className="w-10 h-10 rounded-xl border border-[#EBE8EF] bg-white flex items-center justify-center text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
+              aria-label="Previous Page"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-          {/* Page numbers matching mockup */}
-          {[1, 2, 3].map((num) => {
-            const isActive = currentPageNum === num;
-            return (
-              <button
-                key={num}
-                onClick={() => handlePageChange(num)}
-                className={`w-10 h-10 rounded-xl font-bold text-sm transition-all cursor-pointer ${isActive
-                  ? 'bg-[#5E1083] text-white shadow-sm'
-                  : 'bg-white border border-[#EBE8EF] text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8]'
-                  }`}
-              >
-                {num}
-              </button>
-            );
-          })}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => {
+              const isActive = currentPageNum === num;
+              return (
+                <button
+                  key={num}
+                  onClick={() => handlePageChange(num)}
+                  className={`w-10 h-10 rounded-xl font-bold text-sm transition-all cursor-pointer ${isActive
+                    ? 'bg-[#5E1083] text-white shadow-sm'
+                    : 'bg-white border border-[#EBE8EF] text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8]'
+                    }`}
+                >
+                  {num}
+                </button>
+              );
+            })}
 
-          <span className="w-8 text-center text-[#8E8A9D] font-bold">...</span>
-
-          <button
-            onClick={() => handlePageChange(10)}
-            className={`w-10 h-10 rounded-xl font-bold text-sm transition-all cursor-pointer ${currentPageNum === 10
-              ? 'bg-[#5E1083] text-white shadow-sm'
-              : 'bg-white border border-[#EBE8EF] text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8]'
-              }`}
-          >
-            10
-          </button>
-
-          {/* Next Arrow */}
-          <button
-            onClick={() => handlePageChange(currentPageNum + 1)}
-            disabled={currentPageNum === 10}
-            className="w-10 h-10 rounded-xl border border-[#EBE8EF] bg-white flex items-center justify-center text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
-            aria-label="Next Page"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+            {/* Next Arrow */}
+            <button
+              onClick={() => handlePageChange(currentPageNum + 1)}
+              disabled={currentPageNum === totalPages}
+              className="w-10 h-10 rounded-xl border border-[#EBE8EF] bg-white flex items-center justify-center text-[#544F66] hover:border-purple-300 hover:text-[#7C1FA8] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
+              aria-label="Next Page"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        )}
 
         {/* 8. NEWSLETTER / WEALTH DIGEST CTA */}
 
@@ -797,15 +691,53 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
             <p className="text-xs text-[#6C677E] leading-relaxed mb-6">
               Get personalized financial advice tailored to your goals. Our certified experts are ready to guide you.
             </p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Thank you! An advisor will call you shortly.'); setTalkAdvisorModal(false); }} className="space-y-3">
-              <input type="text" required placeholder="Full Name" className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]" />
-              <input type="tel" required placeholder="Mobile Number" className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]" />
-              <input type="email" placeholder="Email Address" className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]" />
-              <select className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]">
-                <option value="investment">Mutual Funds & SIPs</option>
-                <option value="insurance">Term / Health Insurance</option>
-                <option value="loans">Loan Against Securities / LAP</option>
-                <option value="tax">Tax Planning</option>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendWhatsAppEnquiry({
+                  formName: 'Speak to a Wealth Advisor (Blog)',
+                  name: advisorForm.name,
+                  phone: advisorForm.phone,
+                  email: advisorForm.email,
+                  service: advisorForm.category
+                });
+                alert('Thank you! An advisor will call you shortly.');
+                setTalkAdvisorModal(false);
+                setAdvisorForm({ name: '', phone: '', email: '', category: 'Mutual Funds & SIPs' });
+              }}
+              className="space-y-3"
+            >
+              <input
+                type="text"
+                required
+                value={advisorForm.name}
+                onChange={(e) => setAdvisorForm({ ...advisorForm, name: e.target.value })}
+                placeholder="Enter your name"
+                className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]"
+              />
+              <PhoneInput
+                value={advisorForm.phone}
+                countryCode={advisorForm.countryCode}
+                onCountryCodeChange={(code) => setAdvisorForm((f) => ({ ...f, countryCode: code }))}
+                onChange={(val) => setAdvisorForm((f) => ({ ...f, phone: val }))}
+                placeholder="Phone number"
+              />
+              <input
+                type="email"
+                value={advisorForm.email}
+                onChange={(e) => setAdvisorForm({ ...advisorForm, email: e.target.value })}
+                placeholder="Enter your email address"
+                className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]"
+              />
+              <select
+                value={advisorForm.category}
+                onChange={(e) => setAdvisorForm({ ...advisorForm, category: e.target.value })}
+                className="w-full bg-[#FAF8FC] border border-[#EBE8EF] rounded-xl px-4 py-2.5 text-xs text-[#1E1B2E] focus:outline-none focus:border-[#7C1FA8]"
+              >
+                <option value="Mutual Funds & SIPs">Mutual Funds & SIPs</option>
+                <option value="Term / Health Insurance">Term / Health Insurance</option>
+                <option value="Loan Against Securities / LAP">Loan Against Securities / LAP</option>
+                <option value="Tax Planning">Tax Planning</option>
               </select>
               <button type="submit" className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-xs shadow-md transition-all cursor-pointer mt-2">
                 Request Free Callback
@@ -815,8 +747,7 @@ export default function BlogPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 11. FOOTER */}
-      <Footer onNavigatePage={onNavigatePage} />
+
 
     </div>
   );

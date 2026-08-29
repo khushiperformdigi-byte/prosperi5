@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 
 export default function LoanPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
+  const [quoteForm, setQuoteForm] = useState({ name: '', phone: '', countryCode: '+91', type: 'Home Loan' });
 
   // EMI Calculator State
   const [loanType, setLoanType] = useState('home');
@@ -136,114 +139,12 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF8FD] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
-      
-      {/* 1. TOP UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Loans · Instant Approval & Transparent Rates</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              30+ Partner Banks · Zero Hidden Fees
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => setSelectedModal(true)}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to a Loan Specialist
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FLOATING NAVBAR */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
-            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#1E1B2E]">
-            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Insurance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Financing</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('loan')} className="text-[#7C1FA8] font-bold cursor-pointer">Loans</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('borrow')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Borrow</button>
-          </div>
-
-          {/* Desktop CTA & Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSelectedModal(true)}
-              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
-            >
-              Apply for Loan
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
-            >
-              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* MOBILE MENU DRAWER */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-[#FAF6FC] z-[100] p-4 overflow-y-auto">
-          <div className="max-w-[360px] mx-auto flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2">
-              <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] h-[40px] object-contain" alt="PROSPERi5 Logo" />
-              <button onClick={() => setMobileMenuOpen(false)} className="w-9 h-9 rounded-full bg-[#F5EEFA] text-[#5E1083] flex items-center justify-center cursor-pointer">
-                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            {[
-              { num: '01', label: 'Home', action: () => { setMobileMenuOpen(false); onNavigateHome && onNavigateHome(); } },
-              { num: '02', label: 'About Us', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('about'); } },
-              { num: '03', label: 'Investment', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investment'); } },
-              { num: '04', label: 'Insurance', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('insurance'); } },
-              { num: '05', label: 'Financing', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('financing'); } },
-              { num: '06', label: 'Loans', action: () => setMobileMenuOpen(false), active: true },
-              { num: '07', label: 'Borrow', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('borrow'); } },
-            ].map((item) => (
-              <button key={item.num} onClick={item.action}
-                className={`w-full h-[58px] rounded-[16px] border px-5 flex items-center gap-4 shadow-sm transition-all duration-200 cursor-pointer text-left ${item.active ? 'bg-[#7C1FA8] border-[#7C1FA8] text-white' : 'bg-white border-[#EBE3F5] text-[#1E1B2E] hover:bg-[#7C1FA8] hover:text-white hover:border-[#7C1FA8]'}`}>
-                <span className={`font-extrabold text-sm ${item.active ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>{item.num}</span>
-                <span className="font-bold text-sm">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+    <div className="w-full bg-[#FAF8FD] font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
 
       {/* 3. HERO SECTION */}
       <section className="bg-gradient-to-b from-[#FAF5FC] via-white to-[#F7F2FA] py-12 lg:py-16 px-4 sm:px-6 lg:px-8 border-b border-purple-100/60 select-none">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
+
           {/* Left Column: Heading & Copy */}
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-[#F3EAFB] border border-purple-200/80 px-4 py-1.5 rounded-full text-xs font-extrabold text-[#7C1FA8] shadow-2xs">
@@ -355,8 +256,8 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loanProducts.map((product) => (
-            <div 
-              key={product.id} 
+            <div
+              key={product.id}
               onClick={() => setSelectedModal(true)}
               className={`${product.bgGradient} border ${product.cardBorder} rounded-[26px] p-6 sm:p-7 shadow-2xs hover:shadow-xl hover:scale-[1.015] transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[240px]`}
             >
@@ -408,11 +309,10 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
               <button
                 key={key}
                 onClick={() => handleTypeChange(key)}
-                className={`px-6 py-3.5 sm:py-4 rounded-full text-xs sm:text-sm font-extrabold transition-all duration-200 cursor-pointer ${
-                  loanType === key
+                className={`px-6 py-3.5 sm:py-4 rounded-full text-xs sm:text-sm font-extrabold transition-all duration-200 cursor-pointer ${loanType === key
                     ? 'bg-[#7C1FA8] text-white shadow-md scale-[1.03]'
                     : 'bg-white text-[#544F66] hover:bg-purple-50 border border-purple-100/90 shadow-2xs'
-                }`}
+                  }`}
               >
                 {loanConfigs[key].title}
               </button>
@@ -523,14 +423,13 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <Footer onNavigatePage={onNavigatePage} />
+
 
       {/* CONSULTATION MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setSelectedModal(false)}>
-          <div 
-            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
+          <div
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
             onClick={e => e.stopPropagation()}
           >
@@ -546,39 +445,57 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
                 </button>
               </div>
               <p className="text-[#544F66] font-medium mb-6 text-sm">Enter your details to receive instant rate offers & loan eligibility status.</p>
-              <div className="space-y-4">
-                <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs" />
-                
-                {/* Phone Input with Country Code */}
-                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] transition-colors shadow-2xs">
-                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+971">🇦🇪 +971</option>
-                    <option value="+65">🇸🇬 +65</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+49">🇩🇪 +49</option>
-                    <option value="+1">🇨🇦 +1</option>
-                  </select>
-                  <input type="tel" placeholder="Mobile Number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
-                </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  sendWhatsAppEnquiry({
+                    formName: 'Instant Loan Application',
+                    name: quoteForm.name,
+                    phone: `${quoteForm.countryCode} ${quoteForm.phone}`,
+                    service: quoteForm.type
+                  });
+                  alert('Thank you! Your loan application details have been sent via WhatsApp.');
+                  setSelectedModal(false);
+                  setQuoteForm({ name: '', phone: '', countryCode: '+91', type: 'Home Loan' });
+                }}
+                className="space-y-4"
+              >
+                <input
+                  type="text"
+                  required
+                  value={quoteForm.name}
+                  onChange={(e) => setQuoteForm({ ...quoteForm, name: e.target.value })}
+                  placeholder="Enter your name"
+                  className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs"
+                />
 
-                <select className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs font-semibold text-[#1E1B2E] cursor-pointer">
-                  <option value="home">Home Loan</option>
-                  <option value="personal">Personal Loan</option>
-                  <option value="business">Business Loan</option>
-                  <option value="lap">Loan Against Property (LAP)</option>
-                  <option value="education">Education Loan</option>
+                <PhoneInput
+                  value={quoteForm.phone}
+                  countryCode={quoteForm.countryCode}
+                  onCountryCodeChange={(code) => setQuoteForm((f) => ({ ...f, countryCode: code }))}
+                  onChange={(val) => setQuoteForm((f) => ({ ...f, phone: val }))}
+                  placeholder="Enter phone number"
+                />
+
+                <select
+                  value={quoteForm.type}
+                  onChange={(e) => setQuoteForm({ ...quoteForm, type: e.target.value })}
+                  className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs font-semibold text-[#1E1B2E] cursor-pointer"
+                >
+                  <option value="Home Loan">Home Loan</option>
+                  <option value="Personal Loan">Personal Loan</option>
+                  <option value="Business Loan">Business Loan</option>
+                  <option value="Loan Against Property (LAP)">Loan Against Property (LAP)</option>
+                  <option value="Education Loan">Education Loan</option>
                 </select>
 
                 <button
-                  onClick={() => setSelectedModal(false)}
+                  type="submit"
                   className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-full text-sm transition-all shadow-md cursor-pointer"
                 >
                   Submit Application
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

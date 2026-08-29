@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 
 // Animated Speedometer Gauge Component with Intersection Observer
 function AnimatedSpeedometer() {
@@ -43,13 +45,13 @@ function AnimatedSpeedometer() {
           <path d="M 16,66 A 44,44 0 0,1 104,66" fill="none" stroke="#F3F4F6" strokeWidth="11" strokeLinecap="round" />
           {/* Vibrant Gradient Arc Track */}
           <path d="M 16,66 A 44,44 0 0,1 104,66" fill="none" stroke="url(#speedoGrad)" strokeWidth="11" strokeLinecap="round" />
-          
+
           {/* Animated Needle Group rotating around (60, 66) */}
-          <g 
-            style={{ 
-              transform: `rotate(${needleAngle}deg)`, 
+          <g
+            style={{
+              transform: `rotate(${needleAngle}deg)`,
               transformOrigin: '60px 66px',
-              transition: 'transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1)' 
+              transition: 'transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
             }}
           >
             <line x1="60" y1="66" x2="60" y2="26" stroke="#1E1B2E" strokeWidth="4.5" strokeLinecap="round" />
@@ -98,6 +100,13 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: `Market Insights (${modalOption.title || 'Market Advisory Call'})`,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      service: formData.topicInterest
+    });
     setFormSubmitted(true);
     setTimeout(() => {
       setTimeout(() => {
@@ -110,6 +119,10 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     if (!newsletterEmail) return;
+    sendWhatsAppEnquiry({
+      formName: 'Market Insights Newsletter Subscription',
+      email: newsletterEmail
+    });
     setSubscribed(true);
     setTimeout(() => {
       setSubscribed(false);
@@ -128,122 +141,15 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8FC] text-[#1E1B2E] font-sans selection:bg-[#7C1FA8] selection:text-white">
-      
-      {/* 1. EXACT HOMEPAGE FLOATING NAVBAR & TOP UTILITY STRIP */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-muted-text">
-              <div className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-400">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Investments · Insurance · Financing</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-amber-400 bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              All through one trusted relationship
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button onClick={() => handleOpenModal('Talk to an Expert', 'Schedule a callback with our wealth advisors.')} className="bg-amber-400 hover:bg-amber-500 text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to an Expert
-            </button>
-
-            <div className="flex items-center gap-3 sm:gap-4 text-[#EBE8EF]/80 text-xs">
-              <span className="text-[#EBE8EF]/20">|</span>
-              <button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors flex items-center gap-1 font-medium cursor-pointer">
-                Partner Login
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FLOATING NAVBAR WITH BRAND IMAGE LOGO */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE8EF] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.08)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-
-          {/* Top gradient border line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#7C1FA8] via-[#C81E8C] to-[#F5A623] rounded-t-full"></div>
-
-          {/* Official PROSPERi5 Image Logo */}
-          <div className="flex items-center cursor-pointer group" onClick={onNavigateHome}>
-            <img
-              src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png"
-              className="w-[128px] h-[40px] lg:w-auto lg:h-[32px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-              alt="PROSPERi5 Logo"
-            />
-          </div>
-
-          {/* Links - Desktop */}
-          <div className="hidden lg:flex items-center justify-center gap-x-6 font-medium text-[#1E1B2E] text-sm px-6 flex-1">
-            <button onClick={onNavigateHome} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">Invest</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('borrow')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">Borrow</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('protect')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">Protect</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('knowledge')} className="whitespace-nowrap text-[#7C1FA8] relative py-1 font-bold after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-0.5 after:bg-[#C81E8C] after:rounded-full">Market Insights</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('partner')} className="whitespace-nowrap hover:text-[#7C1FA8] transition-colors py-1 font-semibold cursor-pointer">Partner (B2B)</button>
-          </div>
-
-          {/* CTA */}
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => onNavigatePage && onNavigatePage('partner')}
-              className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-5 py-2 rounded-full text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer hidden sm:block"
-            >
-              Partner Login
-            </button>
-
-            {/* Mobile Hamburger Toggle */}
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-[#1E1B2E] hover:bg-purple-50 focus:outline-none"
-              aria-label="Toggle menu"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-
-        </div>
-      </nav>
-
-      {/* MOBILE MENU DROPDOWN */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[65px] z-40 bg-white/95 backdrop-blur-xl border-b border-purple-100 shadow-xl p-5 animate-in slide-in-from-top-4 font-sans">
-          <div className="flex flex-col gap-3 font-semibold text-sm text-[#1E1B2E]">
-            <button onClick={() => { setMobileMenuOpen(false); onNavigateHome(); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">Home</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('about'); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">About Us</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investment'); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">Invest</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('borrow'); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">Borrow</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('protect'); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">Protect</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('knowledge'); }} className="text-left py-2 px-3 rounded-lg bg-purple-100 text-[#7C1FA8] font-bold">Market Insights</button>
-            <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('partner'); }} className="text-left py-2 px-3 rounded-lg hover:bg-purple-100/50">Partner (B2B)</button>
-          </div>
-        </div>
-      )}
+    <div className="w-full bg-white text-[#1E1B2E] font-sans antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
 
       {/* 2. HERO SECTION (REDUCED TOP HEIGHT) */}
-      <section 
+      <section
         className="w-full bg-cover bg-center pt-2 sm:pt-3 lg:pt-4 pb-6 sm:pb-8 lg:pb-10 px-4 sm:px-8 lg:px-12 font-sans relative overflow-hidden border-b border-purple-100/50"
         style={{ backgroundImage: `url("/ChatGPT Image Aug 26, 2026, 10_41_03 PM.png")` }}
       >
         <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Left Hero Content */}
           <div className="lg:col-span-5 xl:col-span-5 space-y-5 text-left font-jakarta">
             <div>
@@ -263,7 +169,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
             </p>
 
             <div className="pt-2">
-              <button 
+              <button
                 onClick={() => handleOpenModal('Explore Market Insights', 'Get full access to daily stock reports, Sectoral analysis, and macro-economic research.')}
                 className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-7 py-3.5 rounded-full text-sm sm:text-base transition-all shadow-xl cursor-pointer active:scale-95 flex items-center gap-2.5 font-jakarta"
               >
@@ -276,9 +182,9 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
           {/* Right Hero Graphic: 3D Monitor Graphic */}
           <div className="lg:col-span-7 xl:col-span-7 relative flex justify-center lg:justify-end items-center">
             <div className="w-full max-w-[680px] lg:max-w-[780px]">
-              <img 
-                src="/ChatGPT Image Aug 26, 2026, 10_14_23 PM.png" 
-                alt="Market Insights 3D Financial Analytics" 
+              <img
+                src="/ChatGPT Image Aug 26, 2026, 10_14_23 PM.png"
+                alt="Market Insights 3D Financial Analytics"
                 className="w-full h-auto object-contain drop-shadow-2xl hover:scale-102 transition-transform duration-300"
               />
             </div>
@@ -289,7 +195,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 3. MARKET OVERVIEW (4 STANDALONE INDEX CARDS IN PURPLE THEME) */}
       <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
-        
+
         {/* Header Bar (Centered Badge) */}
         <div className="flex justify-center mb-5 sm:mb-6">
           <span className="text-[#7C1FA8] text-xs sm:text-sm font-black uppercase tracking-widest bg-purple-100/90 px-4 py-1.5 rounded-full border border-purple-200 inline-block shadow-2xs">
@@ -299,7 +205,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
         {/* 4 Separate Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          
+
           {/* Card 1: NIFTY 50 */}
           <div className="bg-white border border-purple-100/90 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group">
             <div className="flex items-center justify-between">
@@ -431,10 +337,10 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
       {/* 4. MARKET TRENDS & SENTIMENT (FULL WIDTH #FCE9F4 SOFT PINK BACKGROUND) */}
       <section className="w-full bg-[#FCE9F4] py-10 sm:py-12 my-6 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          
+
           {/* Left Column: Nifty 50 Performance Chart (Matching Reference Image 1) */}
           <div className="lg:col-span-8 bg-white border border-purple-100/90 rounded-3xl p-5 sm:p-6 shadow-md flex flex-col justify-between space-y-5">
-            
+
             {/* Header: Title & Timeframe Selector Tabs */}
             <div className="space-y-3">
               <div>
@@ -448,11 +354,10 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
                   <button
                     key={tf}
                     onClick={() => setActiveTimeframe(tf)}
-                    className={`px-3.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                      activeTimeframe === tf 
-                        ? 'bg-[#7C1FA8] text-white shadow-xs' 
+                    className={`px-3.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeTimeframe === tf
+                        ? 'bg-[#7C1FA8] text-white shadow-xs'
                         : 'text-[#666077] hover:text-[#7C1FA8]'
-                    }`}
+                      }`}
                   >
                     {tf}
                   </button>
@@ -462,7 +367,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
             {/* Interactive Chart with Y-Axis Price Labels & Horizontal Grid Lines */}
             <div className="relative w-full h-64 pt-2 flex">
-              
+
               {/* Left Y-Axis Price Labels */}
               <div className="w-14 shrink-0 flex flex-col justify-between text-[11px] font-extrabold text-[#8D8A99] pb-6 pr-2 text-right select-none">
                 <span>25,200</span>
@@ -474,7 +379,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
               {/* Main SVG Area & Grid Lines */}
               <div className="flex-1 relative h-full flex flex-col justify-between">
-                
+
                 {/* Horizontal Background Grid Lines */}
                 <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
                   <div className="border-b border-gray-100 w-full" />
@@ -504,10 +409,10 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
                     {/* Area Polygon */}
                     <polygon points={`0,200 ${chartPoints[activeTimeframe]} 600,200`} fill="url(#chartTrendGlow)" />
-                    
+
                     {/* Multi-Zigzag Stroke */}
                     <polyline points={chartPoints[activeTimeframe]} fill="none" stroke="#7C1FA8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    
+
                     {/* Vertical Dashed Tooltip Line */}
                     <line x1="312" y1="92" x2="312" y2="200" stroke="#7C1FA8" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
 
@@ -534,11 +439,11 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
           {/* Right Column: Market Sentiment Speedometer (Matching Reference Screenshot) */}
           <div className="lg:col-span-4 bg-white border border-purple-100/90 rounded-3xl p-5 sm:p-6 shadow-md flex flex-col justify-between space-y-4">
-            
+
             {/* Header: Title & View Detailed Chart CTA */}
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-black text-[#1E1B2E]">Market Sentiment</h3>
-              <button 
+              <button
                 onClick={() => handleOpenModal('Market Sentiment Details', 'View live equity advance-decline ratios and sector momentum scores.')}
                 className="text-xs font-black text-[#7C1FA8] hover:text-[#6b1a91] flex items-center gap-1 cursor-pointer"
               >
@@ -552,7 +457,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
             {/* 3 Active Metric Rows (Gainers, Losers, Unchanged) */}
             <div className="space-y-3 pt-3 border-t border-purple-100/60">
-              
+
               {/* Top Gainers */}
               <div className="flex items-center justify-between p-2 rounded-2xl hover:bg-emerald-50/50 transition-colors cursor-pointer group">
                 <div className="flex items-center gap-3">
@@ -605,13 +510,13 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
       <section className="py-4.5 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
         <div className="bg-gradient-to-r from-[#7C1FA8] via-[#6b1a91] to-[#541275] rounded-2xl sm:rounded-3xl py-4.5 px-6 sm:py-6 sm:px-8 text-white shadow-xl relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between gap-5 relative z-10">
-            
+
             {/* Left 3D Envelope Graphic & Copy */}
             <div className="flex items-center gap-4 sm:gap-5 text-center md:text-left">
               <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 hidden sm:block">
-                <img 
-                  src="/market_newsletter_3d.jpg" 
-                  alt="Market Insights Newsletter 3D Envelope" 
+                <img
+                  src="/market_newsletter_3d.jpg"
+                  alt="Market Insights Newsletter 3D Envelope"
                   className="w-full h-full object-contain mix-blend-screen drop-shadow-md"
                 />
               </div>
@@ -628,7 +533,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
               <input
                 type="email"
                 required
-                placeholder="Enter your email"
+                placeholder="Enter your email address"
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 className="w-full sm:w-64 px-5 py-3 rounded-full bg-white text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
@@ -648,7 +553,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
       {/* 7. LEAD INQUIRY & REPORT SUBSCRIPTION MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div 
+          <div
             className="bg-white bg-cover bg-center rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 overflow-hidden border border-purple-100/80"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
           >
@@ -689,7 +594,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Rahul Sharma"
+                        placeholder="Enter your name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-200/90 bg-white/95 rounded-xl text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -698,26 +603,13 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
                     <div>
                       <label className="text-sm font-extrabold text-[#1E1B2E] block mb-1.5">Phone Number</label>
-                      <div className="flex items-center border border-gray-200/90 bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] focus-within:ring-1 focus-within:ring-[#7C1FA8] transition-all shadow-2xs">
-                        <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-bold text-[#1E1B2E] outline-none border-r border-gray-200/90 cursor-pointer">
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+1">🇨🇦 +1</option>
-                        </select>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="e.g. 9876543210"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="w-full px-3 py-3 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none bg-transparent"
-                        />
-                      </div>
+                      <PhoneInput
+                        value={formData.phone}
+                        countryCode={formData.countryCode || '+91'}
+                        onCountryCodeChange={(code) => setFormData((f) => ({ ...f, countryCode: code }))}
+                        onChange={(val) => setFormData((f) => ({ ...f, phone: val }))}
+                        placeholder="Enter phone number"
+                      />
                     </div>
 
                     <div>
@@ -725,7 +617,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
                       <input
                         type="email"
                         required
-                        placeholder="e.g. rahul@example.com"
+                        placeholder="Enter your email address"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-200/90 bg-white/95 rounded-xl text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -747,8 +639,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 8. FOOTER COMPONENT */}
-      <Footer onNavigatePage={(p) => onNavigatePage && onNavigatePage(p)} />
+
 
     </div>
   );

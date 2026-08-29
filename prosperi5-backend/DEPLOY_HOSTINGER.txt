@@ -1,0 +1,24 @@
+HOSTINGER — ONE-SHOT DEPLOY
+===========================
+
+1. Upload prosperi5-backend.zip to Node app ROOT (extract all files here)
+
+2. The zip includes ".env" already configured — no rename needed
+
+3. hPanel Node.js settings:
+   - Startup file: index.js
+   - Node: 20
+   - Click NPM INSTALL
+   - Click RESTART
+
+4. Test:
+   https://yellow-jaguar-571688.hostingersite.com/api/health
+   https://yellow-jaguar-571688.hostingersite.com/api/posts
+
+5. Local dev (while Hostinger deploys):
+   npm run dev:all
+   Opens frontend + local API using same Hostinger MySQL database
+
+6. Production frontend build:
+   npm run build
+   (uses .env.production → Hostinger API automatically)

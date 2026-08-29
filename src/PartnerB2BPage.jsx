@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
+import PhoneInput from './components/PhoneInput';
 
 export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,6 +53,15 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: `B2B Partner Application (${selectedModal === 'demo' ? 'Book Demo' : 'Become a Partner'})`,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      city: formData.city,
+      service: formData.partnerType,
+      message: formData.notes
+    });
     setFormSubmitted(true);
     setTimeout(() => {
       setFormSubmitted(false);
@@ -154,111 +164,12 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
-      
-      {/* 1. TOP UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">For B2B Partners · Mutual Funds, Loans, Insurance & Tax</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              Zero Platform Fee · 100% Payout Accuracy
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => setSelectedModal('partner')}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-              Partner Sign-Up
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FLOATING NAVIGATION BAR */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
-            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#1E1B2E]">
-            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('grow')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Grow</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('personal-finance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Personal Finance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Insurance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Financing</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('borrow')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Borrow</button>
-            <span className="text-[#7C1FA8] font-bold border-b-2 border-[#7C1FA8] pb-0.5">Partner B2B</span>
-          </div>
-
-          {/* Desktop CTA & Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSelectedModal('partner')}
-              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              Become Our Partner
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
-            >
-              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* MOBILE MENU DRAWER */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-[#FAF6FC] z-[100] p-4 overflow-y-auto font-sans">
-          <div className="max-w-[360px] mx-auto flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2">
-              <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] h-[40px] object-contain" alt="PROSPERi5 Logo" />
-              <button onClick={() => setMobileMenuOpen(false)} className="w-9 h-9 rounded-full bg-[#F5EEFA] text-[#5E1083] flex items-center justify-center cursor-pointer">
-                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex flex-col gap-2 pt-4 text-sm font-semibold text-[#1E1B2E]">
-              <button onClick={() => { setMobileMenuOpen(false); onNavigateHome(); }} className="text-left py-2 border-b border-purple-100">Home</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('about'); }} className="text-left py-2 border-b border-purple-100">About Us</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('grow'); }} className="text-left py-2 border-b border-purple-100">Grow</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investment'); }} className="text-left py-2 border-b border-purple-100">Investment</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('insurance'); }} className="text-left py-2 border-b border-purple-100">Insurance</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('financing'); }} className="text-left py-2 border-b border-purple-100">Financing</button>
-              <button onClick={() => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('borrow'); }} className="text-left py-2 border-b border-purple-100">Borrow</button>
-              <button onClick={() => { setMobileMenuOpen(false); setSelectedModal('partner'); }} className="mt-4 w-full bg-[#7C1FA8] text-white py-3 rounded-full text-center font-bold shadow-md">Become Our Partner</button>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className="w-full bg-white font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
 
       {/* 3. COMPACT HERO SECTION */}
       <section className="w-full bg-gradient-to-b from-[#FAF6FC] via-white to-[#F5EEFA] pt-2 lg:pt-3 pb-0 px-4 sm:px-6 lg:px-8 overflow-hidden relative border-b border-purple-100/60 font-sans">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center relative z-10">
-          
+
           {/* Left Content Column */}
           <div className="lg:col-span-6 flex flex-col justify-center space-y-3 text-left pb-2 lg:pb-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/80 border border-purple-200/80 text-[#7C1FA8] text-xs font-bold tracking-wider uppercase w-max shadow-2xs">
@@ -295,7 +206,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
               >
                 <span>Schedule a Demo</span>
                 <svg className="w-4 h-4 text-[#7C1FA8]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/>
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
                 </svg>
               </button>
             </div>
@@ -342,13 +253,13 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
       {/* WHY PARTNER WITH PROSPERI5? (6 BENEFIT CARDS GRID) */}
       <section className="pt-4 pb-6 lg:pt-5 lg:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans border-b border-purple-100/60">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
+
           {/* Left Column: Heading, Subtext & CTA */}
           <div className="lg:col-span-5 flex flex-col justify-center space-y-4 text-left">
             <span className="text-[#7C1FA8] text-xs font-extrabold uppercase tracking-widest">
               WHY PARTNER WITH PROSPERFI?
             </span>
-            
+
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1E1B2E] tracking-tight leading-[1.2]">
               More value for your clients. <br />
               <span className="text-[#7C1FA8]">
@@ -375,7 +286,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
           {/* Right Column: 6 Grid Cards (3 cols x 2 rows) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-            
+
             {/* Card 1: Wide Range of Products */}
             <div className="group bg-white hover:!bg-[#7C1FA8] hover:!border-[#7C1FA8] p-5 sm:p-6 rounded-2xl border border-purple-100/80 shadow-xs hover:shadow-xl transition-all duration-300 space-y-3 cursor-pointer hover:-translate-y-1">
               <div className="w-11 h-11 rounded-xl bg-purple-100 text-[#7C1FA8] group-hover:!bg-white group-hover:!text-[#7C1FA8] flex items-center justify-center shadow-2xs transition-colors">
@@ -462,14 +373,14 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
       {/* BUILT AROUND YOUR BUSINESS SECTION */}
       <section className="py-8 lg:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans border-b border-purple-100/60">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Title, Description, CTA & 3D Growth Illustration */}
           <div className="lg:col-span-5 flex flex-col justify-between space-y-5 text-left h-full">
             <div className="space-y-4">
               <span className="text-[#7C1FA8] text-xs font-extrabold uppercase tracking-widest">
                 BUILT AROUND YOUR BUSINESS
               </span>
-              
+
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1E1B2E] tracking-tight leading-[1.2]">
                 Everything you need to <br className="hidden sm:inline" />
                 build a stronger <br />
@@ -507,7 +418,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
           {/* Right Column: 4 Numbered Horizontal Cards (01, 02, 03, 04) */}
           <div className="lg:col-span-7 space-y-4">
-            
+
             {/* Step 01: Grow Your Revenue */}
             <div className="group bg-white p-4 sm:p-5 rounded-2xl border border-purple-100/80 shadow-xs hover:shadow-md hover:border-purple-200 transition-all cursor-pointer flex items-center gap-4 sm:gap-5">
               <span className="text-2xl sm:text-3xl font-black text-[#7C1FA8] w-10 text-center flex-shrink-0">01</span>
@@ -592,7 +503,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
       {/* HOW IT WORKS SECTION (5-STEP TIMELINE & 4 TRUST HIGHLIGHTS) */}
       <section className="py-8 lg:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans border-b border-purple-100/60">
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="text-[#7C1FA8] text-xs font-extrabold uppercase tracking-widest bg-purple-100/80 px-3.5 py-1 rounded-full border border-purple-200/80">
@@ -609,7 +520,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
         {/* 5-Step Horizontal Flow Timeline */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4 relative mb-10 items-start">
-          
+
           {/* Step 01: Apply */}
           <div className="flex flex-col items-center text-center relative group">
             <div className="w-16 h-16 rounded-full bg-purple-100 text-[#7C1FA8] flex items-center justify-center shadow-xs group-hover:scale-105 transition-all mb-4 relative z-10">
@@ -617,7 +528,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </div>
-            
+
             {/* Arrow connecting to step 2 (hidden on mobile) */}
             <div className="hidden lg:flex items-center justify-center absolute top-[22px] left-[62%] w-[76%] pointer-events-none z-0">
               <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
@@ -718,7 +629,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
 
         {/* Bottom Full-Width Trust Highlights Banner — deep purple with arrows */}
         <div className="bg-[#7C1FA8] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          
+
           {/* Highlight 1: Quick Onboarding */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-full bg-white/20 text-white flex items-center justify-center flex-shrink-0">
@@ -795,7 +706,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
       {/* 11. LEAD CAPTURE / DEMO MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto font-sans">
-          <div 
+          <div
             className="bg-white bg-cover bg-center rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-purple-100/80 my-8 overflow-hidden"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
           >
@@ -839,7 +750,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Rajesh Sharma"
+                      placeholder="Enter your full name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-purple-200/90 bg-white/95 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -849,26 +760,13 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-sm font-extrabold text-[#1E1B2E] block mb-1.5">Mobile Number *</label>
-                      <div className="flex items-center rounded-xl border border-purple-200/90 bg-white/95 overflow-hidden focus-within:border-[#7C1FA8] focus-within:ring-1 focus-within:ring-[#7C1FA8] transition-all shadow-2xs">
-                        <select className="bg-transparent pl-2 pr-0.5 py-3 text-xs font-bold text-[#1E1B2E] outline-none border-r border-purple-200/90 cursor-pointer">
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+1">🇨🇦 +1</option>
-                        </select>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="10-digit number"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="w-full px-2 py-3 text-xs sm:text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none bg-transparent"
-                        />
-                      </div>
+                      <PhoneInput
+                        value={formData.phone}
+                        countryCode={formData.countryCode}
+                        onCountryCodeChange={(code) => setFormData((f) => ({ ...f, countryCode: code }))}
+                        onChange={(val) => setFormData((f) => ({ ...f, phone: val }))}
+                        placeholder="Enter mobile number"
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-extrabold text-[#1E1B2E] block mb-1.5">City *</label>
@@ -888,7 +786,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
                     <input
                       type="email"
                       required
-                      placeholder="name@business.com"
+                      placeholder="name@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-purple-200/90 bg-white/95 text-sm font-medium text-[#1E1B2E] placeholder:text-gray-400 focus:outline-none focus:border-[#7C1FA8] focus:ring-1 focus:ring-[#7C1FA8] transition-all shadow-2xs"
@@ -927,8 +825,7 @@ export default function PartnerB2BPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 12. FOOTER COMPONENT */}
-      <Footer onNavigatePage={(p) => onNavigatePage && onNavigatePage(p)} />
+
     </div>
   );
 }

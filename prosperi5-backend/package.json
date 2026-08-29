@@ -1,0 +1,30 @@
+{
+  "name": "prosperi5-careers-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PROSPERi5 careers API + admin panel (Express + MySQL)",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'Build complete'",
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "seed:admin": "node scripts/seed-admin.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.2.0",
+    "mysql2": "^3.14.1",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.4"
+  }
+}

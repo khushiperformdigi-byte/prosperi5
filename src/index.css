@@ -33,11 +33,46 @@
     overflow-x: clip;
     font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--color-body-text);
+    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4 {
     font-weight: 600 !important;
   }
+}
+
+/* Lightweight GPU-Accelerated Homepage Scroll Reveal Animations */
+.home-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-reveal-scale {
+  opacity: 0;
+  transform: scale(0.94) translateY(18px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-reveal-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-revealed {
+  opacity: 1 !important;
+  transform: translate(0, 0) scale(1) !important;
 }
 
 /* Typography Hierarchy Utilities matching Design System Specification */

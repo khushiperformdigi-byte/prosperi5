@@ -1,9 +1,15 @@
 import React from 'react';
+import { getPathForPage } from './utils/routing';
 
 export default function Footer({ onNavigatePage }) {
   const handleNav = (page) => {
     if (onNavigatePage) {
       onNavigatePage(page);
+    } else {
+      const path = getPathForPage(page);
+      if (window.location.pathname + window.location.search !== path || window.location.hash) {
+        window.history.pushState({ page }, '', path);
+      }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -48,14 +54,14 @@ export default function Footer({ onNavigatePage }) {
                 SOLUTIONS
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => handleNav('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
-                <li><button onClick={() => handleNav('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
-                <li><button onClick={() => handleNav('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
-                <li><button onClick={() => handleNav('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
-                <li><button onClick={() => handleNav('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
-                <li><button onClick={() => handleNav('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
-                <li><button onClick={() => handleNav('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
-                <li><button onClick={() => handleNav('tools')} className="hover:text-white transition-colors cursor-pointer text-left">Financial Tools</button></li>
+                <li><a href={getPathForPage('grow')} onClick={(e) => { e.preventDefault(); handleNav('grow'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Grow</a></li>
+                <li><a href={getPathForPage('protect')} onClick={(e) => { e.preventDefault(); handleNav('protect'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Protect</a></li>
+                <li><a href={getPathForPage('investment')} onClick={(e) => { e.preventDefault(); handleNav('investment'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Investments</a></li>
+                <li><a href={getPathForPage('insurance')} onClick={(e) => { e.preventDefault(); handleNav('insurance'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Insurance</a></li>
+                <li><a href={getPathForPage('financing')} onClick={(e) => { e.preventDefault(); handleNav('financing'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Financing</a></li>
+                <li><a href={getPathForPage('loan')} onClick={(e) => { e.preventDefault(); handleNav('loan'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Loans</a></li>
+                <li><a href={getPathForPage('borrow')} onClick={(e) => { e.preventDefault(); handleNav('borrow'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Borrow</a></li>
+                <li><a href={getPathForPage('tools')} onClick={(e) => { e.preventDefault(); handleNav('tools'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Financial Tools</a></li>
               </ul>
             </div>
 
@@ -65,14 +71,14 @@ export default function Footer({ onNavigatePage }) {
                 FOR INVESTORS
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => handleNav('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
-                <li><button onClick={() => handleNav('insights')} className="hover:text-white transition-colors cursor-pointer text-left">Market Insights</button></li>
-                <li><button onClick={() => handleNav('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
-                <li><button onClick={() => handleNav('personal-finance')} className="hover:text-white transition-colors cursor-pointer text-left">Personal Finance</button></li>
-                <li><button onClick={() => handleNav('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
-                <li><button onClick={() => handleNav('blog')} className="hover:text-white transition-colors cursor-pointer text-left">Blog & Articles</button></li>
-                <li><a href="#expert" className="hover:text-white transition-colors">Talk To an Expert</a></li>
-                <li><a href="#faqs" className="hover:text-white transition-colors">FAQs</a></li>
+                <li><a href={getPathForPage('investors')} onClick={(e) => { e.preventDefault(); handleNav('investors'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Investor Overview</a></li>
+                <li><a href={getPathForPage('insights')} onClick={(e) => { e.preventDefault(); handleNav('insights'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Market Insights</a></li>
+                <li><a href={getPathForPage('tax')} onClick={(e) => { e.preventDefault(); handleNav('tax'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Tax Solutions</a></li>
+                <li><a href={getPathForPage('personal-finance')} onClick={(e) => { e.preventDefault(); handleNav('personal-finance'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Personal Finance</a></li>
+                <li><a href={getPathForPage('knowledge')} onClick={(e) => { e.preventDefault(); handleNav('knowledge'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Knowledge Centre</a></li>
+                <li><a href={getPathForPage('blog')} onClick={(e) => { e.preventDefault(); handleNav('blog'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Blog &amp; Articles</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Talk To an Expert</a></li>
+                <li><a href={getPathForPage('home')} onClick={(e) => { e.preventDefault(); handleNav('home'); setTimeout(() => { const el = document.getElementById('faqs'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 150); }} className="hover:text-white transition-colors cursor-pointer text-left block">FAQs</a></li>
               </ul>
             </div>
 
@@ -82,10 +88,10 @@ export default function Footer({ onNavigatePage }) {
                 FOR PARTNERS
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Overview</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Become a Partner</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Login</button></li>
-                <li><button onClick={() => onNavigatePage && onNavigatePage('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Brochure</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Overview</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Become a Partner</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Login</button></li>
+                <li><button onClick={() => handleNav('partner')} className="hover:text-white transition-colors cursor-pointer text-left">Partner Brochure</button></li>
               </ul>
             </div>
 
@@ -95,11 +101,11 @@ export default function Footer({ onNavigatePage }) {
                 COMPANY
               </h4>
               <ul style={{ fontFamily: "'Inter', sans-serif" }} className="space-y-2 text-[14px] font-medium tracking-[-0.5px] text-white/90">
-                <li><button onClick={() => handleNav('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
-                <li><button onClick={() => handleNav('careers')} className="hover:text-white transition-colors cursor-pointer text-left">Careers</button></li>
-                <li><a href="#why-prosperi5" className="hover:text-white transition-colors">Why PROSPERi5</a></li>
-                <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
-                <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">About Us</a></li>
+                <li><a href={getPathForPage('careers')} onClick={(e) => { e.preventDefault(); handleNav('careers'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Careers</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Why PROSPERi5</a></li>
+                <li><a href={getPathForPage('home')} onClick={(e) => { e.preventDefault(); handleNav('home'); setTimeout(() => { const el = document.getElementById('testimonials'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 150); }} className="hover:text-white transition-colors cursor-pointer text-left block">Testimonials</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Contact Us</a></li>
               </ul>
             </div>
 
@@ -122,15 +128,15 @@ export default function Footer({ onNavigatePage }) {
               Talk to a financial expert or partner specialist.
             </p>
 
-            <a
-              href="#contact"
+            <button
+              onClick={() => handleNav('about')}
               className="w-[160px] h-[44px] rounded-full bg-[#7C1FA8] hover:bg-[#9B26D4] text-white font-medium text-[14px] tracking-[-0.5px] flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer mb-6"
             >
               <span>Contact Us</span>
               <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
               </svg>
-            </a>
+            </button>
 
             {/* Contact info & Social */}
             <div className="flex flex-col items-start text-left w-full pl-2 mb-6">
@@ -143,17 +149,17 @@ export default function Footer({ onNavigatePage }) {
 
               <span className="text-[#F5A623] text-[11px] font-extrabold tracking-wider uppercase mb-2.5 block">FOLLOW</span>
               <div className="flex items-center gap-3">
-                <a href="#facebook" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
                   <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                 </a>
-                <a href="#youtube" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
                   <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </a>
-                <a href="#x" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="w-[44px] h-[44px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/20 transition-all">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
@@ -173,9 +179,9 @@ export default function Footer({ onNavigatePage }) {
               <span>·</span>
               <button onClick={() => handleNav('terms-and-conditions')} className="hover:underline cursor-pointer">Terms &amp; Conditions</button>
               <span>·</span>
-              <a href="#disclaimer" className="hover:underline">Disclaimer</a>
+              <button onClick={() => handleNav('terms-and-conditions')} className="hover:underline cursor-pointer">Disclaimer</button>
               <span>·</span>
-              <a href="#grievance" className="hover:underline">Grievance Redressal</a>
+              <button onClick={() => handleNav('about')} className="hover:underline cursor-pointer">Grievance Redressal</button>
             </div>
 
             <p className="text-[10px] text-white/50 leading-tight mb-4 text-left max-w-[340px]">
@@ -233,14 +239,14 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">SOLUTIONS</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => handleNav('grow')} className="hover:text-white transition-colors cursor-pointer text-left">Grow</button></li>
-                <li><button onClick={() => handleNav('protect')} className="hover:text-white transition-colors cursor-pointer text-left">Protect</button></li>
-                <li><button onClick={() => handleNav('investment')} className="hover:text-white transition-colors cursor-pointer text-left">Investments</button></li>
-                <li><button onClick={() => handleNav('insurance')} className="hover:text-white transition-colors cursor-pointer text-left">Insurance</button></li>
-                <li><button onClick={() => handleNav('financing')} className="hover:text-white transition-colors cursor-pointer text-left">Financing</button></li>
-                <li><button onClick={() => handleNav('loan')} className="hover:text-white transition-colors cursor-pointer text-left">Loans</button></li>
-                <li><button onClick={() => handleNav('borrow')} className="hover:text-white transition-colors cursor-pointer text-left">Borrow</button></li>
-                <li><button onClick={() => handleNav('tools')} className="hover:text-white transition-colors cursor-pointer text-left">Financial Tools</button></li>
+                <li><a href={getPathForPage('grow')} onClick={(e) => { e.preventDefault(); handleNav('grow'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Grow</a></li>
+                <li><a href={getPathForPage('protect')} onClick={(e) => { e.preventDefault(); handleNav('protect'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Protect</a></li>
+                <li><a href={getPathForPage('investment')} onClick={(e) => { e.preventDefault(); handleNav('investment'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Investments</a></li>
+                <li><a href={getPathForPage('insurance')} onClick={(e) => { e.preventDefault(); handleNav('insurance'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Insurance</a></li>
+                <li><a href={getPathForPage('financing')} onClick={(e) => { e.preventDefault(); handleNav('financing'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Financing</a></li>
+                <li><a href={getPathForPage('loan')} onClick={(e) => { e.preventDefault(); handleNav('loan'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Loans</a></li>
+                <li><a href={getPathForPage('borrow')} onClick={(e) => { e.preventDefault(); handleNav('borrow'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Borrow</a></li>
+                <li><a href={getPathForPage('tools')} onClick={(e) => { e.preventDefault(); handleNav('tools'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Financial Tools</a></li>
               </ul>
             </div>
 
@@ -248,14 +254,14 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">FOR INVESTORS</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => handleNav('investors')} className="hover:text-white transition-colors cursor-pointer text-left">Investor Overview</button></li>
-                <li><button onClick={() => handleNav('insights')} className="hover:text-white transition-colors cursor-pointer text-left">Market Insights</button></li>
-                <li><button onClick={() => handleNav('tax')} className="hover:text-white transition-colors cursor-pointer text-left">Tax Solutions</button></li>
-                <li><button onClick={() => handleNav('personal-finance')} className="hover:text-white transition-colors cursor-pointer text-left">Personal Finance</button></li>
-                <li><button onClick={() => handleNav('knowledge')} className="hover:text-white transition-colors cursor-pointer text-left">Knowledge Centre</button></li>
-                <li><button onClick={() => handleNav('blog')} className="hover:text-white transition-colors cursor-pointer text-left">Blog & Articles</button></li>
-                <li><a href="#expert" className="hover:text-white transition-colors">Talk To an Expert</a></li>
-                <li><a href="#faqs" className="hover:text-white transition-colors">FAQs</a></li>
+                <li><a href={getPathForPage('investors')} onClick={(e) => { e.preventDefault(); handleNav('investors'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Investor Overview</a></li>
+                <li><a href={getPathForPage('insights')} onClick={(e) => { e.preventDefault(); handleNav('insights'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Market Insights</a></li>
+                <li><a href={getPathForPage('tax')} onClick={(e) => { e.preventDefault(); handleNav('tax'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Tax Solutions</a></li>
+                <li><a href={getPathForPage('personal-finance')} onClick={(e) => { e.preventDefault(); handleNav('personal-finance'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Personal Finance</a></li>
+                <li><a href={getPathForPage('knowledge')} onClick={(e) => { e.preventDefault(); handleNav('knowledge'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Knowledge Centre</a></li>
+                <li><a href={getPathForPage('blog')} onClick={(e) => { e.preventDefault(); handleNav('blog'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Blog &amp; Articles</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Talk To an Expert</a></li>
+                <li><a href={getPathForPage('home')} onClick={(e) => { e.preventDefault(); handleNav('home'); setTimeout(() => { const el = document.getElementById('faqs'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 150); }} className="hover:text-white transition-colors cursor-pointer text-left block">FAQs</a></li>
               </ul>
             </div>
 
@@ -274,11 +280,11 @@ export default function Footer({ onNavigatePage }) {
             <div>
               <h4 className="text-[#F5A623] text-xs font-extrabold tracking-wider uppercase mb-2">COMPANY</h4>
               <ul className="space-y-1 text-xs sm:text-[13px] text-white/90 font-semibold">
-                <li><button onClick={() => handleNav('about')} className="hover:text-white transition-colors cursor-pointer text-left">About Us</button></li>
-                <li><button onClick={() => handleNav('careers')} className="hover:text-white transition-colors cursor-pointer text-left">Careers</button></li>
-                <li><a href="#why-prosperi5" className="hover:text-white transition-colors">Why PROSPERi5</a></li>
-                <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
-                <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">About Us</a></li>
+                <li><a href={getPathForPage('careers')} onClick={(e) => { e.preventDefault(); handleNav('careers'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Careers</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Why PROSPERi5</a></li>
+                <li><a href={getPathForPage('home')} onClick={(e) => { e.preventDefault(); handleNav('home'); setTimeout(() => { const el = document.getElementById('testimonials'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 150); }} className="hover:text-white transition-colors cursor-pointer text-left block">Testimonials</a></li>
+                <li><a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-white transition-colors cursor-pointer text-left block">Contact Us</a></li>
               </ul>
             </div>
 
@@ -298,15 +304,15 @@ export default function Footer({ onNavigatePage }) {
               <h4 className="text-xs sm:text-[14px] font-bold text-white mb-2">
                 Talk to a financial expert or partner specialist.
               </h4>
-              <a
-                href="#contact"
-                className="bg-[#7C1FAB] hover:bg-[#9B26D4] text-white font-bold text-xs px-5 py-2 rounded-full shadow-md inline-flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
+              <button
+                onClick={() => handleNav('about')}
+                className="bg-[#7C1FAB] hover:bg-[#9B26D4] text-white font-bold text-xs px-5 py-2 rounded-full shadow-md inline-flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02] active:scale-95"
               >
                 <span>Contact Us</span>
                 <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
                 </svg>
-              </a>
+              </button>
             </div>
 
             {/* Center: Contact info */}
@@ -321,17 +327,17 @@ export default function Footer({ onNavigatePage }) {
             <div className="md:col-span-3 flex flex-col md:items-start lg:items-end">
               <span className="text-[#F5A623] text-[11px] font-extrabold tracking-wider uppercase mb-1.5 block">FOLLOW</span>
               <div className="flex items-center gap-2.5">
-                <a href="#facebook" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                 </a>
-                <a href="#youtube" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
                   <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </a>
-                <a href="#x" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all cursor-pointer shadow-sm">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
@@ -344,21 +350,33 @@ export default function Footer({ onNavigatePage }) {
           {/* SERVICES PILLARS BOX */}
           <div className="border border-white/10 rounded-[16px] py-3.5 px-5 bg-white/[0.03] mb-4 sm:mb-5">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-center">
-              <div className="flex items-center gap-2.5 md:border-r md:border-white/10 md:pr-3">
+              <div 
+                onClick={() => handleNav('investment')}
+                className="flex items-center gap-2.5 md:border-r md:border-white/10 md:pr-3 cursor-pointer group hover:opacity-80 transition-opacity"
+              >
                 <span className="text-[#E84C88] font-extrabold text-xs sm:text-[13.5px]">01</span>
-                <span className="text-xs sm:text-[13.5px] font-bold text-white">Investments</span>
+                <span className="text-xs sm:text-[13.5px] font-bold text-white group-hover:text-[#F5A623] transition-colors">Investments</span>
               </div>
-              <div className="flex items-center gap-2.5 md:border-r md:border-white/10 md:px-3">
+              <div 
+                onClick={() => handleNav('insurance')}
+                className="flex items-center gap-2.5 md:border-r md:border-white/10 md:px-3 cursor-pointer group hover:opacity-80 transition-opacity"
+              >
                 <span className="text-[#9B26D4] font-extrabold text-xs sm:text-[13.5px]">02</span>
-                <span className="text-xs sm:text-[13.5px] font-bold text-white">Insurance</span>
+                <span className="text-xs sm:text-[13.5px] font-bold text-white group-hover:text-[#F5A623] transition-colors">Insurance</span>
               </div>
-              <div className="flex items-center gap-2.5 md:border-r md:border-white/10 md:px-3">
+              <div 
+                onClick={() => handleNav('financing')}
+                className="flex items-center gap-2.5 md:border-r md:border-white/10 md:px-3 cursor-pointer group hover:opacity-80 transition-opacity"
+              >
                 <span className="text-[#E84C88] font-extrabold text-xs sm:text-[13.5px]">03</span>
-                <span className="text-xs sm:text-[13.5px] font-bold text-white">Financing</span>
+                <span className="text-xs sm:text-[13.5px] font-bold text-white group-hover:text-[#F5A623] transition-colors">Financing</span>
               </div>
-              <div className="flex items-center gap-2.5 md:pl-3">
+              <div 
+                onClick={() => handleNav('partner')}
+                className="flex items-center gap-2.5 md:pl-3 cursor-pointer group hover:opacity-80 transition-opacity"
+              >
                 <span className="text-white font-extrabold text-xs sm:text-[13.5px]">04</span>
-                <span className="text-xs sm:text-[13.5px] font-bold text-white">Partner Platform</span>
+                <span className="text-xs sm:text-[13.5px] font-bold text-white group-hover:text-[#F5A623] transition-colors">Partner Platform</span>
               </div>
             </div>
           </div>
@@ -366,18 +384,18 @@ export default function Footer({ onNavigatePage }) {
           {/* BOTTOM COPYRIGHT & DISCLAIMER & SCROLL TO TOP */}
           <div className="pt-4 mt-3 border-t border-white/10 flex flex-col gap-2 text-xs sm:text-[12.5px] text-white/90 font-semibold">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-x-4 gap-y-2 text-center sm:text-left">
-              
+
               <div className="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
                 <span className="font-semibold">© 2026 PROSPERi5. All rights reserved.</span>
                 <span className="text-white/30 hidden sm:inline">•</span>
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 sm:gap-x-3 gap-y-1 text-white/90 font-semibold">
-                  <button onClick={() => handleNav('privacy-policy')} className="hover:text-[#F5A623] transition-colors cursor-pointer">Privacy Policy</button>
+                  <a href={getPathForPage('privacy-policy')} onClick={(e) => { e.preventDefault(); handleNav('privacy-policy'); }} className="hover:text-[#F5A623] transition-colors cursor-pointer">Privacy Policy</a>
                   <span className="text-white/40">·</span>
-                  <button onClick={() => handleNav('terms-and-conditions')} className="hover:text-[#F5A623] transition-colors cursor-pointer">Terms &amp; Conditions</button>
+                  <a href={getPathForPage('terms-and-conditions')} onClick={(e) => { e.preventDefault(); handleNav('terms-and-conditions'); }} className="hover:text-[#F5A623] transition-colors cursor-pointer">Terms &amp; Conditions</a>
                   <span className="text-white/40">·</span>
-                  <a href="#disclaimer" className="hover:text-[#F5A623] transition-colors">Disclaimer</a>
+                  <a href={getPathForPage('terms-and-conditions')} onClick={(e) => { e.preventDefault(); handleNav('terms-and-conditions'); }} className="hover:text-[#F5A623] transition-colors cursor-pointer">Disclaimer</a>
                   <span className="text-white/40">·</span>
-                  <a href="#grievance" className="hover:text-[#F5A623] transition-colors">Grievance Redressal</a>
+                  <a href={getPathForPage('about')} onClick={(e) => { e.preventDefault(); handleNav('about'); }} className="hover:text-[#F5A623] transition-colors cursor-pointer">Grievance Redressal</a>
                 </div>
               </div>
 

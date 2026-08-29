@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Footer from './Footer';
+import { sendWhatsAppEnquiry } from './utils/whatsapp';
+import PhoneInput from './components/PhoneInput';
 
 export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -8,6 +10,23 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
   const [tenureYears, setTenureYears] = useState(10);
   const [selectedOptionModal, setSelectedOptionModal] = useState(null);
   const [modalSubmitted, setModalSubmitted] = useState(false);
+  const [modalFormData, setModalFormData] = useState({ name: '', phone: '', countryCode: '+91' });
+
+  const handleModalFormSubmit = (e) => {
+    e.preventDefault();
+    sendWhatsAppEnquiry({
+      formName: `Financing Application (${selectedOptionModal ? selectedOptionModal.title : 'Financing Request'})`,
+      name: modalFormData.name,
+      phone: `${modalFormData.countryCode} ${modalFormData.phone}`,
+      service: selectedOptionModal ? selectedOptionModal.title : 'Financing Solutions',
+      extra: selectedOptionModal ? {
+        'Required Amount': `₹ ${loanAmount.toLocaleString('en-IN')}`,
+        'Tenure': `${tenureYears} Years`,
+        'Est. Monthly EMI': selectedOptionModal.emi ? `₹ ${selectedOptionModal.emi.toLocaleString('en-IN')}` : ''
+      } : {}
+    });
+    setModalSubmitted(true);
+  };
 
   const calculateEMI = () => {
     const P = loanAmount;
@@ -122,85 +141,13 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFBFD] font-sans text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-hidden">
-      
-      {/* 1. TOP CONTACT UTILITY BAR */}
-      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2 items-center text-white/70">
-              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                </svg>
-              </div>
-              <span className="font-medium text-[#EBE8EF]/80 text-xs">Financing & Capital · Business & Loan Solutions</span>
-            </div>
-            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
-            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
-              Secure · Transparent · Reliable
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => setSelectedModal(true)}
-              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-            >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
-              </svg>
-              Talk to an Advisor
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FLOATING NAVBAR */}
-      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
-            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#1E1B2E]">
-            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Home</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Insurance</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="text-[#7C1FA8] font-bold cursor-pointer">Financing</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Tools</button>
-            <button onClick={() => onNavigatePage && onNavigatePage('blog')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Blog</button>
-          </div>
-
-          {/* Desktop CTA & Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSelectedModal(true)}
-              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer"
-            >
-              Start Investing
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
-            >
-              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
+    <div className="w-full bg-white font-sans text-body-text antialiased selection:bg-purple-100 selection:text-primary-purple overflow-x-hidden">
 
       {/* 2. HERO SECTION (COMPACT ASPECT RATIO BANNER & UNCLIPPED) */}
       <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
         <div className="w-full relative">
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 11_38_20 AM.png" 
+          <img
+            src="/ChatGPT Image Aug 26, 2026, 11_38_20 AM.png"
             alt="Smart Finance. Stronger Future."
             className="w-full h-auto block -mt-3 sm:-mt-5 lg:-mt-7"
           />
@@ -298,7 +245,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
         {/* 4. WHY CHOOSE PROSPERIS FINANCE? SECTION (MATCHING 85446c49-3148-4f5d-892b-7863abe5b44d.png) */}
         <section className="bg-gradient-to-r from-[#4E0C72] via-[#5E1683] to-[#6E1C98] rounded-[22px] py-4.5 px-4 sm:px-6 lg:py-5 lg:px-7 text-white shadow-xl relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-            
+
             {/* Left Header Box (Col span 4) */}
             <div className="lg:col-span-4 space-y-1 text-left lg:border-r lg:border-white/20 lg:pr-6">
               <span className="text-purple-200/90 text-[10px] font-extrabold tracking-wider uppercase block">
@@ -312,7 +259,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
 
             {/* Right 5 Horizontal Feature Columns (Col span 8) */}
             <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 divide-y-0 sm:divide-x sm:divide-white/20 text-center sm:text-left">
-              
+
               {/* Feature 1: Best Interest Rates */}
               <div className="sm:pl-3 space-y-1 flex flex-col items-center sm:items-start">
                 <div className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-sm text-white flex items-center justify-center font-extrabold text-sm shadow-inner shrink-0 mb-1">
@@ -386,7 +333,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
         {/* 5. COMPACT INTERACTIVE EMI CALCULATOR SECTION (MATCHING CHATGPT IMAGE) */}
         <section className="bg-[#F7F2FB] border border-[#E8DEF3] rounded-[26px] p-5 sm:p-6 lg:p-7 shadow-xs relative overflow-hidden transform-gpu will-change-transform">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
+
             {/* Left Header Box & 3D Calculator Visual (Col span 4) */}
             <div className="lg:col-span-4 flex items-center justify-between gap-4 border-b lg:border-b-0 lg:border-r border-purple-200/60 pb-4 lg:pb-0 lg:pr-6">
               <div className="space-y-1 text-left">
@@ -400,9 +347,9 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
 
               {/* 3D Gold Coins Graphic */}
               <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 flex items-center justify-center pointer-events-none">
-                <img 
-                  src="/coins.png" 
-                  alt="Gold Coins" 
+                <img
+                  src="/coins.png"
+                  alt="Gold Coins"
                   className="max-w-full max-h-full object-contain drop-shadow-sm"
                 />
               </div>
@@ -410,14 +357,14 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
 
             {/* Middle 3 Interactive Sliders (Col span 6) */}
             <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-5 divide-y sm:divide-y-0 sm:divide-x divide-purple-200/50">
-              
+
               {/* Slider 1: Loan Amount */}
               <div className="space-y-2 text-left pt-2 sm:pt-0 sm:pl-3">
                 <span className="text-xs font-extrabold text-[#5E1683] block">Loan Amount</span>
                 <div className="text-base sm:text-lg font-extrabold text-[#1E1B2E] tabular-nums">
                   ₹ {loanAmount.toLocaleString('en-IN')}
                 </div>
-                <input 
+                <input
                   type="range"
                   min="100000"
                   max="50000000"
@@ -434,7 +381,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
                 <div className="text-base sm:text-lg font-extrabold text-[#1E1B2E] tabular-nums">
                   {interestRate}%
                 </div>
-                <input 
+                <input
                   type="range"
                   min="6"
                   max="18"
@@ -451,7 +398,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
                 <div className="text-base sm:text-lg font-extrabold text-[#1E1B2E] tabular-nums">
                   {tenureYears} {tenureYears === 1 ? 'Year' : 'Years'}
                 </div>
-                <input 
+                <input
                   type="range"
                   min="1"
                   max="30"
@@ -473,17 +420,17 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
                 </div>
               </div>
 
-              <button 
-                onClick={() => setSelectedOptionModal({ 
-                  title: 'Loan EMI Breakdown', 
+              <button
+                onClick={() => setSelectedOptionModal({
+                  title: 'Loan EMI Breakdown',
                   subtitle: 'Detailed breakdown of your calculated monthly repayments and interest.',
-                  isEMIBreakdown: true, 
-                  loanAmount, 
-                  interestRate, 
-                  tenureYears, 
-                  emi, 
-                  totalInterest, 
-                  totalPayment 
+                  isEMIBreakdown: true,
+                  loanAmount,
+                  interestRate,
+                  tenureYears,
+                  emi,
+                  totalInterest,
+                  totalPayment
                 })}
                 className="w-full bg-[#5E1683] hover:bg-[#7C1FA8] text-white font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
@@ -499,7 +446,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 6. HOW IT WORKS - SIMPLE STEPS TO GET YOUR LOAN (100% FULL BLEED SCREEN WIDTH) */}
       <section className="w-full bg-gradient-to-r from-[#4E0C72] via-[#5E1683] to-[#6E1C98] py-9 sm:py-12 px-4 sm:px-6 lg:px-8 text-white shadow-xl text-center overflow-hidden my-6 transform-gpu">
-        
+
         <style>{`
           @keyframes stepFadeIn {
             0% {
@@ -542,7 +489,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-3 relative z-10">
-              
+
               {/* Step 1: Choose Loan */}
               <div className="flex flex-col items-center text-center group animate-step-1">
                 <div className="w-15 h-15 rounded-full bg-white text-[#5E1683] flex items-center justify-center font-extrabold text-lg shadow-xl group-hover:scale-110 transition-transform">
@@ -641,7 +588,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
             <h2 className="text-xl font-extrabold">Need Capital for Your Next Big Step?</h2>
             <p className="text-xs text-white/80 mt-1">Get custom financing offers curated from 30+ top banks & NBFCs.</p>
           </div>
-          <button 
+          <button
             onClick={() => setSelectedModal(true)}
             className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-extrabold px-6 py-3 rounded-full text-xs cursor-pointer shadow-md transition-all active:scale-95"
           >
@@ -653,13 +600,12 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
 
 
 
-      {/* HOMEPAGE FLOATING FOOTER */}
-      <Footer onNavigatePage={onNavigatePage} />
+
 
       {/* PREMIUM PROSPERI5 MODAL DIALOG POPUP */}
       {selectedOptionModal && (
         <div className="fixed inset-0 z-[9999] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
-          <div 
+          <div
             className="bg-white bg-cover bg-center rounded-[28px] max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-purple-100/80 animate-in fade-in zoom-in-95 duration-200 text-left overflow-hidden"
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
           >
@@ -671,7 +617,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
               <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#7C1FAB] via-[#E84C88] to-[#F5A623]"></div>
 
               {/* Close Button */}
-              <button 
+              <button
                 onClick={() => {
                   setSelectedOptionModal(null);
                   setModalSubmitted(false);
@@ -725,46 +671,34 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
                   )}
 
                   {/* Lead Form */}
-                  <form 
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      setModalSubmitted(true);
-                    }}
+                  <form
+                    onSubmit={handleModalFormSubmit}
                     className="space-y-3.5 pt-1"
                   >
                     <div>
                       <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Your Full Name</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="e.g. Rahul Sharma"
+                      <input
+                        type="text"
+                        required
+                        value={modalFormData.name}
+                        onChange={(e) => setModalFormData({ ...modalFormData, name: e.target.value })}
+                        placeholder="Enter your name"
                         className="w-full bg-white/95 border border-[#EBE8EF] focus:border-[#7C1FAB] rounded-xl p-2.5 text-xs font-bold text-[#1E1B2E] outline-none transition-all shadow-2xs"
                       />
                     </div>
 
                     <div>
                       <label className="text-xs font-extrabold text-[#1E1B2E] block mb-1">Phone Number</label>
-                      <div className="flex items-center bg-white/95 border border-[#EBE8EF] focus-within:border-[#7C1FAB] rounded-xl overflow-hidden shadow-2xs">
-                        <select className="bg-transparent pl-2.5 pr-1 py-2.5 text-xs font-bold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+1">🇨🇦 +1</option>
-                        </select>
-                        <input 
-                          type="tel" 
-                          required 
-                          placeholder="e.g. 98765 43210"
-                          className="w-full bg-transparent p-2.5 text-xs font-bold text-[#1E1B2E] outline-none"
-                        />
-                      </div>
+                      <PhoneInput
+                        value={modalFormData.phone}
+                        countryCode={modalFormData.countryCode || '+91'}
+                        onCountryCodeChange={(code) => setModalFormData((f) => ({ ...f, countryCode: code }))}
+                        onChange={(val) => setModalFormData((f) => ({ ...f, phone: val }))}
+                        placeholder="Enter phone number"
+                      />
                     </div>
 
-                    <button 
+                    <button
                       type="submit"
                       className="w-full bg-[#7C1FAB] hover:bg-[#63148B] text-white font-extrabold py-3 px-6 rounded-full text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
                     >

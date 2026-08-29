@@ -1,0 +1,436 @@
+{
+  "info": {
+    "name": "Prosperi5 Live API Collection (Hostinger)",
+    "_postman_id": "prosperi5-api-collection-hostinger",
+    "description": "Complete API collection for Prosperi5 backend running on Hostinger (https://lightsteelblue-wombat-848843.hostingersite.com)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://lightsteelblue-wombat-848843.hostingersite.com/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System Health",
+      "item": [
+        {
+          "name": "Check Health & DB Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@prosperi5.com\",\n  \"password\": \"AdminSecretPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Admin Info (/auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Careers & Applications",
+      "item": [
+        {
+          "name": "List Public Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/jobs?department=&location=&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs"],
+              "query": [
+                { "key": "department", "value": "" },
+                { "key": "location", "value": "" },
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job By ID or Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/jobs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "1"]
+            }
+          }
+        },
+        {
+          "name": "Submit Job Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": 1,\n  \"fullName\": \"Rahul Sharma\",\n  \"email\": \"rahul.sharma@example.com\",\n  \"phone\": \"+91 9876543210\",\n  \"message\": \"I am an experienced Wealth Advisor applying for this role.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/applications",
+              "host": ["{{baseUrl}}"],
+              "path": ["applications"]
+            }
+          }
+        },
+        {
+          "name": "Submit General Contact / Enquiry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formName\": \"Talk to Expert\",\n  \"name\": \"Anita Verma\",\n  \"email\": \"anita@example.com\",\n  \"phone\": \"+91 9812345678\",\n  \"service\": \"Investments\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enquiries",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiries"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Blog",
+      "item": [
+        {
+          "name": "List Public Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts?category=&search=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"],
+              "query": [
+                { "key": "category", "value": "" },
+                { "key": "search", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Post By ID or Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "1"]
+            }
+          }
+        },
+        {
+          "name": "Serve Stored Media Image",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/media/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["media", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Job Management",
+      "item": [
+        {
+          "name": "List Admin Jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jobs?status=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "jobs"],
+              "query": [
+                { "key": "status", "value": "all" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Job Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jobs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "jobs", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Job Opening",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Financial Analyst\",\n  \"department\": \"Research & Analysis\",\n  \"location\": \"Mumbai / Hybrid\",\n  \"type\": \"Full-time\",\n  \"experience\": \"3-5 Years\",\n  \"description\": \"Analyze equity, mutual fund, and fixed income markets.\",\n  \"responsibilities\": [\n    \"Prepare quarterly market insights reports\",\n    \"Evaluate wealth management products\"\n  ],\n  \"requirements\": [\n    \"CFA / MBA Finance\",\n    \"Minimum 3 years experience in financial research\"\n  ],\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Update Job Opening",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Financial Analyst (Updated)\",\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/jobs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "jobs", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Job Opening",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jobs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "jobs", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Blog Management",
+      "item": [
+        {
+          "name": "List Admin Posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/posts?status=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "posts"],
+              "query": [
+                { "key": "status", "value": "all" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Post Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/posts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "posts", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Blog Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Navigating Market Volatility in 2026\",\n  \"slug\": \"navigating-market-volatility-2026\",\n  \"category\": \"Investments\",\n  \"excerpt\": \"Key asset allocation strategies to protect and grow capital.\",\n  \"content\": \"<p>Market volatility requires a disciplined asset allocation approach...</p>\",\n  \"readTime\": \"4 min read\",\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "posts"]
+            }
+          }
+        },
+        {
+          "name": "Update Blog Post",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Navigating Market Volatility in 2026 (Updated)\",\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/posts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "posts", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Blog Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/posts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "posts", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Media Uploads",
+      "item": [
+        {
+          "name": "Upload Media File (Form Data)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "altText",
+                  "value": "Blog Banner Image",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/media",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "media"]
+            }
+          }
+        },
+        {
+          "name": "Upload Media From URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f\",\n  \"altText\": \"Financial Growth\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/media/from-url",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "media", "from-url"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
