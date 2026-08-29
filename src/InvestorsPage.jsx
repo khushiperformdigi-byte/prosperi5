@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './Footer';
-import PhoneInput from './components/PhoneInput';
 
 export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,38 +17,197 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="w-full bg-white font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
+    <div className="min-h-screen bg-white font-sans text-[#1E1B2E] antialiased selection:bg-purple-100 selection:text-[#7C1FA8] overflow-x-hidden">
+      
+      {/* 1. TOP CONTACT UTILITY BAR */}
+      <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-2 items-center text-white/70">
+              <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
+                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+                </svg>
+              </div>
+              <span className="font-medium text-[#EBE8EF]/80 text-xs">For Investors · Wealth Building & Guidance</span>
+            </div>
+            <span className="text-[#EBE8EF]/20 hidden sm:inline">|</span>
+            <span className="border border-white/10 text-[#F5A623] bg-white/5 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider hidden sm:inline-block">
+              Secure · Transparent · Reliable
+            </span>
+          </div>
 
-      {/* 3. HERO SECTION – Full-width banner image with interactive CTA overlay */}
-      <section className="w-full overflow-hidden relative">
-        <img
-          src="/ChatGPT Image Aug 25, 2026, 03_39_42 PM.png"
-          alt="Investor Page - Invest in possibilities. Build lasting wealth."
-          className="w-full h-auto block"
-        />
-        {/* Interactive Overlay Click Zones over Hero CTAs */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Start Investing CTA overlay area */}
-          <button
-            onClick={() => setSelectedModal(true)}
-            aria-label="Start Investing"
-            className="absolute left-[7%] sm:left-[8%] top-[44%] sm:top-[47%] w-[18%] sm:w-[15%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
-          />
-          {/* Explore Opportunities CTA overlay area */}
-          <button
-            onClick={() => {
-              const el = document.getElementById('opportunities');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-              } else if (onNavigatePage) {
-                onNavigatePage('investment');
-              } else {
-                setSelectedModal(true);
-              }
-            }}
-            aria-label="Explore Opportunities"
-            className="absolute left-[26%] sm:left-[24%] top-[44%] sm:top-[47%] w-[24%] sm:w-[20%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
-          />
+          <div className="flex items-center gap-4 sm:gap-6">
+            <button
+              onClick={() => setSelectedModal(true)}
+              className="bg-[#F5A623] hover:bg-[#D49300] text-[#1E1B2E] font-bold px-4 py-1.5 rounded-full text-[10px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2.25 6.622c0-1.077.873-1.95 1.95-1.95h2.25c.877 0 1.63.585 1.85 1.432l.711 2.766c.2.783-.062 1.615-.67 2.115l-1.56 1.287a15.776 15.776 0 0 0 6.6 6.6l1.287-1.56c.5-.608 1.332-.87 2.115-.67l2.766.711c.847.22 1.432.973 1.432 1.85v2.25c0 1.077-.873 1.95-1.95 1.95h-2.25a16.5 16.5 0 0 1-16.5-16.5v-2.25Z" />
+              </svg>
+              Talk to an Advisor
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. FLOATING NAVBAR */}
+      <nav className={`sticky top-0 lg:top-2 max-w-7xl mx-auto px-0 lg:px-4 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
+        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE3F5] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.06)] h-[72px] lg:h-[56px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
+          {/* Brand Logo */}
+          <div className="flex items-center gap-6 cursor-pointer" onClick={onNavigateHome}>
+            <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] lg:w-[140px] h-[40px] lg:h-[44px] object-contain" alt="PROSPERi5 Logo" />
+          </div>
+
+          {/* Desktop Nav Items */}
+          <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#1E1B2E]">
+            <button onClick={onNavigateHome} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Home</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('about')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">About Us</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('investment')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Investment</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('insurance')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Insurance</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('financing')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Financing</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Tools</button>
+            <button onClick={() => onNavigatePage && onNavigatePage('blog')} className="hover:text-[#7C1FA8] transition-colors cursor-pointer">Blog</button>
+          </div>
+
+          {/* Desktop CTA & Mobile Toggle */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSelectedModal(true)}
+              className="hidden lg:flex bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold px-5 py-2 rounded-full text-xs shadow-md transition-all items-center gap-1.5 cursor-pointer"
+            >
+              Start Investing
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden w-10 h-10 rounded-full bg-[#FAF5FD] border border-purple-100 text-[#7C1FA8] flex items-center justify-center cursor-pointer"
+            >
+              <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* MOBILE MENU DRAWER */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-[#FAF6FC] z-[100] p-4 overflow-y-auto">
+          <div className="max-w-[360px] mx-auto flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-2">
+              <img src="/1a2e5a0b7dae37d97f8bf79f055a6ca0cf33d8b9.png" className="w-[128px] h-[40px] object-contain" alt="PROSPERi5 Logo" />
+              <button onClick={() => setMobileMenuOpen(false)} className="w-9 h-9 rounded-full bg-[#F5EEFA] text-[#5E1083] flex items-center justify-center cursor-pointer">
+                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {[
+              { num: '01', label: 'Home', action: () => { setMobileMenuOpen(false); onNavigateHome && onNavigateHome(); } },
+              { num: '02', label: 'About Us', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('about'); } },
+              { num: '03', label: 'Blog', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('blog'); } },
+              { num: '04', label: 'Tools', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('tools'); } },
+              { num: '05', label: 'Investors', action: () => setMobileMenuOpen(false), active: true },
+              { num: '06', label: 'Investment', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('investment'); } },
+              { num: '07', label: 'Insurance', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('insurance'); } },
+              { num: '08', label: 'Financing', action: () => { setMobileMenuOpen(false); onNavigatePage && onNavigatePage('financing'); } },
+            ].map((item) => (
+              <button key={item.num} onClick={item.action}
+                className={`w-full h-[58px] rounded-[16px] border px-5 flex items-center gap-4 shadow-sm transition-all duration-200 cursor-pointer text-left ${item.active ? 'bg-[#7C1FA8] border-[#7C1FA8] text-white' : 'bg-white border-[#EBE3F5] text-[#1E1B2E] hover:bg-[#7C1FA8] hover:text-white hover:border-[#7C1FA8]'}`}>
+                <span className={`font-extrabold text-sm ${item.active ? 'text-[#F5A623]' : 'text-[#7C1FAB]'}`}>{item.num}</span>
+                <span className="font-bold text-sm">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3. HERO SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Category Badge, Heading, Subtitle, 2 CTAs, and Social Proof */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>INVESTOR</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[46px] sm:leading-[52px] lg:text-[52px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[560px]">
+              Invest in possibilities. <br /><span className="text-[#7C1FA8]">Build lasting wealth.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[520px]">
+              Join thousands of investors who trust PROSPERi5 to grow their wealth with expert-curated opportunities across multiple asset classes.
+            </p>
+
+            {/* 2 CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 mb-7 w-full sm:w-auto">
+              <button
+                onClick={() => setSelectedModal(true)}
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Start Investing</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => {
+                  const el = document.getElementById('opportunities');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else onNavigatePage && onNavigatePage('investment');
+                }}
+                className="border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50/80 font-extrabold px-6 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Explore Opportunities</span>
+              </button>
+            </div>
+
+            {/* Social Proof Rating & Avatars Row */}
+            <div className="flex items-center gap-3.5 pt-4 border-t border-purple-100/80 w-full max-w-[520px]">
+              <div className="flex items-center">
+                <img src="/Portrait 2.png" className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-2xs" alt="Investor 1" />
+                <img src="/Portrait 2 (2).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 2" />
+                <img src="/Portrait 2 (3).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 3" />
+                <img src="/Portrait 2 (4).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 4" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-[#1E1B2E]">
+                  Trusted by <span className="text-[#7C1FA8] font-black">24,560+</span> happy investors
+                </span>
+                <div className="flex items-center gap-1 mt-0.5 text-xs">
+                  <span className="font-black text-[#1E1B2E]">4.8/5</span>
+                  <div className="flex text-[#F5A623] text-xs">
+                    ★ ★ ★ ★ ★
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: 3D Investor Portfolio Graphic */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[520px] sm:max-w-[560px] lg:max-w-[620px] flex justify-center items-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 05_15_23 PM.png"
+                alt="Invest in possibilities. Build lasting wealth. - PROSPERi5 Investor 3D Portfolio Graphic"
+                className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[440px] object-contain drop-shadow-xl"
+              />
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -136,8 +294,8 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 5. WHY INVESTORS TRUST US (COMPACT SECTION) */}
       <section className="w-full bg-gradient-to-b from-[#FAF7FD] to-[#F5EEFA] py-8 lg:py-10 px-4 sm:px-6 lg:px-8 border-t border-b border-[#EBE3F5]">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
-
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+          
           {/* Left Column: Title + 2x2 Compact Feature Grid */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center">
             <div className="mb-6">
@@ -230,7 +388,7 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
       {/* 6. BUILT FOR YOUR JOURNEY (COMPACT SECTION) */}
       <section className="w-full bg-[#FAF7FC] py-8 lg:py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-10">
-
+          
           {/* Left Column: Image of couple working on laptop */}
           <div className="w-full lg:w-[38%] flex justify-center items-center">
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-[#EBE3F5] w-full max-w-[480px]">
@@ -461,13 +619,14 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </section>
 
-
+      {/* 6. FOOTER */}
+      <Footer onNavigatePage={onNavigatePage} />
 
       {/* EXPERT CALLBACK MODAL */}
       {selectedModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setSelectedModal(false)}>
-          <div
-            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80"
+          <div 
+            className="bg-white bg-cover bg-center rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden border border-purple-100/80" 
             style={{ backgroundImage: `url("/ChatGPT Image Aug 21, 2026, 10_49_29 AM.png")` }}
             onClick={e => e.stopPropagation()}
           >
@@ -485,10 +644,20 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
               </div>
               <p className="text-[#544F66] font-medium mb-6 text-sm">Speak to a certified wealth manager to build your custom portfolio.</p>
               <div className="space-y-4">
-                <input type="text" placeholder="Enter your name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs" />
-                <PhoneInput
-                  placeholder="Enter phone number"
-                />
+                <input type="text" placeholder="Full Name" className="w-full border border-[#EBE8EF] bg-white/95 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#7C1FA8] transition-colors shadow-2xs" />
+                <div className="flex items-center border border-[#EBE8EF] bg-white/95 rounded-xl overflow-hidden focus-within:border-[#7C1FA8] transition-colors shadow-2xs">
+                  <select className="bg-transparent pl-3 pr-1 py-3 text-xs sm:text-sm font-semibold text-[#1E1B2E] outline-none border-r border-[#EBE8EF] cursor-pointer">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇨🇦 +1</option>
+                  </select>
+                  <input type="tel" placeholder="Mobile Number" className="w-full px-3 py-3 text-sm text-[#1E1B2E] outline-none bg-transparent" />
+                </div>
                 <button
                   onClick={() => setSelectedModal(false)}
                   className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer"
