@@ -5,9 +5,22 @@ require_once __DIR__ . '/../db.php';
 
 class JobsController {
     public static function formatJob(array $row): array {
+        $resp = $row['responsibilities'] ?? '';
+        $req = $row['requirements'] ?? '';
+
+        if (is_string($resp)) {
+            $decoded = json_decode($resp, true);
+            $resp = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : array_values(array_filter(array_map('trim', explode("\n", $resp))));
+        }
+
+        if (is_string($req)) {
+            $decoded = json_decode($req, true);
+            $req = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : array_values(array_filter(array_map('trim', explode("\n", $req))));
+        }
+
         return [
             'id' => (int)$row['id'],
-            'title' => $row['title'],
+            'title' => $row['title'] ?? '',
             'slug' => $row['slug'] ?? '',
             'department' => $row['department'] ?? '',
             'location' => $row['location'] ?? '',
@@ -15,8 +28,8 @@ class JobsController {
             'experience' => $row['experience'] ?? '',
             'imageUrl' => $row['imageUrl'] ?? $row['image_url'] ?? '',
             'description' => $row['description'] ?? '',
-            'responsibilities' => is_string($row['responsibilities'] ?? '') ? json_decode($row['responsibilities'], true) ?: $row['responsibilities'] : ($row['responsibilities'] ?: []),
-            'requirements' => is_string($row['requirements'] ?? '') ? json_decode($row['requirements'], true) ?: $row['requirements'] : ($row['requirements'] ?: []),
+            'responsibilities' => $resp ?: [],
+            'requirements' => $req ?: [],
             'status' => $row['status'] ?? 'published',
             'createdAt' => $row['created_at'] ?? null,
             'updatedAt' => $row['updated_at'] ?? null
@@ -26,9 +39,29 @@ class JobsController {
     private static function ensureColumnExists() {
         try {
             DB::execute("ALTER TABLE jobs ADD COLUMN image_url VARCHAR(1000) DEFAULT NULL");
-        } catch (Exception $e) {
-            // Column already exists or table issue
+        } catch (Exception $e) {}
+
+        try {
+            DB::execute("ALTER TABLE jobs MODIFY COLUMN responsibilities LONGTEXT DEFAULT NULL");
+            DB::execute("ALTER TABLE jobs MODIFY COLUMN requirements LONGTEXT DEFAULT NULL");
+        } catch (Exception $e) {}
+    }
+
+    private static function formatJsonList($val): string {
+        if (is_array($val)) {
+            return json_encode(array_values($val));
         }
+        if (is_string($val)) {
+            $trimmed = trim($val);
+            if ($trimmed === '') return json_encode([]);
+            $decoded = json_decode($trimmed, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return json_encode(array_values($decoded));
+            }
+            $lines = array_values(array_filter(array_map('trim', explode("\n", $trimmed))));
+            return json_encode($lines);
+        }
+        return json_encode([]);
     }
 
     public static function listPublic(array $queryParams): array {
@@ -173,8 +206,8 @@ class JobsController {
         }
 
         $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($title)) . '-' . time();
-        $respJson = is_string($body['responsibilities'] ?? '') ? $body['responsibilities'] : json_encode($body['responsibilities'] ?? []);
-        $reqJson = is_string($body['requirements'] ?? '') ? $body['requirements'] : json_encode($body['requirements'] ?? []);
+        $respJson = self::formatJsonList($body['responsibilities'] ?? []);
+        $reqJson = self::formatJsonList($body['requirements'] ?? []);
 
         DB::execute(
             'INSERT INTO jobs (title, slug, department, location, type, experience, image_url, description, responsibilities, requirements, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())',
@@ -202,8 +235,8 @@ class JobsController {
         $description = $body['description'] ?? $job['description'];
         $status = $body['status'] ?? $job['status'];
 
-        $respJson = isset($body['responsibilities']) ? (is_string($body['responsibilities']) ? $body['responsibilities'] : json_encode($body['responsibilities'])) : $job['responsibilities'];
-        $reqJson = isset($body['requirements']) ? (is_string($body['requirements']) ? $body['requirements'] : json_encode($body['requirements'])) : $job['requirements'];
+        $respJson = isset($body['responsibilities']) ? self::formatJsonList($body['responsibilities']) : self::formatJsonList($job['responsibilities']);
+        $reqJson = isset($body['requirements']) ? self::formatJsonList($body['requirements']) : self::formatJsonList($job['requirements']);
 
         DB::execute(
             'UPDATE jobs SET title = ?, department = ?, location = ?, type = ?, experience = ?, image_url = ?, description = ?, responsibilities = ?, requirements = ?, status = ?, updated_at = NOW() WHERE id = ?',
