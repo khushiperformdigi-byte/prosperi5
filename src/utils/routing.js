@@ -81,10 +81,18 @@ export const getPageFromUrl = () => {
   // Prioritize hash if present for migration from legacy hash links
   const rawKey = hash || pathname;
   const cleanKey = rawKey.replace(/^[\/#]+/, '');
+  const decodedKey = decodeURIComponent(cleanKey).trim().toLowerCase();
+  const normalizedKey = decodedKey.replace(/\s+/g, '-');
 
   let targetPage = 'home';
 
-  switch (cleanKey) {
+  switch (decodedKey) {
+    case '':
+    case 'home':
+      targetPage = 'home';
+      break;
+    default:
+      switch (normalizedKey) {
     case '':
     case 'home':
       targetPage = 'home';
@@ -173,7 +181,17 @@ export const getPageFromUrl = () => {
     case 'career':
       targetPage = 'careers';
       break;
+    case 'blog-admin':
+    case 'admin/blog':
+    case 'blog admin':
+    case 'blog_admin':
+      targetPage = 'blog-admin';
+      break;
     case 'careers-admin':
+    case 'careers admin':
+    case 'careers_admin':
+    case 'admin/careers':
+    case 'admin':
       targetPage = 'careers-admin';
       break;
     case 'privacy-policy':
@@ -187,6 +205,7 @@ export const getPageFromUrl = () => {
     default:
       targetPage = 'home';
   }
+}
 
   let articleId = null;
   if (targetPage === 'blog-detail' && search) {
