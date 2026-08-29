@@ -1,5 +1,4 @@
-import React, { useMemo, useRef } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { getAdminToken } from '../api/careers';
 import { API_BASE } from '../config/api.js';
 
@@ -8,7 +7,15 @@ const TINYMCE_API_KEY =
   '29yjvaqhv2mmq2srv7i5ezlegyxheodtr62oc7vj3p9i3mew';
 
 export default function TinyEditor({ value, onChange, height = 520 }) {
+  const [EditorComp, setEditorComp] = useState(null);
+  const [loadError, setLoadError] = useState(false);
   const editorRef = useRef(null);
+
+  useEffect(() => {
+    import('@tinymce/tinymce-react')
+      .then((mod) => setEditorComp(() => mod.Editor))
+      .catch(() => setLoadError(true));
+  }, []);
 
   const init = useMemo(
     () => ({
@@ -109,8 +116,20 @@ export default function TinyEditor({ value, onChange, height = 520 }) {
     [height]
   );
 
+  if (loadError || !EditorComp) {
+    return (
+      <textarea
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ height, width: '100%' }}
+        className="w-full p-4 border border-purple-200 rounded-xl font-mono text-sm"
+        placeholder="HTML Content Editor..."
+      />
+    );
+  }
+
   return (
-    <Editor
+    <EditorComp
       apiKey={TINYMCE_API_KEY}
       onInit={(_evt, editor) => {
         editorRef.current = editor;
