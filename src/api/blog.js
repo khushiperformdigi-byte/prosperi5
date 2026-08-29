@@ -70,7 +70,7 @@ export async function fetchAdminPosts(params = {}) {
   });
   const query = search.toString();
   const payload = await request(`/admin/posts${query ? `?${query}` : ''}`, { auth: true });
-  return payload.data?.posts || [];
+  return Array.isArray(payload.data?.posts) ? payload.data.posts : [];
 }
 
 export async function fetchAdminPost(id) {

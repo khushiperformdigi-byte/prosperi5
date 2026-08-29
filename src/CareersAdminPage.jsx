@@ -39,7 +39,60 @@ function linesToText(list) {
   return '';
 }
 
-export default function CareersAdminPage() {
+class AdminErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Admin Error caught:', error, errorInfo);
+  }
+
+  handleReset = () => {
+    clearAdminToken();
+    window.location.reload();
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#FAF8FC] flex items-center justify-center p-4 font-sans">
+          <div className="bg-white border border-[#EBE8EF] rounded-[24px] shadow-xl p-8 max-w-md w-full text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl font-bold">
+              ⚠️
+            </div>
+            <h2 className="text-xl font-extrabold text-[#1E1B2E]">Admin Interface Error</h2>
+            <p className="text-sm text-[#6F6A82]">
+              {this.state.error?.message || 'An unexpected rendering error occurred in the admin panel.'}
+            </p>
+            <button
+              onClick={this.handleReset}
+              className="w-full bg-[#7C1FA8] hover:bg-[#5E1083] text-white font-bold rounded-xl py-3 text-sm transition-colors cursor-pointer"
+            >
+              Clear Session & Re-login
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function CareersAdminPage(props) {
+  return (
+    <AdminErrorBoundary>
+      <CareersAdminInner {...props} />
+    </AdminErrorBoundary>
+  );
+}
+
+function CareersAdminInner() {
   const [bootstrapping, setBootstrapping] = useState(true);
   const [admin, setAdmin] = useState(null);
   const [section, setSection] = useState(() => (
@@ -321,7 +374,7 @@ export default function CareersAdminPage() {
               </h1>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-[#6F6A82]">{admin.name || admin.email}</span>
+              <span className="text-sm text-[#6F6A82]">{admin?.name || admin?.email || 'Admin User'}</span>
               <button
                 type="button"
                 onClick={handleLogout}

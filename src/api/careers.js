@@ -88,7 +88,7 @@ export async function fetchAdminJobs(params = {}) {
   });
   const query = search.toString();
   const payload = await request(`/admin/jobs${query ? `?${query}` : ''}`, { auth: true });
-  return payload.data?.jobs || [];
+  return Array.isArray(payload.data?.jobs) ? payload.data.jobs : [];
 }
 
 export async function fetchAdminJob(id) {
