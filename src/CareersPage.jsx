@@ -47,6 +47,14 @@ function JobImage({ url, title = '', department = '' }) {
     </div>
   );
 }
+
+function ensureArray(val) {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string' && val.trim()) {
+    return val.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+  }
+  return [];
+}
 const DEFAULT_FALLBACK_JOBS = [
   {
     id: 'job-1',
@@ -619,7 +627,7 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
                             Key Responsibilities:
                           </h3>
                           <ul className="space-y-2 text-xs sm:text-sm text-[#544F66]">
-                            {(job.responsibilities || []).map((resp, idx) => (
+                            {ensureArray(job.responsibilities).map((resp, idx) => (
                               <li key={idx} className="flex items-start gap-2.5">
                                 <span className="text-[#7C1FA8] font-black text-sm mt-0.5">•</span>
                                 <span>{resp}</span>
@@ -634,7 +642,7 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
                             What We Are Looking For:
                           </h3>
                           <ul className="space-y-2 text-xs sm:text-sm text-[#544F66]">
-                            {(job.requirements || []).map((req, idx) => (
+                            {ensureArray(job.requirements).map((req, idx) => (
                               <li key={idx} className="flex items-start gap-2.5">
                                 <span className="text-[#7C1FA8] font-black text-sm mt-0.5">•</span>
                                 <span>{req}</span>
@@ -649,7 +657,7 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
                             What We Offer:
                           </h3>
                           <ul className="space-y-2 text-xs sm:text-sm text-[#544F66]">
-                            {(job.benefits || []).map((ben, idx) => (
+                            {ensureArray(job.benefits).map((ben, idx) => (
                               <li key={idx} className="flex items-start gap-2.5">
                                 <span className="text-[#F5A623] font-black text-sm mt-0.5">✦</span>
                                 <span>{ben}</span>
