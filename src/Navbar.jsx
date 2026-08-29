@@ -130,9 +130,9 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* 2. FLOATING NAVBAR */}
+      {/* 2. FLOATING GLASSNAVBAR */}
       <nav className={`sticky top-0 lg:top-3.5 max-w-[1380px] mx-auto px-0 lg:px-4 mt-2 sm:mt-3.5 relative font-sans transition-all ${mobileMenuOpen ? 'z-[9999]' : 'z-50'}`}>
-        <div className="bg-white/95 backdrop-blur-md rounded-none lg:rounded-[24px] border-b border-purple-100/60 lg:border lg:border-[#EBE8EF] shadow-sm lg:shadow-[0_12px_40px_rgba(30,27,46,0.08)] h-[72px] lg:h-[64px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible">
+        <div className="bg-white/75 backdrop-blur-xl lg:backdrop-blur-2xl rounded-none lg:rounded-[24px] border-b border-white/60 lg:border lg:border-white/80 shadow-[0_8px_32px_0_rgba(30,27,46,0.08),0_1px_1px_0_rgba(255,255,255,0.8)_inset] h-[72px] lg:h-[64px] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all relative overflow-visible ring-1 ring-black/5">
 
           {/* Brand Logo */}
           <div className="flex items-center cursor-pointer group shrink-0 pr-2" onClick={() => handleNav('home')}>
@@ -177,7 +177,7 @@ export default function Navbar({
                 </svg>
               </button>
 
-              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white border border-[#EBE8EF] rounded-xl p-1.5 shadow-[0_10px_25px_rgba(30,27,46,0.08)] w-[200px] space-y-0.5 animate-in fade-in slide-in-from-top-1 z-[9999]">
+              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white/85 backdrop-blur-xl border border-white/80 rounded-xl p-1.5 shadow-[0_16px_40px_rgba(30,27,46,0.12)] w-[200px] space-y-0.5 animate-in fade-in slide-in-from-top-1 z-[9999]">
                 <a
                   href={getPathForPage('grow')}
                   onClick={(e) => { e.preventDefault(); handleNav('grow'); }}
@@ -254,7 +254,7 @@ export default function Navbar({
                 </svg>
               </a>
 
-              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white border border-[#EBE8EF] rounded-xl p-1.5 shadow-[0_10px_25px_rgba(30,27,46,0.08)] w-[210px] space-y-0.5 animate-in fade-in slide-in-from-top-1 z-[9999]">
+              <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover:flex flex-col bg-white/85 backdrop-blur-xl border border-white/80 rounded-xl p-1.5 shadow-[0_16px_40px_rgba(30,27,46,0.12)] w-[210px] space-y-0.5 animate-in fade-in slide-in-from-top-1 z-[9999]">
                 <a
                   href={getPathForPage('tools')}
                   onClick={(e) => { e.preventDefault(); handleNav('tools'); }}
