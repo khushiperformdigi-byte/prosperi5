@@ -25,7 +25,6 @@ import BlogDetailPage from './BlogDetailPage';
 import BlogAdminPanel from './admin/BlogAdminPanel';
 import CareersPage from './CareersPage';
 import CareersAdminPage from './CareersAdminPage';
-import Testimonials from './Testimonials';
 import Footer from './Footer';
 
 function AnimatedCounter({ end, suffix = '', prefix = '', duration = 1500 }) {
