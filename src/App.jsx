@@ -500,13 +500,54 @@ function App() {
               </div>
             </div>
 
-            {/* Store badges: Width 250px, Height 40px, Gap 10px on mobile */}
-            <div className="flex items-center gap-[10px] mt-4 justify-center lg:justify-start w-full sm:w-auto">
-              <img
-                src="/app-badges.png"
-                className="w-[250px] h-[40px] lg:w-auto lg:h-[42px] object-contain cursor-pointer hover:opacity-90 transition-opacity"
-                alt="App Store Badges"
-              />
+            {/* Code-Rendered Store Buttons */}
+            <div className="flex flex-wrap items-center gap-3 mt-4 justify-center lg:justify-start w-full">
+              {/* Google Play Button */}
+              <a
+                href="#download"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('partner-waitlist')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="flex items-center gap-3 bg-[#0D0B18] hover:bg-[#1A182E] border border-white/15 hover:border-[#7C1FA8]/50 text-white rounded-xl px-4 py-2 sm:px-4.5 sm:py-2.5 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 group cursor-pointer"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="0 0 24 24">
+                  <path d="M3.609 1.814L13.792 12 3.61 22.186a2.37 2.37 0 0 1-.61-1.614V3.428c0-.623.224-1.2.609-1.614z" fill="#4285F4"/>
+                  <path d="M17.156 8.636l-3.364 3.364 3.364 3.364 3.82-2.17c.87-.494.87-2.064 0-2.558l-3.82-2.17z" fill="#FBBC05"/>
+                  <path d="M3.609 1.814a2.38 2.38 0 0 1 1.706-.118l11.841 6.94-3.364 3.364L3.609 1.814z" fill="#EA4335"/>
+                  <path d="M3.609 22.186l10.183-10.186 3.364 3.364-11.841 6.94a2.38 2.38 0 0 1-1.706-.118z" fill="#34A853"/>
+                </svg>
+                <div className="flex flex-col text-left leading-none">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-0.5">
+                    GET IT ON
+                  </span>
+                  <span className="text-xs sm:text-sm font-extrabold text-white tracking-tight">
+                    Google Play
+                  </span>
+                </div>
+              </a>
+
+              {/* App Store Button */}
+              <a
+                href="#download"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('partner-waitlist')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="flex items-center gap-3 bg-[#0D0B18] hover:bg-[#1A182E] border border-white/15 hover:border-[#7C1FA8]/50 text-white rounded-xl px-4 py-2 sm:px-4.5 sm:py-2.5 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 group cursor-pointer"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current text-white mb-0.5" viewBox="0 0 24 24">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.64-.78 1.08-1.85.96-2.93-.93.04-2.06.62-2.73 1.4-.6.69-1.12 1.8-0.98 2.86 1.05.08 2.11-.55 2.75-1.33z"/>
+                </svg>
+                <div className="flex flex-col text-left leading-none">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-0.5">
+                    Download on the
+                  </span>
+                  <span className="text-xs sm:text-sm font-extrabold text-white tracking-tight">
+                    App Store
+                  </span>
+                </div>
+              </a>
             </div>
 
           </ScrollReveal>
