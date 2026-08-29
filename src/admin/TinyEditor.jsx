@@ -1,5 +1,4 @@
-import React, { useMemo, useRef } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { getAdminToken } from '../api/careers';
 import { API_BASE } from '../config/api.js';
 
@@ -9,6 +8,13 @@ const TINYMCE_API_KEY =
 
 export default function TinyEditor({ value, onChange, height = 520 }) {
   const editorRef = useRef(null);
+  const [EditorComp, setEditorComp] = useState(null);
+
+  useEffect(() => {
+    import('@tinymce/tinymce-react')
+      .then((mod) => setEditorComp(() => mod.Editor))
+      .catch(() => setEditorComp(null));
+  }, []);
 
   const init = useMemo(
     () => ({
@@ -80,44 +86,31 @@ export default function TinyEditor({ value, onChange, height = 520 }) {
         if (!url) throw new Error('Upload succeeded but no media URL returned');
         return url;
       },
-      file_picker_callback: (callback, _value, meta) => {
-        if (meta.filetype !== 'image') return;
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async () => {
-          const file = input.files?.[0];
-          if (!file) return;
-          const formData = new FormData();
-          formData.append('file', file);
-          const token = getAdminToken();
-          const response = await fetch(`${API_BASE}/admin/media`, {
-            method: 'POST',
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-            body: formData,
-          });
-          const payload = await response.json().catch(() => ({}));
-          if (!response.ok) {
-            window.alert(payload.message || 'Image upload failed');
-            return;
-          }
-          callback(payload.data.media.url, { title: file.name });
-        };
-        input.click();
-      },
     }),
     [height]
   );
 
+  if (EditorComp) {
+    return (
+      <EditorComp
+        apiKey={TINYMCE_API_KEY}
+        onInit={(_evt, editor) => {
+          editorRef.current = editor;
+        }}
+        value={value}
+        onEditorChange={(content) => onChange(content)}
+        init={init}
+      />
+    );
+  }
+
   return (
-    <Editor
-      apiKey={TINYMCE_API_KEY}
-      onInit={(_evt, editor) => {
-        editorRef.current = editor;
-      }}
+    <textarea
       value={value}
-      onEditorChange={(content) => onChange(content)}
-      init={init}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full border border-purple-200 rounded-lg p-3 text-sm font-mono focus:outline-none focus:border-purple-600 bg-white text-[#1E1B2E]"
+      style={{ height: `${height}px` }}
+      placeholder="Write post content..."
     />
   );
 }
