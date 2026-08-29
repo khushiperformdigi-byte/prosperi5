@@ -664,13 +664,24 @@ function CareersAdminInner() {
                   className="border border-[#EBE8EF] rounded-2xl p-4 space-y-3"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-bold text-base">{job.title}</h3>
-                      <p className="text-xs text-[#6F6A82] mt-1 flex flex-wrap gap-x-3 gap-y-1">
-                        <span>{job.location}</span>
-                        <span>{job.department}</span>
-                        <span>{job.experience}</span>
-                      </p>
+                    <div className="flex items-start gap-3">
+                      {job.imageUrl && (
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-purple-50 border border-purple-100 shrink-0 shadow-2xs">
+                          <img
+                            src={job.imageUrl}
+                            alt={job.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="font-bold text-base">{job.title}</h3>
+                        <p className="text-xs text-[#6F6A82] mt-1 flex flex-wrap gap-x-3 gap-y-1">
+                          <span>{job.location}</span>
+                          <span>{job.department}</span>
+                          <span>{job.experience}</span>
+                        </p>
+                      </div>
                     </div>
                     <StatusBadge status={job.status} />
                   </div>

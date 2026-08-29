@@ -53,6 +53,7 @@ CREATE TABLE `jobs` (
   `location` VARCHAR(100) NOT NULL,
   `type` VARCHAR(50) NOT NULL DEFAULT 'Full-time',
   `experience` VARCHAR(100) NOT NULL DEFAULT '0-2 Years',
+  `image_url` VARCHAR(1000) DEFAULT NULL,
   `description` TEXT NOT NULL,
   `responsibilities` JSON DEFAULT NULL,
   `requirements` JSON DEFAULT NULL,

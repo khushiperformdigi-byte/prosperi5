@@ -8,21 +8,31 @@ class JobsController {
         return [
             'id' => (int)$row['id'],
             'title' => $row['title'],
-            'slug' => $row['slug'],
-            'department' => $row['department'],
-            'location' => $row['location'],
-            'type' => $row['type'],
-            'experience' => $row['experience'],
-            'description' => $row['description'],
-            'responsibilities' => is_string($row['responsibilities']) ? json_decode($row['responsibilities'], true) ?: [] : ($row['responsibilities'] ?: []),
-            'requirements' => is_string($row['requirements']) ? json_decode($row['requirements'], true) ?: [] : ($row['requirements'] ?: []),
-            'status' => $row['status'],
-            'createdAt' => $row['created_at'],
-            'updatedAt' => $row['updated_at']
+            'slug' => $row['slug'] ?? '',
+            'department' => $row['department'] ?? '',
+            'location' => $row['location'] ?? '',
+            'type' => $row['type'] ?? 'Full-time',
+            'experience' => $row['experience'] ?? '',
+            'imageUrl' => $row['imageUrl'] ?? $row['image_url'] ?? '',
+            'description' => $row['description'] ?? '',
+            'responsibilities' => is_string($row['responsibilities'] ?? '') ? json_decode($row['responsibilities'], true) ?: $row['responsibilities'] : ($row['responsibilities'] ?: []),
+            'requirements' => is_string($row['requirements'] ?? '') ? json_decode($row['requirements'], true) ?: $row['requirements'] : ($row['requirements'] ?: []),
+            'status' => $row['status'] ?? 'published',
+            'createdAt' => $row['created_at'] ?? null,
+            'updatedAt' => $row['updated_at'] ?? null
         ];
     }
 
+    private static function ensureColumnExists() {
+        try {
+            DB::execute("ALTER TABLE jobs ADD COLUMN image_url VARCHAR(1000) DEFAULT NULL");
+        } catch (Exception $e) {
+            // Column already exists or table issue
+        }
+    }
+
     public static function listPublic(array $queryParams): array {
+        self::ensureColumnExists();
         $where = ["status = 'published'"];
         $params = [];
 
@@ -56,6 +66,7 @@ class JobsController {
     }
 
     public static function getPublic(string $idOrSlug): array {
+        self::ensureColumnExists();
         $job = is_numeric($idOrSlug)
             ? DB::queryOne("SELECT * FROM jobs WHERE id = ? AND status = 'published'", [(int)$idOrSlug])
             : DB::queryOne("SELECT * FROM jobs WHERE slug = ? AND status = 'published'", [$idOrSlug]);
@@ -107,6 +118,7 @@ class JobsController {
     }
 
     public static function listAdmin(array $queryParams): array {
+        self::ensureColumnExists();
         $where = ['1=1'];
         $params = [];
 
@@ -135,6 +147,7 @@ class JobsController {
     }
 
     public static function getAdmin(int $id): array {
+        self::ensureColumnExists();
         $job = DB::queryOne('SELECT * FROM jobs WHERE id = ?', [$id]);
         if (!$job) {
             http_response_code(404);
@@ -144,11 +157,13 @@ class JobsController {
     }
 
     public static function create(array $body): array {
+        self::ensureColumnExists();
         $title = trim($body['title'] ?? '');
         $department = trim($body['department'] ?? '');
         $location = trim($body['location'] ?? '');
-        $type = trim($body['type'] ?? 'Full-time');
+        $type = trim($body['type'] ?? $body['employmentType'] ?? 'Full-time');
         $experience = trim($body['experience'] ?? '');
+        $imageUrl = trim($body['imageUrl'] ?? $body['image_url'] ?? '');
         $description = trim($body['description'] ?? '');
         $status = trim($body['status'] ?? 'published');
 
@@ -158,12 +173,12 @@ class JobsController {
         }
 
         $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($title)) . '-' . time();
-        $respJson = json_encode($body['responsibilities'] ?? []);
-        $reqJson = json_encode($body['requirements'] ?? []);
+        $respJson = is_string($body['responsibilities'] ?? '') ? $body['responsibilities'] : json_encode($body['responsibilities'] ?? []);
+        $reqJson = is_string($body['requirements'] ?? '') ? $body['requirements'] : json_encode($body['requirements'] ?? []);
 
         DB::execute(
-            'INSERT INTO jobs (title, slug, department, location, type, experience, description, responsibilities, requirements, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())',
-            [$title, $slug, $department, $location, $type, $experience, $description, $respJson, $reqJson, $status]
+            'INSERT INTO jobs (title, slug, department, location, type, experience, image_url, description, responsibilities, requirements, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())',
+            [$title, $slug, $department, $location, $type, $experience, $imageUrl ?: null, $description, $respJson, $reqJson, $status]
         );
 
         $newId = (int)DB::lastInsertId();
@@ -171,6 +186,7 @@ class JobsController {
     }
 
     public static function update(int $id, array $body): array {
+        self::ensureColumnExists();
         $job = DB::queryOne('SELECT * FROM jobs WHERE id = ?', [$id]);
         if (!$job) {
             http_response_code(404);
@@ -180,17 +196,18 @@ class JobsController {
         $title = $body['title'] ?? $job['title'];
         $department = $body['department'] ?? $job['department'];
         $location = $body['location'] ?? $job['location'];
-        $type = $body['type'] ?? $job['type'];
+        $type = $body['type'] ?? $body['employmentType'] ?? $job['type'];
         $experience = $body['experience'] ?? $job['experience'];
+        $imageUrl = array_key_exists('imageUrl', $body) ? $body['imageUrl'] : (array_key_exists('image_url', $body) ? $body['image_url'] : ($job['image_url'] ?? null));
         $description = $body['description'] ?? $job['description'];
         $status = $body['status'] ?? $job['status'];
 
-        $respJson = isset($body['responsibilities']) ? json_encode($body['responsibilities']) : $job['responsibilities'];
-        $reqJson = isset($body['requirements']) ? json_encode($body['requirements']) : $job['requirements'];
+        $respJson = isset($body['responsibilities']) ? (is_string($body['responsibilities']) ? $body['responsibilities'] : json_encode($body['responsibilities'])) : $job['responsibilities'];
+        $reqJson = isset($body['requirements']) ? (is_string($body['requirements']) ? $body['requirements'] : json_encode($body['requirements'])) : $job['requirements'];
 
         DB::execute(
-            'UPDATE jobs SET title = ?, department = ?, location = ?, type = ?, experience = ?, description = ?, responsibilities = ?, requirements = ?, status = ?, updated_at = NOW() WHERE id = ?',
-            [$title, $department, $location, $type, $experience, $description, $respJson, $reqJson, $status, $id]
+            'UPDATE jobs SET title = ?, department = ?, location = ?, type = ?, experience = ?, image_url = ?, description = ?, responsibilities = ?, requirements = ?, status = ?, updated_at = NOW() WHERE id = ?',
+            [$title, $department, $location, $type, $experience, $imageUrl ?: null, $description, $respJson, $reqJson, $status, $id]
         );
 
         return self::getAdmin($id);
