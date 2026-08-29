@@ -35,14 +35,14 @@ export default function Testimonials() {
           </span>
 
           {/* Main Heading: Hear It from Partners Already Earning More */}
-          <h2 className="font-sans font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] text-heading-ink tracking-[-0.5px] mb-2 text-center w-[342px] max-w-full lg:w-full lg:max-w-none whitespace-normal lg:whitespace-nowrap mx-auto">
+          <h2 className="font-sans font-semibold text-[30px] leading-[38px] sm:text-[34px] sm:leading-[42px] lg:text-[36px] lg:leading-[44px] text-[#1E1B2E] tracking-[-0.5px] mb-2 text-center max-w-3xl mx-auto">
             Hear It from Partners Already Earning More
           </h2>
 
-          {/* Subheading Paragraph */}
+          {/* Subheading Paragraph (Width Contained Under Heading Width) */}
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="font-medium text-[14px] leading-[17px] sm:leading-relaxed lg:text-[16px] lg:leading-[24px] text-[#544F66] tracking-[-0.5px] text-center w-[342px] max-w-full lg:w-full lg:max-w-[700px] mx-auto"
+            className="font-medium text-[14px] leading-[20px] sm:leading-relaxed lg:text-[15.5px] lg:leading-[24px] text-[#544F66] tracking-[-0.5px] text-center max-w-xl mx-auto"
           >
             Understand what you gain when you choose PROSPERi5 over other distribution models.
           </p>
