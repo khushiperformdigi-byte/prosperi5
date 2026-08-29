@@ -1,6 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Footer from './Footer';
 import Testimonials from './Testimonials';
+
+function AnimatedCounter({ end, decimals = 0, prefix = '', suffix = '', duration = 1600 }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          let startTime = null;
+          const animate = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+            const currentVal = easeOutProgress * end;
+            setCount(decimals > 0 ? parseFloat(currentVal.toFixed(decimals)) : Math.floor(currentVal));
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              setCount(end);
+            }
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [end, duration, hasAnimated, decimals]);
+
+  const formattedCount = decimals > 0 
+    ? count.toFixed(decimals) 
+    : new Intl.NumberFormat('en-IN').format(count);
+
+  return <span ref={ref}>{prefix}{formattedCount}{suffix}</span>;
+}
 
 export default function GrowPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -70,7 +110,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -190,48 +230,186 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </nav>
 
-      {/* 3. HERO SECTION (REDUCED HEIGHT FULL WIDTH BANNER) */}
-      <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
-        <div className="w-full relative max-w-[1920px] mx-auto">
-          {/* Main Hero Banner Image with Compact Height */}
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 10_22_49 AM.png" 
-            alt="Grow Your Wealth - Smart decisions. Stronger future."
-            className="w-full h-auto max-h-[460px] sm:max-h-[500px] object-cover object-center block"
-          />
+      {/* 3. HERO SECTION (GROW YOUR WEALTH) */}
+      <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden pt-3 sm:pt-4 lg:pt-5 pb-3 sm:pb-4 lg:pb-5 px-4 sm:px-6 lg:px-8 font-sans">
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-purple-200/30 rounded-full filter blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-10 w-[350px] h-[350px] bg-pink-100/30 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-          {/* Interactive Hotspots Over the Banner Buttons (Zero Hover Effect) */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Start Investing Hotspot Button */}
-            <a
-              href="#start-investing"
-              onClick={(e) => {
-                e.preventDefault();
-                handleOpenApplyModal('Start Investing Today', 'Access expert curated portfolios and start building wealth with Prosperi5.');
-              }}
-              title="Start Investing"
-              aria-label="Start Investing"
-              className="pointer-events-auto absolute left-[8%] sm:left-[8.5%] top-[65%] sm:top-[67%] w-[16%] sm:w-[15%] h-[12%] sm:h-[13%] rounded-2xl cursor-pointer focus:outline-none opacity-0"
-            />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Main Copy, Badges & Actions */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            {/* Top Category Badge */}
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-2 inline-block font-sans">
+              GROW YOUR WEALTH
+            </span>
 
-            {/* Explore Funds Hotspot Button */}
-            <a
-              href="#invest-solutions"
-              onClick={(e) => {
-                e.preventDefault();
-                const elem = document.getElementById('invest-solutions');
-                if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-              }}
-              title="Explore Funds"
-              aria-label="Explore Funds"
-              className="pointer-events-auto absolute left-[25%] sm:left-[25.5%] top-[65%] sm:top-[67%] w-[16%] sm:w-[15%] h-[12%] sm:h-[13%] rounded-2xl cursor-pointer focus:outline-none opacity-0"
-            />
+            {/* Main Title */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[46px] sm:leading-[54px] lg:text-[54px] lg:leading-[62px] tracking-[-0.03em] text-[#1E1135] mb-2.5">
+              Smart decisions <br />
+              <span className="text-[#7C1FA8]">Stronger future.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="font-medium text-[15px] sm:text-[16.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-5 max-w-[540px]"
+            >
+              Access expert curated investments and tools to grow your wealth, your way.
+            </p>
+
+            {/* 4 Feature Badges Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6 w-full max-w-2xl">
+              {/* Feature 1: Curated by Experts */}
+              <div className="flex items-center gap-2.5 p-2 sm:p-2.5 px-3 rounded-xl bg-purple-50/70 border border-purple-100/90 shadow-2xs">
+                <div className="w-8 h-8 rounded-full bg-purple-100/90 text-[#7C1FA8] flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </div>
+                <span className="text-[11.5px] sm:text-xs font-semibold text-[#1E1135] leading-tight font-sans">
+                  Curated by Experts
+                </span>
+              </div>
+
+              {/* Feature 2: Low Cost Investing */}
+              <div className="flex items-center gap-2.5 p-2 sm:p-2.5 px-3 rounded-xl bg-purple-50/70 border border-purple-100/90 shadow-2xs">
+                <div className="w-8 h-8 rounded-full bg-purple-100/90 text-[#7C1FA8] flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v2.25m-7.5-3.75l3 3m0 0l3-3m-3 3V3m6 12V6.75A2.25 2.25 0 0017.25 4.5H6.75A2.25 2.25 0 004.5 6.75v10.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25z" />
+                  </svg>
+                </div>
+                <span className="text-[11.5px] sm:text-xs font-semibold text-[#1E1135] leading-tight font-sans">
+                  Low Cost Investing
+                </span>
+              </div>
+
+              {/* Feature 3: Transparent & Secure */}
+              <div className="flex items-center gap-2.5 p-2 sm:p-2.5 px-3 rounded-xl bg-purple-50/70 border border-purple-100/90 shadow-2xs">
+                <div className="w-8 h-8 rounded-full bg-purple-100/90 text-[#7C1FA8] flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
+                  </svg>
+                </div>
+                <span className="text-[11.5px] sm:text-xs font-semibold text-[#1E1135] leading-tight font-sans">
+                  Transparent &amp; Secure
+                </span>
+              </div>
+
+              {/* Feature 4: SIP & Goal Based */}
+              <div className="flex items-center gap-2.5 p-2 sm:p-2.5 px-3 rounded-xl bg-purple-50/70 border border-purple-100/90 shadow-2xs">
+                <div className="w-8 h-8 rounded-full bg-purple-100/90 text-[#7C1FA8] flex items-center justify-center shrink-0 font-bold text-xs">
+                  %
+                </div>
+                <span className="text-[11.5px] sm:text-xs font-semibold text-[#1E1135] leading-tight font-sans">
+                  SIP &amp; Goal Based
+                </span>
+              </div>
+            </div>
+
+            {/* CTA Buttons Row */}
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              <button
+                onClick={() => handleOpenApplyModal('Start Investing Today', 'Access expert curated portfolios and start building wealth with Prosperi5.')}
+                className="h-[48px] sm:h-[52px] px-7 sm:px-8 rounded-[16px] bg-[#7C1FA8] hover:bg-[#68198f] text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Start Investing</span>
+              </button>
+              <a
+                href="#invest-solutions"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const elem = document.getElementById('invest-solutions');
+                  if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[48px] sm:h-[52px] px-7 sm:px-8 rounded-[16px] bg-white border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50 font-bold text-sm sm:text-base transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+              >
+                Explore Funds
+              </a>
+            </div>
+
+            {/* Social Proof Row */}
+            <div className="flex items-center gap-3 pt-0.5">
+              <div className="flex -space-x-2 overflow-hidden">
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover" src="/Portrait 2 (2).png" alt="User 1" />
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover" src="/Portrait 2 (3).png" alt="User 2" />
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover" src="/Portrait 2 (4).png" alt="User 3" />
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover" src="/Portrait 2.png" alt="User 4" />
+              </div>
+              <p className="text-xs sm:text-sm font-medium text-[#544F66] font-sans">
+                <span className="font-extrabold text-[#7C1FA8]">1M+</span> investors are growing with PROSPERi5
+              </p>
+            </div>
           </div>
+
+          {/* RIGHT COLUMN: Massive 3D Plant Graphic Shifted Upwards */}
+          <div className="lg:col-span-6 relative flex items-center justify-center mt-2 lg:-mt-10 lg:-mb-4 w-full">
+            {/* Background Soft Purple Circle Ring Glow */}
+            <div className="absolute w-[420px] h-[420px] sm:w-[540px] sm:h-[540px] lg:w-[640px] lg:h-[640px] bg-gradient-to-tr from-purple-200/50 via-purple-100/60 to-pink-100/50 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+            {/* 3D Potted Plant Illustration (Shifted Slightly Upward) */}
+            <div className="relative z-10 w-full max-w-[440px] sm:max-w-[580px] lg:max-w-[680px] lg:-translate-y-4 flex justify-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 02_37_21 PM.png"
+                alt="Smart decisions Stronger future - Wealth Growth Plant"
+                className="w-full h-auto max-h-[500px] sm:max-h-[580px] object-contain drop-shadow-2xl select-none pointer-events-none"
+              />
+            </div>
+
+            {/* Compact Floating Wealth Created Stats Card with Counter Animation */}
+            <div className="absolute right-0 sm:right-[10px] lg:right-[15px] top-[4%] sm:top-[6%] lg:top-[6%] z-20 bg-white/95 backdrop-blur-md rounded-[18px] sm:rounded-[20px] p-3 sm:p-3.5 border border-purple-100/90 shadow-xl w-[175px] sm:w-[195px] select-none transition-all hover:scale-105 font-sans">
+              <span className="text-[9.5px] font-extrabold text-[#8E8A9D] uppercase tracking-wider block mb-0.5 font-sans">
+                Wealth Created
+              </span>
+              <h4 className="text-lg sm:text-xl font-black text-[#7C1FA8] leading-tight font-sans tracking-tight">
+                <AnimatedCounter end={2350} prefix="₹" suffix=" Cr+" />
+              </h4>
+              <p className="text-[9.5px] text-[#544F66] font-medium mt-0.5 mb-2 font-sans">
+                Across <AnimatedCounter end={1} suffix="M+" /> investor accounts
+              </p>
+
+              {/* Sparkline Line Chart Graphic */}
+              <div className="w-full h-8 sm:h-9 bg-purple-50/70 rounded-lg p-1.5 flex items-end justify-between relative overflow-hidden mb-2.5">
+                <svg className="w-full h-full text-[#7C1FA8] overflow-visible" viewBox="0 0 100 40" fill="none">
+                  <path
+                    d="M 5 32 L 22 24 L 38 26 L 55 18 L 70 21 L 85 12 L 95 6"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  {/* Glowing Data Dots */}
+                  <circle cx="5" cy="32" r="3" fill="#7C1FA8" />
+                  <circle cx="22" cy="24" r="3" fill="#7C1FA8" />
+                  <circle cx="38" cy="26" r="3" fill="#7C1FA8" />
+                  <circle cx="55" cy="18" r="3" fill="#7C1FA8" />
+                  <circle cx="70" cy="21" r="3" fill="#7C1FA8" />
+                  <circle cx="85" cy="12" r="3" fill="#7C1FA8" />
+                  <circle cx="95" cy="6" r="4" fill="#7C1FA8" stroke="white" strokeWidth="2" />
+                </svg>
+              </div>
+
+              {/* Y-o-Y Growth Pill */}
+              <div className="flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-extrabold text-[10.5px]">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                  </svg>
+                  <AnimatedCounter end={18.6} decimals={1} suffix="%" />
+                </span>
+                <span className="text-[9.5px] font-semibold text-[#544F66] font-sans">
+                  Y-o-Y Growth
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
       {/* 4. INVEST YOUR WAY. GROW EVERY DAY. SECTION (ZERO HOVER EFFECTS) */}
-      <section id="invest-solutions" className="py-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto select-none scroll-mt-24">
+      <section id="invest-solutions" className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none scroll-mt-24">
         <div className="text-center max-w-3xl mx-auto mb-7">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1E1B2E] tracking-tight">
             Invest your way. Grow every day.
@@ -367,7 +545,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
       </section>
 
       {/* 4.5 WHY INVEST WITH PROSPERI5? SECTION (ENHANCED TEXT SIZE & HEIGHT) */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans select-none">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans select-none">
         
         {/* Top Header & 5 Benefit Badges Row */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
@@ -628,7 +806,7 @@ export default function GrowPage({ onNavigateHome, onNavigatePage }) {
       <Testimonials />
 
       {/* 7.5 READY TO GROW YOUR WEALTH CTA BANNER (PLACED AFTER TESTIMONIALS WITH SEMI-BOLD TEXT) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 my-10 font-sans select-none">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 my-10 font-sans select-none">
         <div className="bg-[#1A0826] bg-gradient-to-r from-[#280A3D] via-[#1C072A] to-[#11031C] rounded-2xl py-4 sm:py-5 px-6 sm:px-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-purple-900/40 relative overflow-hidden">
           
           {/* Left Graphic + Title Block */}

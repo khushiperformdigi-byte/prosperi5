@@ -241,7 +241,7 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -352,13 +352,62 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO BANNER SECTION (FULL WIDTH) */}
-      <section className="w-full overflow-hidden bg-white border-b border-[#EBE8EF]">
-        <img
-          src="/careers_hero_banner.png"
-          alt="Build Your Career With Prosperi5 - We are always looking for passionate, driven and talented individuals"
-          className="w-full h-auto block select-none max-h-[380px] lg:max-h-[420px] object-cover object-center"
-        />
+      {/* 3. HERO BANNER SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Pill Tag, Main Heading, Subtitle & Action CTAs */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>CAREERS AT PROSPERi5</span>
+            </div>
+
+            {/* Main Heading (Single Line) */}
+            <h1 className="font-sans font-extrabold text-[32px] leading-[40px] sm:text-[40px] sm:leading-[48px] lg:text-[46px] lg:leading-[54px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[720px]">
+              Build Your Career <span className="text-[#7C1FA8]">With Prosperi5</span>
+            </h1>
+
+            {/* Subtitle Paragraph (Contained Under Heading Width) */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[560px]">
+              We are always looking for passionate, driven and talented individuals to join our mission of helping people achieve financial freedom.
+            </p>
+
+            {/* Action CTA Button */}
+            <div>
+              <button 
+                onClick={() => {
+                  const el = document.getElementById('open-positions');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else setSelectedJob({ title: 'General Career Application' });
+                }}
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>View Open Positions</span>
+                <span>➔</span>
+              </button>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: Office & Career Illustration */}
+          <div className="lg:col-span-5 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[520px] sm:max-w-[580px] flex justify-center items-center">
+              <img
+                src="/careers_hero_banner.png"
+                alt="Build Your Career With Prosperi5 - Office & Career Illustration"
+                className="w-full h-auto max-h-[360px] sm:max-h-[400px] lg:max-h-[440px] object-cover object-right rounded-2xl"
+              />
+            </div>
+          </div>
+
+        </div>
       </section>
 
       {/* 4. MAIN CAREERS CONTAINER */}
@@ -368,7 +417,7 @@ export default function CareersPage({ onNavigateHome, onNavigatePage }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
           {/* LEFT COLUMN: OPEN POSITIONS LIST */}
-          <section className="lg:col-span-8 space-y-6">
+          <section id="open-positions" className="lg:col-span-8 space-y-6 scroll-mt-24">
             
             {/* Main Section Heading */}
             <div className="flex items-center justify-between mb-6">

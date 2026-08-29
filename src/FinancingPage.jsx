@@ -126,7 +126,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -196,33 +196,79 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
         </div>
       </nav>
 
-      {/* 2. HERO SECTION (COMPACT ASPECT RATIO BANNER & UNCLIPPED) */}
-      <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
-        <div className="w-full relative">
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 11_38_20 AM.png" 
-            alt="Smart Finance. Stronger Future."
-            className="w-full h-auto block -mt-3 sm:-mt-5 lg:-mt-7"
-          />
+      {/* 2. HERO SECTION (SMART FINANCE. STRONGER FUTURE.) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-4 sm:pb-5 lg:pb-6 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Curved Light Purple Background Overlay on Right */}
+        <div className="absolute top-1/2 -right-20 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[80px] pointer-events-none"></div>
 
-          {/* Interactive Click Hotspots for smooth user interaction */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Explore Options Hotspot */}
-            <button
-              onClick={() => setSelectedOptionModal({ title: 'Explore Financing Solutions', subtitle: 'Select from our wide range of business, home, and personal financing options.' })}
-              title="Explore Options"
-              aria-label="Explore Options"
-              className="pointer-events-auto absolute left-[3.5%] top-[59%] w-[13.2%] h-[15%] rounded-full cursor-pointer focus:outline-none"
-            />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Badge, Title, Subtitle, CTA Button & Dot Grid Decoration */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left relative">
+            
+            {/* Top Category Badge */}
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span className="text-[#7C1FA8] text-xs font-black uppercase tracking-widest font-sans">
+                FINANCE THAT EMPOWERS
+              </span>
+            </div>
 
-            {/* Check Eligibility Hotspot */}
-            <button
-              onClick={() => setSelectedOptionModal({ title: 'Check Financing Eligibility', subtitle: 'Find out your maximum pre-approved loan amount and interest rates instantly.' })}
-              title="Check Eligibility"
-              aria-label="Check Eligibility"
-              className="pointer-events-auto absolute left-[18.2%] top-[59%] w-[13.2%] h-[15%] rounded-full cursor-pointer focus:outline-none"
-            />
+            {/* Main Title */}
+            <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[52px] lg:text-[50px] lg:leading-[58px] tracking-[-0.03em] text-[#1E1B2E] mb-3 max-w-[560px]">
+              Smart Finance. <span className="text-[#7C1FA8]">Stronger Future.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[22px] sm:leading-[25px] text-[#544F66] mb-6 max-w-[480px]">
+              Flexible financing solutions designed to help you achieve your goals, grow your business and build a better tomorrow.
+            </p>
+
+            {/* CTA Button */}
+            <div className="flex items-center gap-3.5 mb-2">
+              <button
+                onClick={() => setSelectedOptionModal({ title: 'Explore Financing Solutions', subtitle: 'Select from our wide range of business, home, and personal financing options.' })}
+                className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-xl bg-[#7C1FA8] hover:bg-[#68198f] text-white font-bold text-sm sm:text-base shadow-md shadow-purple-900/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Explore Options</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Decorative Dot Matrix SVG */}
+            <div className="hidden sm:block absolute bottom-0 right-10 text-purple-200 pointer-events-none opacity-60">
+              <svg className="w-16 h-12" fill="currentColor" viewBox="0 0 40 30">
+                <circle cx="5" cy="5" r="2" />
+                <circle cx="15" cy="5" r="2" />
+                <circle cx="25" cy="5" r="2" />
+                <circle cx="35" cy="5" r="2" />
+                <circle cx="5" cy="15" r="2" />
+                <circle cx="15" cy="15" r="2" />
+                <circle cx="25" cy="15" r="2" />
+                <circle cx="35" cy="15" r="2" />
+                <circle cx="5" cy="25" r="2" />
+                <circle cx="15" cy="25" r="2" />
+                <circle cx="25" cy="25" r="2" />
+                <circle cx="35" cy="25" r="2" />
+              </svg>
+            </div>
+
           </div>
+
+          {/* RIGHT COLUMN: User Image (3D Growth Graphic) */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[580px] flex justify-center items-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 03_18_19 PM.png"
+                alt="Smart Finance. Stronger Future - 3D Growth Illustration"
+                className="w-full h-auto max-h-[420px] sm:max-h-[460px] lg:max-h-[480px] object-contain drop-shadow-xl select-none"
+              />
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -530,7 +576,7 @@ export default function FinancingPage({ onNavigateHome, onNavigatePage }) {
           </div>
 
           {/* 5-Step Process Timeline Row */}
-          <div className="relative max-w-5xl mx-auto">
+          <div className="relative max-w-7xl mx-auto">
             {/* Connecting Horizontal Line & Glow Dots */}
             <div className="hidden lg:flex items-center justify-between absolute top-[30px] left-[10%] right-[10%] z-0 pointer-events-none">
               <div className="w-full h-[2px] bg-purple-300/40 relative flex items-center justify-around">

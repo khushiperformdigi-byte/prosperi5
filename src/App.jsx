@@ -375,7 +375,7 @@ function App() {
 
       {/* 1. RECONSTRUCTED TOP CONTACT UTILITY BAR - CYLINDER SHAPE (DESKTOP ONLY) */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-muted-text">
               {/* Orange/gold node icon */}
@@ -767,7 +767,7 @@ function App() {
       </nav>
 
       {/* 3. HERO CONTAINER */}
-      <main className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-6 lg:pt-8 pb-4 lg:pb-8 z-10 relative">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-6 lg:pt-8 pb-4 lg:pb-8 z-10 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
           {/* LEFT CONTENT COLUMN */}
@@ -838,8 +838,8 @@ function App() {
               </button>
             </div>
 
-            {/* Desktop Value bullets (Left-aligned with separating dots) */}
-            <div className="hidden lg:flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-sm font-semibold text-heading-ink w-full">
+            {/* Desktop Value bullets (Left-aligned with separating dots - 1 Single Row) */}
+            <div className="hidden lg:flex flex-nowrap items-center gap-x-3.5 sm:gap-x-4 gap-y-2 mt-6 text-xs sm:text-sm font-semibold text-heading-ink w-full whitespace-nowrap">
               <div className="flex items-center gap-1">
                 <span className="text-primary-purple text-base font-bold">✓</span>
                 <span>Trusted guidance</span>
@@ -856,13 +856,50 @@ function App() {
               </div>
             </div>
 
-            {/* Store badges: Width 250px, Height 40px, Gap 10px on mobile */}
-            <div className="flex items-center gap-[10px] mt-4 justify-center lg:justify-start w-full sm:w-auto">
-              <img
-                src="/app-badges.png"
-                className="w-[250px] h-[40px] lg:w-auto lg:h-[42px] object-contain cursor-pointer hover:opacity-90 transition-opacity"
-                alt="App Store Badges"
-              />
+            {/* Store Badges - Pure Code Components */}
+            <div className="flex items-center gap-3 mt-5 justify-center lg:justify-start w-full sm:w-auto">
+              
+              {/* Google Play Button */}
+              <button
+                onClick={() => setSelectedModal(true)}
+                className="bg-white hover:bg-gray-50 text-[#1E1B2E] border border-[#1E1B2E] rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-2xs transition-all cursor-pointer active:scale-95"
+              >
+                <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+                  <path d="M3.609 1.814C3.232 2.21 3 2.784 3 3.525v16.95c0 .741.232 1.315.609 1.711l.09.088L13.15 12.82v-.226L3.7 1.725l-.091.089z" fill="#00D2FF"/>
+                  <path d="M16.3 15.975l-3.15-3.151v-.226l3.15-3.15.09.052 3.733 2.122c1.066.606 1.066 1.6 0 2.207l-3.733 2.121-.09.025z" fill="#FFC900"/>
+                  <path d="M16.39 15.95L13.15 12.71 3.609 22.25c.355.378.947.424 1.616.044l11.165-6.344z" fill="#FF3A44"/>
+                  <path d="M16.39 8.05L5.225 1.706C4.556 1.326 3.964 1.372 3.609 1.75L13.15 11.29l3.24-3.24z" fill="#00E676"/>
+                </svg>
+
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#1E1B2E] leading-none block">
+                    GET IT ON
+                  </span>
+                  <span className="text-sm font-extrabold text-[#1E1B2E] leading-tight block tracking-tight">
+                    Google Play
+                  </span>
+                </div>
+              </button>
+
+              {/* App Store Button */}
+              <button
+                onClick={() => setSelectedModal(true)}
+                className="bg-white hover:bg-gray-50 text-[#1E1B2E] border border-[#1E1B2E] rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-2xs transition-all cursor-pointer active:scale-95"
+              >
+                <svg className="w-5 h-5 shrink-0 fill-current text-[#1E1B2E]" viewBox="0 0 24 24">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.87c.68-.83 1.14-1.99.99-3.14-.99.04-2.18.67-2.88 1.49-.63.73-1.18 1.92-1.03 3.05 1.1.09 2.24-.56 2.92-1.4" />
+                </svg>
+
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] font-bold text-[#1E1B2E] leading-none block">
+                    Download on the
+                  </span>
+                  <span className="text-sm font-extrabold text-[#1E1B2E] leading-tight block tracking-tight">
+                    App Store
+                  </span>
+                </div>
+              </button>
+
             </div>
 
           </div>
@@ -912,9 +949,9 @@ function App() {
       >
         <div className="max-w-7xl mx-auto">
           {/* Category heading */}
-          <h2 className="text-[#7C1FA8] text-xs font-bold tracking-widest uppercase mb-4 lg:mb-5 font-sans">
-            Partner Value at a Glance
-          </h2>
+          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-2 inline-block font-sans">
+            PARTNER VALUE AT A GLANCE
+          </span>
 
           {/* Symmetric Cards Grid (4 equal columns) with Deep Purple default and Hover background transition to #7C1FA8 and text color #F5A623 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
@@ -1036,9 +1073,9 @@ function App() {
       >
         <div className="max-w-[360px] mx-auto flex flex-col items-center">
           {/* Centered category heading */}
-          <h2 className="text-[#7C1FA8] text-xs font-black tracking-widest uppercase mb-5 text-center font-sans">
+          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-2 inline-block text-center font-sans">
             PARTNER VALUE AT A GLANCE
-          </h2>
+          </span>
 
           {/* Stacked overlapping cards deck (Container: 360px x 376px) */}
           <div ref={mobilePartnerCardsRef} className="w-full max-w-[360px] h-[376px] flex flex-col items-center relative select-none">
@@ -1154,7 +1191,7 @@ function App() {
 
                 {/* Stationary Center Text Mask Container */}
                 <div className="absolute inset-0 m-auto w-[54%] h-[54%] rounded-full bg-white flex flex-col items-center justify-center text-center p-2 z-10 shadow-sm pointer-events-none">
-                  <span className="text-[#F5A623] font-bold text-[10px] sm:text-[11px] lg:text-[12px] tracking-wider uppercase mb-1 font-sans">
+                  <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1 inline-block font-sans">
                     ONE PLATFORM
                   </span>
                   <h3
@@ -1165,9 +1202,9 @@ function App() {
                   </h3>
                   <span
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="font-medium text-[9.5px] sm:text-[10.5px] lg:text-[11.5px] tracking-tight text-[#544F66] mt-1"
+                    className="font-medium text-[9.5px] sm:text-[10.5px] lg:text-[11.5px] tracking-tight text-[#544F66] mt-1 block leading-tight"
                   >
-                    Investments · Insurance · Financing
+                    Investments · Insurance <br /> Financing
                   </span>
                 </div>
               </div>
@@ -1281,19 +1318,14 @@ function App() {
 
       {/* 4.5 FIVE REASONS PARTNERS SWITCH TO PROSPERi5 SECTION */}
       <section id="why-us" ref={reasonsRef} className="bg-[#FAF7FC] w-full py-4 sm:py-5 lg:py-5 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
-        <div className="max-w-4xl lg:max-w-[840px] mx-auto">
+        <div className="max-w-7xl mx-auto">
 
           {/* Centered Header: Exact Mobile & Desktop Specs */}
           <div className="mb-4 sm:mb-5 text-center flex flex-col items-center mx-auto w-[342px] max-w-full lg:w-full lg:max-w-5xl">
             {/* Badge Wrapper: WHY PARTNERS SWITCH */}
-            <div className="bg-[#F5A623] text-heading-ink rounded-[15px] px-[14px] py-[6px] h-[29px] w-[191px] flex items-center justify-center mb-3 shadow-sm select-none">
-              <span
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase whitespace-nowrap text-center text-[#1E1135]"
-              >
-                WHY PARTNERS SWITCH
-              </span>
-            </div>
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
+              WHY PARTNERS SWITCH
+            </span>
 
             {/* Main Heading: Five Reasons Partners Switch To PROSPERi5 */}
             <h2 className="font-sans font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] text-heading-ink tracking-[-0.5px] mb-2 text-center w-[342px] max-w-full lg:w-full lg:max-w-none whitespace-normal lg:whitespace-nowrap mx-auto">
@@ -1480,9 +1512,9 @@ function App() {
             </div>
 
             {/* Proof Rail Banner Box */}
-            <div className="mt-8 sm:mt-10 w-full flex justify-center lg:-mx-16 lg:w-[calc(100%+128px)] lg:max-w-[968px] mx-auto">
+            <div className="mt-8 sm:mt-10 w-full flex justify-center mx-auto">
               {/* Desktop Version: HTML Interactive Banner */}
-              <div className="w-full max-w-[968px] hidden lg:flex items-center justify-between rounded-[22px] bg-[#5E1683] shadow-[0px_12px_28px_rgba(18,8,26,0.15)] px-8 py-5.5 text-white select-none transition-transform duration-300 hover:scale-[1.01]">
+              <div className="w-full max-w-7xl hidden lg:flex items-center justify-between rounded-[22px] bg-[#5E1683] shadow-[0px_12px_28px_rgba(18,8,26,0.15)] px-8 py-5.5 text-white select-none transition-transform duration-300 hover:scale-[1.01]">
                 {/* Left Section: 50+ Financial products... */}
                 <div className="flex items-center gap-4">
                   <span className="font-sans font-bold text-[38px] leading-none tracking-[-0.5px] text-[#F5A623]">
@@ -1601,7 +1633,7 @@ function App() {
         <div className="absolute -bottom-10 -left-10 w-[300px] h-[300px] bg-purple-200/30 rounded-full filter blur-[90px] pointer-events-none"></div>
         <div className="absolute top-2 right-0 w-[250px] h-[250px] bg-pink-200/20 rounded-full filter blur-[80px] pointer-events-none"></div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-7xl mx-auto relative z-10">
 
           {/* Section Header (Centered & Compact) */}
           <div className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
@@ -1617,7 +1649,8 @@ function App() {
           </div>
 
           {/* Stepper Timeline Header Row with 5 Numbered Purple Circles */}
-          <div className="hidden lg:grid grid-cols-5 gap-3.5 sm:gap-4 mb-5 relative max-w-6xl mx-auto">
+          <div className="hidden lg:grid grid-cols-5 gap-3.5 sm:gap-4 mb-5 relative max-w-7xl mx-auto">
+
             {/* Horizontal Background Line (Simple Solid Line) */}
             <div className="absolute top-1/2 left-[10%] right-[10%] -translate-y-1/2 h-[2px] bg-purple-200 pointer-events-none z-0"></div>
 
@@ -1631,7 +1664,7 @@ function App() {
                   }`}
               >
                 <div className={`w-7.5 h-7.5 rounded-full flex items-center justify-center text-xs font-extrabold transition-all duration-200 ${activeStep === idx
-                  ? 'bg-[#7C1FA8] text-[#F5A623] scale-125 ring-4 ring-[#F5A623]/50 shadow-md border-2 border-[#F5A623]'
+                  ? 'bg-[#7C1FA8] text-white scale-125 ring-4 ring-purple-300/80 shadow-md border-2 border-white'
                   : 'bg-[#7C1FAB] text-white shadow-sm border-2 border-white'
                   }`}>
                   {num}
@@ -1641,7 +1674,7 @@ function App() {
           </div>
 
           {/* 5 Horizontal Process Cards Grid (White by default, Gold #F5A623 on Hover) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 relative max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 relative max-w-7xl mx-auto">
             {[
               {
                 step: '01',
@@ -1666,7 +1699,7 @@ function App() {
                     className="w-14 h-14 object-contain transition-all duration-200"
                     style={{
                       filter: isHovered 
-                        ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
+                        ? 'brightness(0) invert(1)'
                         : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
                     }}
                   />
@@ -1724,26 +1757,26 @@ function App() {
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
                     } ${isHovered
-                      ? 'bg-[#7C1FA8] text-[#F5A623] shadow-xl -translate-y-1.5 border border-[#5E1083]'
+                      ? 'bg-[#7C1FA8] text-white shadow-xl -translate-y-1.5 border border-[#5E1083]'
                       : 'bg-white text-[#1E1B2E] border border-purple-100/60 shadow-sm hover:shadow-md'
                     }`}
                 >
                   <div>
-                    <span className={`text-xl font-extrabold font-display block mb-2.5 transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#7C1FAB]'
+                    <span className={`text-xl font-extrabold font-display block mb-2.5 transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#7C1FAB]'
                       }`}>
                       {card.step}
                     </span>
-                    <h3 className={`font-bold text-sm sm:text-[14.5px] leading-snug transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#1E1B2E]'
+                    <h3 className={`font-bold text-sm sm:text-[14.5px] leading-snug transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#1E1B2E]'
                       }`}>
                       {card.title}
                     </h3>
-                    <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-[#F5A623]/95' : 'text-[#544F66]'
+                    <p className={`text-[13px] sm:text-[13.5px] leading-relaxed mt-2 font-medium transition-colors duration-200 ${isHovered ? 'text-white/90' : 'text-[#544F66]'
                       }`}>
                       {card.description}
                     </p>
                   </div>
                   <div className="flex justify-end mt-4">
-                    <div className={`transition-colors duration-200 ${isHovered ? 'text-[#F5A623]' : 'text-[#7C1FAB]'
+                    <div className={`transition-colors duration-200 ${isHovered ? 'text-white' : 'text-[#7C1FAB]'
                       }`}>
                       {typeof card.icon === 'function' ? card.icon(isHovered) : card.icon}
                     </div>
@@ -1762,11 +1795,8 @@ function App() {
 
           {/* Section Header (Mobile View Specs) */}
           <div id="about" className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
-            {/* Top Badge: WHY PARTNERS CHOOSE US (Inter 600 SemiBold 14px -0.5px tracking) */}
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[#7C1FA8] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
-            >
+            {/* Top Badge: WHY PARTNERS CHOOSE US */}
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
               WHY PARTNERS CHOOSE US
             </span>
 
@@ -2074,10 +2104,7 @@ function App() {
       <section id="how-it-works-mobile" className="block lg:hidden bg-[#F5EEFA] w-full py-6 px-4 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
         <div className="max-w-[401px] mx-auto flex flex-col items-center">
           {/* Category Header: HOW IT WORKS */}
-          <span
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="text-[#7C1FA8] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase text-center block w-[342px] max-w-full mb-3"
-          >
+          <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
             HOW IT WORKS
           </span>
 
@@ -2140,7 +2167,7 @@ function App() {
                     className="w-[70px] h-[70px] object-contain transition-all duration-200"
                     style={{
                       filter: isActive 
-                        ? 'brightness(0) saturate(100%) invert(74%) sepia(90%) saturate(1250%) hue-rotate(346deg)'
+                        ? 'brightness(0) invert(1)'
                         : 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(4500%) hue-rotate(272deg)'
                     }}
                   />
@@ -2155,7 +2182,7 @@ function App() {
                     <svg className="w-[70px] h-[70px] stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
-                    <svg className="w-5 h-5 fill-current absolute -top-1 -right-1 text-[#F5A623]" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 fill-current absolute -top-1 -right-1" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
@@ -2190,15 +2217,15 @@ function App() {
                   key={card.step}
                   onClick={() => handleMobileStepClick(idx)}
                   className={`w-[240px] h-[240px] rounded-[16px] p-5 shrink-0 snap-center transition-all duration-300 flex flex-col justify-between cursor-pointer ${isActive
-                    ? 'bg-[#7C1FA8] text-[#F5A623] shadow-xl scale-[1.02]'
+                    ? 'bg-[#7C1FA8] text-white shadow-xl scale-[1.02]'
                     : 'bg-white text-[#1E1B2E] border border-purple-100/90 shadow-sm'
                     }`}
                 >
                   <div className="flex justify-between items-start w-full">
-                    <div className={`mt-1.5 ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
+                    <div className={`mt-1.5 ${isActive ? 'text-white' : 'text-[#7C1FA8]'}`}>
                       {typeof card.icon === 'function' ? card.icon(isActive) : card.icon}
                     </div>
-                    <span className={`font-extrabold text-sm ${isActive ? 'text-[#F5A623]' : 'text-[#7C1FA8]'}`}>
+                    <span className={`font-extrabold text-sm ${isActive ? 'text-white' : 'text-[#7C1FA8]'}`}>
                       {card.step}
                     </span>
                   </div>
@@ -2206,14 +2233,14 @@ function App() {
                   <div className="flex flex-col mt-auto">
                     <h3
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-semibold text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-[#F5A623]' : 'text-[#1E1B2E]'
+                      className={`font-semibold text-[16px] leading-tight tracking-[-0.5px] ${isActive ? 'text-white' : 'text-[#1E1B2E]'
                         }`}
                     >
                       {card.title}
                     </h3>
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className={`font-medium text-[13px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-[#F5A623]/95' : 'text-[#544F66]'
+                      className={`font-medium text-[13px] leading-snug tracking-[-0.5px] mt-1.5 ${isActive ? 'text-white/90' : 'text-[#544F66]'
                         }`}
                     >
                       {card.description}
@@ -2234,15 +2261,12 @@ function App() {
         <div className="absolute top-10 left-10 w-[300px] h-[300px] bg-pink-100/30 rounded-full filter blur-[90px] pointer-events-none"></div>
         <div className="absolute -bottom-10 right-10 w-[300px] h-[300px] bg-purple-200/30 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-7xl mx-auto relative z-10">
 
           {/* Section Header (Exact Mobile View Specs) */}
           <div className="mb-6 sm:mb-8 text-center flex flex-col items-center mx-auto lg:max-w-5xl">
-            {/* Top Badge: STRENGTHENED BY RELATIONSHIPS (Inter 600 14px -0.5px tracking) */}
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[#C81E8C] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
-            >
+            {/* Top Badge: STRENGTHENED BY RELATIONSHIPS */}
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
               STRENGTHENED BY RELATIONSHIPS
             </span>
 
@@ -2622,14 +2646,11 @@ function App() {
       {/* 7. FAQ SECTION (Questions Every Serious Advisor Asks Us) */}
       <section className="mesh-bg bg-white w-full py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/40 font-sans">
         {/* MOBILE VIEW (< lg) */}
-        <div className="lg:hidden max-w-6xl mx-auto">
+        <div className="lg:hidden max-w-7xl mx-auto">
           {/* Centered Header for mobile */}
           <div className="text-center flex flex-col items-center mx-auto mb-6">
             {/* Top Badge: FREQUENTLY ASKED QUESTIONS */}
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[#C81E8C] font-semibold text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
-            >
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
               FREQUENTLY ASKED QUESTIONS
             </span>
 
@@ -2756,13 +2777,10 @@ function App() {
         </div>
 
         {/* DESKTOP VIEW (>= lg: 2-Column Side-by-Side Layout) */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center max-w-6xl mx-auto">
+        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
           {/* Left Header Content */}
           <div className="lg:col-span-5 flex flex-col justify-center text-left my-auto">
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[#D81B60] text-xs font-bold tracking-wider uppercase mb-2 inline-block font-sans"
-            >
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block font-sans">
               FREQUENTLY ASKED QUESTIONS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-[32px] lg:leading-[38px] font-bold text-heading-ink tracking-tight mb-2.5 text-left max-w-md">
@@ -2860,15 +2878,12 @@ function App() {
 
       {/* 8. LET'S BEGIN / GET STARTED FORM SECTION (Compact Layout) */}
       <section id="signup" className="bg-[#FAF6FC] w-full py-4 sm:py-5 lg:py-6 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none border-t border-purple-100/50 font-sans">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
 
           {/* Section Header (Mobile View Specs + Desktop) */}
           <div className="text-center flex flex-col items-center mx-auto lg:max-w-5xl mb-8 lg:mb-10">
-            {/* Top Badge: LET’S BEGIN (Inter 500 Medium 14px -0.5px tracking) */}
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[#7C1FA8] font-medium text-[14px] leading-none tracking-[-0.5px] uppercase mb-2 inline-block text-center"
-            >
+            {/* Top Badge: LET’S BEGIN */}
+            <span className="text-[#7C1FAB] text-xs font-extrabold tracking-wider uppercase mb-1.5 inline-block text-center font-sans">
               LET’S BEGIN
             </span>
 
@@ -3283,7 +3298,7 @@ function App() {
           </div>
 
           {/* Bottom Dual Bar (Hidden on mobile) */}
-          <div className="hidden lg:flex bg-white rounded-full p-3 px-6 sm:px-7 border border-purple-100/80 shadow-sm flex-row items-center justify-between gap-2.5 text-xs max-w-[1248px] mx-auto mt-3.5">
+          <div className="hidden lg:flex bg-white rounded-full p-3 px-6 sm:px-7 border border-purple-100/80 shadow-sm flex-row items-center justify-between gap-2.5 text-xs max-w-7xl mx-auto mt-3.5">
             <div className="flex items-center gap-2.5 text-center sm:text-left">
               <span className="text-[#5E1683] font-bold text-xs sm:text-[13.5px] whitespace-nowrap">For Investors</span>
               <span className="text-gray-300 hidden sm:inline">•</span>

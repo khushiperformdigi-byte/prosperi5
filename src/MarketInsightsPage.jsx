@@ -132,7 +132,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. EXACT HOMEPAGE FLOATING NAVBAR & TOP UTILITY STRIP */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-muted-text">
               <div className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-400">
@@ -237,49 +237,52 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 2. HERO SECTION (REDUCED TOP HEIGHT) */}
-      <section 
-        className="w-full bg-cover bg-center pt-2 sm:pt-3 lg:pt-4 pb-6 sm:pb-8 lg:pb-10 px-4 sm:px-8 lg:px-12 font-sans relative overflow-hidden border-b border-purple-100/50"
-        style={{ backgroundImage: `url("/ChatGPT Image Aug 26, 2026, 10_41_03 PM.png")` }}
-      >
-        <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      {/* 2. HERO SECTION (COMPACT FULL WIDTH) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
           
           {/* Left Hero Content */}
-          <div className="lg:col-span-5 xl:col-span-5 space-y-5 text-left font-jakarta">
-            <div>
-              <span className="text-[#7C1FA8] text-xs font-black uppercase tracking-widest bg-white/95 px-3.5 py-1.5 rounded-full border border-purple-200 inline-block shadow-2xs font-jakarta">
-                MARKET INSIGHTS
-              </span>
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
+            
+            {/* Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>MARKET INSIGHTS</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#1E1B2E] tracking-tight leading-[1.10] font-jakarta">
-              Insights today,<br />
-              <span className="text-[#7C1FA8]">better decisions</span><br />
-              tomorrow.
+            {/* Title */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[46px] sm:leading-[52px] lg:text-[50px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[680px]">
+              Insights today, <span className="text-[#7C1FA8]">better decisions</span> tomorrow.
             </h1>
 
-            <p className="text-sm sm:text-base text-[#544F66] font-medium leading-relaxed max-w-md font-inter">
-              Stay informed with expert analysis, market trends and data that help you invest smarter.
+            {/* Subtitle */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[620px]">
+              Stay informed with expert market analysis, real-time index tracking, sectoral trends, and actionable data that empower you to make smarter, high-conviction investment decisions.
             </p>
 
-            <div className="pt-2">
+            {/* CTA Button */}
+            <div>
               <button 
                 onClick={() => handleOpenModal('Explore Market Insights', 'Get full access to daily stock reports, Sectoral analysis, and macro-economic research.')}
-                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-7 py-3.5 rounded-full text-sm sm:text-base transition-all shadow-xl cursor-pointer active:scale-95 flex items-center gap-2.5 font-jakarta"
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
               >
                 <span>Explore Insights</span>
-                <span className="text-base">➔</span>
+                <span>➔</span>
               </button>
             </div>
           </div>
 
-          {/* Right Hero Graphic: 3D Monitor Graphic */}
-          <div className="lg:col-span-7 xl:col-span-7 relative flex justify-center lg:justify-end items-center">
-            <div className="w-full max-w-[680px] lg:max-w-[780px]">
+          {/* Right Hero Graphic: 3D Workstation Cutout PNG */}
+          <div className="lg:col-span-5 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[500px] sm:max-w-[540px] flex justify-center items-center">
               <img 
-                src="/ChatGPT Image Aug 26, 2026, 10_14_23 PM.png" 
-                alt="Market Insights 3D Financial Analytics" 
-                className="w-full h-auto object-contain drop-shadow-2xl hover:scale-102 transition-transform duration-300"
+                src="/ChatGPT Image Aug 29, 2026, 05_06_15 PM.png" 
+                alt="Market Insights 3D Financial Analytics Workstation" 
+                className="w-full h-auto max-h-[340px] sm:max-h-[380px] lg:max-h-[400px] object-contain drop-shadow-xl"
               />
             </div>
           </div>
@@ -288,7 +291,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
       </section>
 
       {/* 3. MARKET OVERVIEW (4 STANDALONE INDEX CARDS IN PURPLE THEME) */}
-      <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
+      <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
         
         {/* Header Bar (Centered Badge) */}
         <div className="flex justify-center mb-5 sm:mb-6">
@@ -430,7 +433,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 4. MARKET TRENDS & SENTIMENT (FULL WIDTH #FCE9F4 SOFT PINK BACKGROUND) */}
       <section className="w-full bg-[#FCE9F4] py-10 sm:py-12 my-6 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Left Column: Nifty 50 Performance Chart (Matching Reference Image 1) */}
           <div className="lg:col-span-8 bg-white border border-purple-100/90 rounded-3xl p-5 sm:p-6 shadow-md flex flex-col justify-between space-y-5">
@@ -602,7 +605,7 @@ export default function MarketInsightsPage({ onNavigateHome, onNavigatePage }) {
 
 
       {/* 6. NEWSLETTER SUBSCRIPTION BANNER (ENHANCED TYPOGRAPHY SIZE) */}
-      <section className="py-4.5 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
+      <section className="py-4.5 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
         <div className="bg-gradient-to-r from-[#7C1FA8] via-[#6b1a91] to-[#541275] rounded-2xl sm:rounded-3xl py-4.5 px-6 sm:py-6 sm:px-8 text-white shadow-xl relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between gap-5 relative z-10">
             

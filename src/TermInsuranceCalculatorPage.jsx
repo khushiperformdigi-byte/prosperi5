@@ -171,7 +171,7 @@ export default function TermInsuranceCalculatorPage({ onNavigateHome, onNavigate
       
       {/* 1. TOP UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -275,26 +275,72 @@ export default function TermInsuranceCalculatorPage({ onNavigateHome, onNavigate
         </div>
       )}
 
-      {/* 3. MAIN PAGE CONTAINER */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-14 relative z-10">
+      {/* 3. HERO SECTION (FULL WIDTH) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-        {/* BREADCRUMB */}
-        <div className="flex items-center gap-2 text-xs text-[#8E8A9D] font-medium py-1.5">
-          <button onClick={onNavigateHome} className="hover:text-[#7C1FAB] transition-colors cursor-pointer">Home</button>
-          <span>&gt;</span>
-          <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FAB] transition-colors cursor-pointer">Tools</button>
-          <span>&gt;</span>
-          <span className="text-[#C81E8C] font-semibold">Term Insurance Calculator</span>
-        </div>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Category Badge, Heading, Subtitle, and 3 Feature Badges */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>TERM INSURANCE CALCULATOR</span>
+            </div>
 
-        {/* HERO BANNER IMAGE */}
-        <div className="w-full overflow-hidden rounded-[20px] sm:rounded-[24px] border border-[#EBE8EF] shadow-sm my-3 mb-6 bg-white">
-          <img
-            src="/term_insurance_calculator_hero_banner.png"
-            alt="Calculate. Compare. Secure Your Tomorrow. Use our Term Insurance Calculator to find the right coverage"
-            className="w-full h-auto block select-none max-h-[360px] lg:max-h-[400px] object-cover object-center"
-          />
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[52px] lg:text-[48px] lg:leading-[56px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 max-w-[540px]">
+              Calculate. Compare. <br /><span className="text-[#7C1FA8]">Secure Your Tomorrow.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 max-w-[480px]">
+              Use our Term Insurance Calculator to find the right coverage for your family and secure their future.
+            </p>
+
+            {/* 3 Feature Pill Badges */}
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+              {/* Badge 1 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-full px-3.5 py-2 flex items-center gap-2 text-xs font-bold text-[#1E1B2E] shadow-2xs">
+                <span className="text-[#7C1FA8]">🧮</span>
+                <span>Calculate in Seconds</span>
+              </div>
+
+              {/* Badge 2 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-full px-3.5 py-2 flex items-center gap-2 text-xs font-bold text-[#1E1B2E] shadow-2xs">
+                <span className="text-[#C81E8C]">🛡️</span>
+                <span>100% Accurate</span>
+              </div>
+
+              {/* Badge 3 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-full px-3.5 py-2 flex items-center gap-2 text-xs font-bold text-[#1E1B2E] shadow-2xs">
+                <span className="text-[#F5A623]">👨‍👩‍👧</span>
+                <span>Plan for Your Family</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: 3D Term Insurance Visual */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[440px] sm:max-w-[480px] lg:max-w-[520px] flex justify-center items-center">
+              <img
+                src="/term_hero_illustration.png"
+                alt="Calculate. Compare. Secure Your Tomorrow. - Term Insurance Calculator 3D Visual"
+                className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[440px] object-contain drop-shadow-xl select-none"
+              />
+            </div>
+          </div>
+
         </div>
+      </section>
+
+      {/* 4. MAIN CALCULATOR CONTAINER */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 relative z-10">
 
         {/* 2-COLUMN CALCULATOR GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

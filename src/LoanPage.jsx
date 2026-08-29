@@ -140,7 +140,7 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -240,85 +240,100 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO SECTION */}
-      <section className="bg-gradient-to-b from-[#FAF5FC] via-white to-[#F7F2FA] py-12 lg:py-16 px-4 sm:px-6 lg:px-8 border-b border-purple-100/60 select-none">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      {/* 3. HERO SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Soft Ambient Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
           
-          {/* Left Column: Heading & Copy */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-[#F3EAFB] border border-purple-200/80 px-4 py-1.5 rounded-full text-xs font-extrabold text-[#7C1FA8] shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-[#F5A623] animate-pulse"></span>
+          {/* LEFT COLUMN: Category Tag, Heading, Subtitle, 2 CTAs, and Bullets */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#F5A623] inline-block animate-pulse"></span>
               <span>LOANS & CREDIT SOLUTIONS</span>
             </div>
 
-            <h1 className="font-sans font-extrabold text-3xl sm:text-5xl lg:text-5xl text-[#1E1B2E] tracking-tight leading-[1.15]">
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[48px] sm:leading-[54px] lg:text-[52px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 max-w-[580px]">
               Fast, Flexible Loans <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C1FA8] via-[#C81E8C] to-[#F5A623]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C1FA8] via-[#B83280] to-[#E53E3E]">
                 Tailored for Every Life Goal.
               </span>
             </h1>
 
-            <p className="text-[#544F66] text-sm sm:text-base font-semibold leading-relaxed max-w-xl mx-auto lg:mx-0">
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 max-w-[530px]">
               Compare rates from 30+ leading banks & NBFCs. Get instant digital approval for Home, Business, Personal, and Property Loans with minimal documentation.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            {/* 2 CTA Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 mb-7 w-full sm:w-auto">
               <button
                 onClick={() => setSelectedModal(true)}
-                className="w-full sm:w-auto bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-7 py-3.5 rounded-full text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
               >
                 <span>Apply for a Loan</span>
                 <span>→</span>
               </button>
+
               <button
                 onClick={() => {
                   const el = document.getElementById('calculator');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else if (onNavigatePage) onNavigatePage('tools');
                 }}
-                className="w-full sm:w-auto border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50 font-extrabold px-7 py-3.5 rounded-full text-sm transition-all cursor-pointer text-center active:scale-95"
+                className="border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50/80 font-extrabold px-6 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
               >
-                Calculate EMI
+                <span>Calculate EMI</span>
               </button>
             </div>
 
-            {/* Quick Metrics */}
-            <div className="pt-6 border-t border-purple-100 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-bold text-[#1E1B2E]">
-              <div className="flex items-center gap-2">
-                <span className="text-[#16A34A] text-base font-extrabold">✓</span>
+            {/* 3 Quick Bullets Row */}
+            <div className="pt-4 border-t border-purple-100/80 flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-bold text-[#1E1B2E]">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#16A34A] text-sm font-extrabold">✓</span>
                 <span>Lowest Interest Rates</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[#16A34A] text-base font-extrabold">✓</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#16A34A] text-sm font-extrabold">✓</span>
                 <span>100% Digital Process</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[#16A34A] text-base font-extrabold">✓</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#16A34A] text-sm font-extrabold">✓</span>
                 <span>Zero Hidden Charges</span>
               </div>
             </div>
+
           </div>
 
-          {/* Right Column: Hero Graphic Card */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-xl border border-purple-100/80 relative overflow-hidden">
-              <div className="flex items-center justify-between pb-4 border-b border-purple-50">
+          {/* RIGHT COLUMN: Smart Loan Comparison Card (Pure Code Component) */}
+          <div className="lg:col-span-6 flex justify-center w-full mt-4 lg:mt-0">
+            <div className="w-full max-w-[460px] bg-white rounded-[24px] p-6 shadow-xl border border-purple-100/90 text-left space-y-4">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-purple-100/80">
                 <div>
-                  <span className="text-[10px] font-bold text-[#7C1FA8] uppercase tracking-wider block">INSTANT LOAN DISBURSAL</span>
+                  <span className="text-[10px] font-black text-[#7C1FA8] uppercase tracking-wider block mb-0.5">INSTANT LOAN DISBURSAL</span>
                   <h3 className="font-extrabold text-lg text-[#1E1B2E]">Smart Loan Comparison</h3>
                 </div>
-                <span className="bg-[#16A34A]/10 text-[#16A34A] font-bold text-xs px-3 py-1 rounded-full">30+ Lenders</span>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold text-xs px-3 py-1 rounded-full shrink-0">30+ Lenders</span>
               </div>
 
-              <div className="space-y-3 my-5">
+              {/* 3 Interactive Loan Row Cards */}
+              <div className="space-y-3 py-1">
                 {[
                   { type: 'Home Loan', rate: '8.40% p.a.', time: 'Sanction in 48 hrs' },
                   { type: 'Personal Loan', rate: '10.50% p.a.', time: 'Same day disbursal' },
                   { type: 'Business Loan', rate: '11.25% p.a.', time: 'Collateral-free' },
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF6FD] border border-purple-100/60">
+                  <div key={idx} className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8FC] border border-[#EBE3F5]">
                     <div>
-                      <h4 className="font-bold text-sm text-[#1E1B2E]">{item.type}</h4>
-                      <span className="text-xs text-[#544F66] font-medium">{item.time}</span>
+                      <h4 className="font-extrabold text-sm text-[#1E1B2E]">{item.type}</h4>
+                      <span className="text-xs text-[#666077] font-medium block mt-0.5">{item.time}</span>
                     </div>
                     <div className="text-right">
                       <span className="font-black text-sm text-[#7C1FA8]">{item.rate}</span>
@@ -327,12 +342,14 @@ export default function LoanPage({ onNavigateHome, onNavigatePage }) {
                 ))}
               </div>
 
+              {/* Bottom Eligibility CTA */}
               <button
                 onClick={() => setSelectedModal(true)}
-                className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-bold py-3.5 rounded-2xl text-xs sm:text-sm transition-all shadow-md cursor-pointer active:scale-95"
+                className="w-full bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold py-3.5 rounded-xl text-sm transition-all shadow-md cursor-pointer active:scale-[0.99] text-center"
               >
                 Check Your Loan Eligibility Now
               </button>
+
             </div>
           </div>
 

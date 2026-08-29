@@ -47,7 +47,7 @@ export default function LoanAgainstSecuritiesPage({ onNavigateHome, onNavigatePa
       
       {/* 1. TOP UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -151,26 +151,77 @@ export default function LoanAgainstSecuritiesPage({ onNavigateHome, onNavigatePa
         </div>
       )}
 
-      {/* 3. MAIN PAGE CONTAINER */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-14 relative z-10">
+      {/* 3. HERO SECTION (FULL WIDTH) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-        {/* BREADCRUMB */}
-        <div className="flex items-center gap-2 text-xs text-[#8E8A9D] font-medium py-1.5">
-          <button onClick={onNavigateHome} className="hover:text-[#7C1FAB] transition-colors cursor-pointer">Home</button>
-          <span>&gt;</span>
-          <button onClick={() => onNavigatePage && onNavigatePage('tools')} className="hover:text-[#7C1FAB] transition-colors cursor-pointer">Tools</button>
-          <span>&gt;</span>
-          <span className="text-[#C81E8C] font-semibold">Loan Against Securities</span>
-        </div>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Category Badge, Heading, Subtitle, and 3 Feature Badges */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>LOAN AGAINST SECURITIES CALCULATOR</span>
+            </div>
 
-        {/* HERO BANNER IMAGE */}
-        <div className="w-full overflow-hidden rounded-[20px] sm:rounded-[24px] border border-[#EBE8EF] shadow-sm my-3 mb-6 bg-white">
-          <img
-            src="/las_calculator_hero_banner.png"
-            alt="Unlock Value. Invest. Grow. Achieve More. Use our Loan Against Securities Calculator"
-            className="w-full h-auto block select-none max-h-[360px] lg:max-h-[400px] object-cover object-center"
-          />
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[52px] lg:text-[48px] lg:leading-[56px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[640px]">
+              Unlock Value. <br />Invest. Grow. <span className="text-[#7C1FA8]">Achieve More.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[640px]">
+              Use our Loan Against Securities Calculator to estimate your loan amount and plan your finances better.
+            </p>
+
+            {/* 3 Feature Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-purple-100/80 w-full max-w-[640px]">
+              
+              {/* Badge 1 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-2xl p-3 flex flex-col items-start text-left shadow-2xs">
+                <span className="text-base mb-1">🧮</span>
+                <span className="font-extrabold text-xs text-[#1E1B2E]">Instant Estimate</span>
+                <span className="text-[10px] font-medium text-[#666077] mt-0.5">Quick loan calculation</span>
+              </div>
+
+              {/* Badge 2 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-2xl p-3 flex flex-col items-start text-left shadow-2xs">
+                <span className="text-base mb-1">📈</span>
+                <span className="font-extrabold text-xs text-[#1E1B2E]">Higher Value</span>
+                <span className="text-[10px] font-medium text-[#666077] mt-0.5">Leverage investments</span>
+              </div>
+
+              {/* Badge 3 */}
+              <div className="bg-white/90 backdrop-blur-sm border border-purple-100/90 rounded-2xl p-3 flex flex-col items-start text-left shadow-2xs">
+                <span className="text-base mb-1">🛡️</span>
+                <span className="font-extrabold text-xs text-[#1E1B2E]">Secure Process</span>
+                <span className="text-[10px] font-medium text-[#666077] mt-0.5">Quick & hassle-free</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: Professional Securities Portfolio Dashboard Graphic */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[460px] sm:max-w-[500px] lg:max-w-[540px] flex justify-center items-center">
+              <img
+                src="/investor_tablet_dashboard.png"
+                alt="Unlock Value. Invest. Grow. Achieve More. - Professional Securities Portfolio"
+                className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[440px] object-cover rounded-[24px] shadow-xl border border-purple-100/60 select-none"
+              />
+            </div>
+          </div>
+
         </div>
+      </section>
+
+      {/* 4. MAIN CALCULATOR CONTAINER */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 relative z-10">
 
         {/* 2-COLUMN CALCULATOR GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

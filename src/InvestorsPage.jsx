@@ -21,7 +21,7 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -123,36 +123,91 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO SECTION – Full-width banner image with interactive CTA overlay */}
-      <section className="w-full overflow-hidden relative">
-        <img
-          src="/ChatGPT Image Aug 25, 2026, 03_39_42 PM.png"
-          alt="Investor Page - Invest in possibilities. Build lasting wealth."
-          className="w-full h-auto block"
-        />
-        {/* Interactive Overlay Click Zones over Hero CTAs */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Start Investing CTA overlay area */}
-          <button
-            onClick={() => setSelectedModal(true)}
-            aria-label="Start Investing"
-            className="absolute left-[7%] sm:left-[8%] top-[44%] sm:top-[47%] w-[18%] sm:w-[15%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
-          />
-          {/* Explore Opportunities CTA overlay area */}
-          <button
-            onClick={() => {
-              const el = document.getElementById('opportunities');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-              } else if (onNavigatePage) {
-                onNavigatePage('investment');
-              } else {
-                setSelectedModal(true);
-              }
-            }}
-            aria-label="Explore Opportunities"
-            className="absolute left-[26%] sm:left-[24%] top-[44%] sm:top-[47%] w-[24%] sm:w-[20%] h-[18%] sm:h-[15%] rounded-full cursor-pointer pointer-events-auto focus:outline-none"
-          />
+      {/* 3. HERO SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Category Badge, Heading, Subtitle, 2 CTAs, and Social Proof */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>INVESTOR</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[46px] sm:leading-[52px] lg:text-[52px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[560px]">
+              Invest in possibilities. <br /><span className="text-[#7C1FA8]">Build lasting wealth.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[520px]">
+              Join thousands of investors who trust PROSPERi5 to grow their wealth with expert-curated opportunities across multiple asset classes.
+            </p>
+
+            {/* 2 CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 mb-7 w-full sm:w-auto">
+              <button
+                onClick={() => setSelectedModal(true)}
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Start Investing</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => {
+                  const el = document.getElementById('opportunities');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else onNavigatePage && onNavigatePage('investment');
+                }}
+                className="border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50/80 font-extrabold px-6 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Explore Opportunities</span>
+              </button>
+            </div>
+
+            {/* Social Proof Rating & Avatars Row */}
+            <div className="flex items-center gap-3.5 pt-4 border-t border-purple-100/80 w-full max-w-[520px]">
+              <div className="flex items-center">
+                <img src="/Portrait 2.png" className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-2xs" alt="Investor 1" />
+                <img src="/Portrait 2 (2).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 2" />
+                <img src="/Portrait 2 (3).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 3" />
+                <img src="/Portrait 2 (4).png" className="w-8 h-8 rounded-full border-2 border-white object-cover -ml-2.5 shadow-2xs" alt="Investor 4" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-[#1E1B2E]">
+                  Trusted by <span className="text-[#7C1FA8] font-black">24,560+</span> happy investors
+                </span>
+                <div className="flex items-center gap-1 mt-0.5 text-xs">
+                  <span className="font-black text-[#1E1B2E]">4.8/5</span>
+                  <div className="flex text-[#F5A623] text-xs">
+                    ★ ★ ★ ★ ★
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: 3D Investor Portfolio Graphic */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[520px] sm:max-w-[560px] lg:max-w-[620px] flex justify-center items-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 05_15_23 PM.png"
+                alt="Invest in possibilities. Build lasting wealth. - PROSPERi5 Investor 3D Portfolio Graphic"
+                className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[440px] object-contain drop-shadow-xl"
+              />
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -239,7 +294,7 @@ export default function InvestorsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 5. WHY INVESTORS TRUST US (COMPACT SECTION) */}
       <section className="w-full bg-gradient-to-b from-[#FAF7FD] to-[#F5EEFA] py-8 lg:py-10 px-4 sm:px-6 lg:px-8 border-t border-b border-[#EBE3F5]">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           
           {/* Left Column: Title + 2x2 Compact Feature Grid */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center">

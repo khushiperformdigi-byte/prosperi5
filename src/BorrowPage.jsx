@@ -301,7 +301,7 @@ export default function BorrowPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -402,28 +402,151 @@ export default function BorrowPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO SECTION (FULL WIDTH COMPACT BANNER) */}
-      <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
-        <div className="w-full relative">
-          {/* Main Hero Image */}
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 05_57_35 PM.png" 
-            alt="Funds when you need them. Freedom when you use them."
-            className="w-full h-auto block object-contain max-h-[580px] mx-auto"
-          />
+      {/* 3. HERO SECTION (YOUR GOALS NEED FUNDING. WE MAKE IT HAPPEN.) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-6 sm:pb-7 lg:pb-8 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-          {/* Interactive Click Hotspots mapped over the Hero Image Buttons */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Explore Loan Options Hotspot */}
-            <button
-              onClick={() => handleOpenApplyModal('Explore Loan Options', 'Find the best loan offer suited for your financial goals.')}
-              title="Explore Loan Options"
-              aria-label="Explore Loan Options"
-              className="pointer-events-auto absolute left-[4.5%] top-[50%] w-[16.5%] h-[15%] rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400 opacity-0"
-            />
+        <div className="max-w-7xl mx-auto space-y-7 relative z-10">
+          
+          {/* TOP HERO GRID (Left text content + Right user 3D image) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* LEFT COLUMN: Badge, Title, Subtitle & Action Buttons */}
+            <div className="lg:col-span-6 flex flex-col items-start text-left">
+              
+              {/* Top Category Badge */}
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+                <span className="text-[#7C1FA8] text-xs font-black uppercase tracking-widest font-sans">
+                  LOANS
+                </span>
+              </div>
 
-            {/* Check Eligibility Hotspot */}
+              {/* Main Title */}
+              <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[52px] lg:text-[50px] lg:leading-[58px] tracking-[-0.03em] text-[#1E1B2E] mb-3 max-w-[560px]">
+                Your goals need funding. <span className="text-[#7C1FA8]">We make it happen.</span>
+              </h1>
+
+              {/* Subtitle Paragraph */}
+              <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[22px] sm:leading-[25px] text-[#544F66] mb-6 max-w-[520px]">
+                Get access to flexible, secure and hassle-free loans for your personal and professional needs. With competitive rates and a simple process, Prosperi5 helps you move forward with confidence.
+              </p>
+
+              {/* CTA Buttons Row */}
+              <div className="flex flex-wrap items-center gap-3.5">
+                <button
+                  onClick={() => handleOpenApplyModal('Explore Loan Options', 'Find the best loan offer suited for your financial goals.')}
+                  className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-xl bg-[#7C1FA8] hover:bg-[#68198f] text-white font-bold text-sm sm:text-base shadow-md shadow-purple-900/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Explore Loan Options</span>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() => handleOpenApplyModal('Check Eligibility', 'Check your borrowing limit with zero impact on CIBIL score.')}
+                  className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-xl bg-white hover:bg-purple-50 text-[#7C1FA8] border border-[#7C1FA8]/40 font-bold text-sm sm:text-base shadow-2xs transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+                >
+                  Check Eligibility
+                </button>
+              </div>
+
+            </div>
+
+            {/* RIGHT COLUMN: User 3D Image & Callout */}
+            <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+              
+              {/* Optional Callout text top right */}
+              <div className="hidden sm:flex absolute -top-4 right-6 flex-col items-center pointer-events-none z-20">
+                <span className="text-[#7C1FA8] font-bold text-xs sm:text-sm -rotate-6 tracking-tight">
+                  Big dreams need the right support
+                </span>
+                <svg className="w-6 h-6 text-[#7C1FA8] -mt-1 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                </svg>
+              </div>
+
+              {/* 3D Image Container */}
+              <div className="relative z-10 w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[580px] flex justify-center items-center">
+                <img
+                  src="/ChatGPT Image Aug 29, 2026, 03_23_22 PM.png"
+                  alt="Your goals need funding. We make it happen - Loans Illustration"
+                  className="w-full h-auto max-h-[420px] sm:max-h-[460px] lg:max-h-[480px] object-contain drop-shadow-xl select-none"
+                />
+              </div>
+
+            </div>
+
           </div>
+
+          {/* BOTTOM 4 FEATURE CARDS ROW */}
+          <div className="bg-white/95 backdrop-blur-md rounded-[22px] p-4 sm:p-5 border border-purple-100/80 shadow-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-purple-100/80">
+            
+            {/* Feature 1 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h4 className="font-extrabold text-sm text-[#1E1B2E]">Competitive Rates</h4>
+                <p className="text-xs font-medium text-[#666077] leading-snug mt-0.5">
+                  Get the best rates with complete transparency.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h4 className="font-extrabold text-sm text-[#1E1B2E]">Quick & Easy Process</h4>
+                <p className="text-xs font-medium text-[#666077] leading-snug mt-0.5">
+                  Minimal documentation and faster approvals.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h4 className="font-extrabold text-sm text-[#1E1B2E]">Secure & Trusted</h4>
+                <p className="text-xs font-medium text-[#666077] leading-snug mt-0.5">
+                  Your data and transactions are always safe with us.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h4 className="font-extrabold text-sm text-[#1E1B2E]">Personalized Support</h4>
+                <p className="text-xs font-medium text-[#666077] leading-snug mt-0.5">
+                  Dedicated relationship managers to guide you at every step.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -444,8 +567,8 @@ export default function BorrowPage({ onNavigateHome, onNavigatePage }) {
           </p>
         </div>
 
-        {/* 4 Cards Grid (max-w-6xl with slightly larger cards & text) */}
-        <div className="max-w-6xl mx-auto">
+        {/* 4 Cards Grid (max-w-7xl) */}
+        <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             {/* Card 1: Personal Loan */}
@@ -638,8 +761,8 @@ export default function BorrowPage({ onNavigateHome, onNavigatePage }) {
           </h2>
         </div>
 
-        {/* 4 Steps Horizontal Row with SVG Arrows (max-w-6xl with mathematically centered arrows) */}
-        <div className="max-w-6xl mx-auto">
+        {/* 4 Steps Horizontal Row with SVG Arrows (max-w-7xl) */}
+        <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-10 relative">
             
             {/* Step 1 */}
@@ -719,7 +842,7 @@ export default function BorrowPage({ onNavigateHome, onNavigatePage }) {
       {/* ========================================================================= */}
       {/* 7. SECTION 4: LOAN CALCULATOR BANNER (COMPACT HEIGHT & WIDTH) */}
       {/* ========================================================================= */}
-      <section className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
         <div 
           className="rounded-[24px] sm:rounded-[32px] p-5 sm:p-7 lg:p-8 shadow-2xl text-white relative overflow-hidden bg-cover bg-center"
           style={{ backgroundImage: "url('/ChatGPT Image Aug 26, 2026, 09_00_05 PM.png')" }}

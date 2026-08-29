@@ -20,7 +20,7 @@ export default function PersonalFinancePage({ onNavigateHome, onNavigatePage }) 
 
       {/* 1. TOP UTILITY BAR (CYLINDER SHAPE - DESKTOP ONLY) */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-purple-200">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -121,20 +121,63 @@ export default function PersonalFinancePage({ onNavigateHome, onNavigatePage }) 
         </div>
       )}
 
-      {/* 3. HERO SECTION - EDGE-TO-EDGE FULL WIDTH BANNER */}
-      <section className="w-full font-sans border-b border-purple-100/60">
+      {/* 3. HERO SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
         
-        {/* Edge-to-Edge Full Width Banner Image */}
-        <div className="relative w-full overflow-hidden">
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 05_30_11 PM.png" 
-            alt="Personal Finance - Take control of your money. Build a better future." 
-            className="w-full h-auto object-cover max-h-[580px] w-full"
-          />
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Rupee Badge Tag, Main Heading, Subtitle & Action CTA */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag with Rupee Icon */}
+            <div className="inline-flex items-center gap-2 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-5 h-5 rounded-md bg-[#7C1FA8] text-white flex items-center justify-center text-xs font-extrabold shadow-xs">₹</span>
+              <span>PERSONAL FINANCE</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[46px] sm:leading-[52px] lg:text-[50px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[620px]">
+              Take control of <br />your money. <br />
+              <span className="text-[#7C1FA8]">Build a better future.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[540px]">
+              Smart money habits today lead to financial freedom tomorrow. Learn, plan and take action with confidence.
+            </p>
+
+            {/* Left Action CTA Button */}
+            <div>
+              <button 
+                onClick={() => {
+                  const el = document.getElementById('learn-and-grow');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Start Planning</span>
+                <span>➔</span>
+              </button>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: 3D Personal Finance Workstation & Dashboard */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[540px] sm:max-w-[600px] lg:max-w-[660px] flex justify-center items-center">
+              <img
+                src="/personal_finance_hero_3d.png"
+                alt="Take control of your money - PROSPERi5 Personal Finance 3D Illustration"
+                className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[460px] object-contain drop-shadow-xl"
+              />
+            </div>
+          </div>
+
         </div>
-
-
-    </section>
+      </section>
 
       {/* 4. SECTION 2: LEARN AND GROW - PERSONAL FINANCE MADE SIMPLE */}
       <section id="learn-and-grow" className="py-8 lg:py-12 bg-[#E7E2EF] font-sans border-b border-purple-200/60">
@@ -397,7 +440,7 @@ export default function PersonalFinancePage({ onNavigateHome, onNavigatePage }) 
         </div>
 
         {/* 5 Column Cards Row */}
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           
           {/* Habit 1: Set Clear Goals */}

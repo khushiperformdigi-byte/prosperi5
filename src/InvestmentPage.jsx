@@ -107,7 +107,7 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -279,15 +279,15 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             {/* Card 1: Mutual Funds */}
             <div className="bg-[#FAF4FD] hover:bg-[#7C1FAB] border border-[#EBE3F5] hover:border-[#7C1FAB] rounded-[24px] p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 shadow-2xs hover:shadow-xl hover:shadow-[#7C1FAB]/20 hover:-translate-y-1.5 group cursor-pointer">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
                   <FiPieChart className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Mutual Funds</h3>
+                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-white transition-colors">Mutual Funds</h3>
                   <p className="text-xs font-body text-[#544F66] group-hover:text-white font-semibold mt-1.5 leading-snug transition-colors">Professional management, higher growth potential.</p>
                 </div>
               </div>
-              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-[#F5A623] flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
+              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-white flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
                 <span>Explore</span>
                 <span className="text-sm font-normal">→</span>
               </div>
@@ -296,15 +296,15 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             {/* Card 2: SIP */}
             <div className="bg-[#FAF4FD] hover:bg-[#7C1FAB] border border-[#EBE3F5] hover:border-[#7C1FAB] rounded-[24px] p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 shadow-2xs hover:shadow-xl hover:shadow-[#7C1FAB]/20 hover:-translate-y-1.5 group cursor-pointer">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
                   <FiCalendar className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">SIP</h3>
+                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-white transition-colors">SIP</h3>
                   <p className="text-xs font-body text-[#544F66] group-hover:text-white font-semibold mt-1.5 leading-snug transition-colors">Small steps, big wealth over time.</p>
                 </div>
               </div>
-              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-[#F5A623] flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
+              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-white flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
                 <span>Explore</span>
                 <span className="text-sm font-normal">→</span>
               </div>
@@ -313,15 +313,15 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             {/* Card 3: Stocks */}
             <div className="bg-[#FAF4FD] hover:bg-[#7C1FAB] border border-[#EBE3F5] hover:border-[#7C1FAB] rounded-[24px] p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 shadow-2xs hover:shadow-xl hover:shadow-[#7C1FAB]/20 hover:-translate-y-1.5 group cursor-pointer">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
                   <FiTrendingUp className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Stocks</h3>
+                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-white transition-colors">Stocks</h3>
                   <p className="text-xs font-body text-[#544F66] group-hover:text-white font-semibold mt-1.5 leading-snug transition-colors">Own a part of leading companies.</p>
                 </div>
               </div>
-              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-[#F5A623] flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
+              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-white flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
                 <span>Explore</span>
                 <span className="text-sm font-normal">→</span>
               </div>
@@ -330,15 +330,15 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             {/* Card 4: Bonds */}
             <div className="bg-[#FAF4FD] hover:bg-[#7C1FAB] border border-[#EBE3F5] hover:border-[#7C1FAB] rounded-[24px] p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 shadow-2xs hover:shadow-xl hover:shadow-[#7C1FAB]/20 hover:-translate-y-1.5 group cursor-pointer">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
                   <FiShield className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Bonds</h3>
+                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-white transition-colors">Bonds</h3>
                   <p className="text-xs font-body text-[#544F66] group-hover:text-white font-semibold mt-1.5 leading-snug transition-colors">Stable returns with lower risk.</p>
                 </div>
               </div>
-              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-[#F5A623] flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
+              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-white flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
                 <span>Explore</span>
                 <span className="text-sm font-normal">→</span>
               </div>
@@ -347,15 +347,15 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
             {/* Card 5: Retirement Plans */}
             <div className="bg-[#FAF4FD] hover:bg-[#7C1FAB] border border-[#EBE3F5] hover:border-[#7C1FAB] rounded-[24px] p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 shadow-2xs hover:shadow-xl hover:shadow-[#7C1FAB]/20 hover:-translate-y-1.5 group cursor-pointer">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs">
                   <FiUsers className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Retirement Plans</h3>
+                  <h3 className="font-heading font-extrabold text-base sm:text-lg text-[#1E1B2E] group-hover:text-white transition-colors">Retirement Plans</h3>
                   <p className="text-xs font-body text-[#544F66] group-hover:text-white font-semibold mt-1.5 leading-snug transition-colors">A stress-free future for you & your family.</p>
                 </div>
               </div>
-              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-[#F5A623] flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
+              <div className="pt-5 text-xs font-body font-extrabold text-[#C81E8C] group-hover:text-white flex items-center gap-1.5 group-hover:translate-x-1.5 transition-all">
                 <span>Explore</span>
                 <span className="text-sm font-normal">→</span>
               </div>
@@ -692,11 +692,11 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
                   : 'none',
               }}
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
                 <FiUser className="w-4.5 h-4.5 stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Assess Your Goals</h3>
+                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-white transition-colors">Assess Your Goals</h3>
                 <p className="text-[11px] font-body text-[#544F66] group-hover:text-white font-semibold mt-1 leading-snug transition-colors">Tell us about your financial dreams</p>
               </div>
             </div>
@@ -715,11 +715,11 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
                   : 'none',
               }}
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
                 <FiFileText className="w-4.5 h-4.5 stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Get a Plan</h3>
+                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-white transition-colors">Get a Plan</h3>
                 <p className="text-[11px] font-body text-[#544F66] group-hover:text-white font-semibold mt-1 leading-snug transition-colors">Choose the right investment strategy</p>
               </div>
             </div>
@@ -738,11 +738,11 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
                   : 'none',
               }}
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
                 <FiCreditCard className="w-4.5 h-4.5 stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Invest Smartly</h3>
+                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-white transition-colors">Invest Smartly</h3>
                 <p className="text-[11px] font-body text-[#544F66] group-hover:text-white font-semibold mt-1 leading-snug transition-colors">Start with SIP or lumpsum</p>
               </div>
             </div>
@@ -761,11 +761,11 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
                   : 'none',
               }}
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-[#F5A623] group-hover:border-[#F5A623] group-hover:text-[#1E1B2E] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-purple-100/60 border border-purple-200/60 text-[#8B1FA8] group-hover:bg-white group-hover:border-white group-hover:text-[#7C1FAB] flex items-center justify-center group-hover:scale-110 transition-all shadow-2xs shrink-0">
                 <FiTrendingUp className="w-4.5 h-4.5 stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-[#F5A623] transition-colors">Watch Your Wealth Grow</h3>
+                <h3 className="font-heading font-extrabold text-sm text-[#1E1B2E] group-hover:text-white transition-colors">Watch Your Wealth Grow</h3>
                 <p className="text-[11px] font-body text-[#544F66] group-hover:text-white font-semibold mt-1 leading-snug transition-colors">Stay on track to achieve your goals</p>
               </div>
             </div>
@@ -790,9 +790,10 @@ export default function InvestmentPage({ onNavigateHome, onNavigatePage }) {
 
           <button 
             onClick={() => setSelectedModal(true)}
-            className="bg-accent-gold hover:bg-[#D49300] text-heading-ink font-body font-extrabold px-5 py-2 rounded-full text-xs transition-all shadow-md cursor-pointer whitespace-nowrap active:scale-95 shrink-0"
+            className="bg-white hover:bg-purple-50 text-[#7C1FA8] font-body font-extrabold px-7 sm:px-8 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm min-w-[220px] transition-all shadow-md hover:shadow-lg cursor-pointer whitespace-nowrap active:scale-95 shrink-0 flex items-center justify-center gap-1.5"
           >
-            Start Your Investment Journey →
+            <span>Start Your Investment Journey</span>
+            <span className="text-sm font-normal">→</span>
           </button>
 
         </section>

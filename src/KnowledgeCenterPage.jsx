@@ -118,7 +118,7 @@ export default function KnowledgeCenterPage({ onNavigateHome, onNavigatePage }) 
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -187,29 +187,105 @@ export default function KnowledgeCenterPage({ onNavigateHome, onNavigatePage }) 
         </div>
       </nav>
 
-      {/* 3. HERO SECTION (KNOWLEDGE CENTER BANNER) */}
-      <section className="w-full bg-[#FAF8FC] border-b border-[#EBE8EF]/60 relative overflow-hidden">
-        <div className="w-full relative">
-          <img 
-            src="/ChatGPT Image Aug 26, 2026, 11_48_29 AM.png" 
-            alt="Knowledge Center - Learn, Invest & Grow"
-            className="w-full h-auto block -mt-3 sm:-mt-5 lg:-mt-7"
-          />
+      {/* 3. HERO SECTION (FULL WIDTH - CUSTOM REACT) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Ambient Purple Background Glow */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
 
-          {/* Interactive Hotspots Over Banner Buttons */}
-          <div className="absolute inset-0 pointer-events-none">
-            <button
-              onClick={() => setSelectedArticleModal({ title: 'Explore Wealth Guides', content: 'Access full wealth research guides, market analysis and investment tutorials.' })}
-              title="Explore Guides"
-              aria-label="Explore Guides"
-              className="pointer-events-auto absolute left-[4%] top-[60%] w-[15%] h-[15%] rounded-full cursor-pointer focus:outline-none"
-            />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Main Heading, Subtitle & CTAs */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Category Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 bg-[#F0E6F8] text-[#7C1FA8] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3.5">
+              <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span>KNOWLEDGE CENTER</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="font-sans font-extrabold text-[36px] leading-[44px] sm:text-[48px] sm:leading-[54px] lg:text-[52px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3.5 w-full max-w-[640px]">
+              Knowledge that <br />helps you <span className="text-[#7C1FA8]">grow smarter.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-6 w-full max-w-[560px]">
+              Expert insights, practical guides and powerful tools to help you make better financial decisions every day.
+            </p>
+
+            {/* Action CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 mb-6">
+              <button 
+                onClick={() => {
+                  const el = document.getElementById('articles-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#7C1FA8] hover:bg-[#6b1a91] text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Explore Wealth Guides</span>
+                <span>➔</span>
+              </button>
+
+              <button 
+                onClick={() => {
+                  const el = document.getElementById('topics-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="border-2 border-[#7C1FA8] text-[#7C1FA8] hover:bg-purple-50/80 font-extrabold px-6 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <span>Browse Topics</span>
+              </button>
+            </div>
+
+            {/* Popular Searches Row */}
+            <div className="w-full max-w-[580px]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#8E8A9D] block mb-2">
+                POPULAR SEARCHES
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { label: 'SIP Guide', icon: '📈', cat: 'Mutual Funds & SIP' },
+                  { label: 'Income Tax Saving', icon: '📄', cat: 'Tax Savings' },
+                  { label: 'Home Loan', icon: '🏠', cat: 'Loans & Credit' },
+                  { label: 'Mutual Funds', icon: '⏱️', cat: 'Mutual Funds & SIP' },
+                  { label: 'Retirement Planning', icon: '👤', cat: 'Wealth Strategy' }
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setActiveCategory(item.cat);
+                      setSearchQuery(item.label);
+                      const el = document.getElementById('articles-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="bg-white/90 hover:bg-purple-50 border border-[#EBE3F5] hover:border-[#7C1FA8]/50 rounded-xl px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-[#1E1B2E] shadow-2xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <span className="text-xs">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
           </div>
+
+          {/* RIGHT COLUMN: 3D Education & Knowledge Illustration */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[620px] sm:max-w-[700px] lg:max-w-[780px] flex justify-center items-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 05_28_39 PM.png"
+                alt="Knowledge that helps you grow smarter - PROSPERi5 Knowledge Center 3D Illustration"
+                className="w-full h-auto max-h-[460px] sm:max-h-[520px] lg:max-h-[580px] object-contain drop-shadow-xl"
+              />
+            </div>
+          </div>
+
         </div>
       </section>
 
       {/* 4. EXPLORE FINANCIAL TOPICS SECTION (COMPACT & CENTERED) */}
-      <section className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto select-none">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none">
         
         {/* Centered Header */}
         <div className="text-center max-w-2xl mx-auto mb-7">
@@ -316,7 +392,7 @@ export default function KnowledgeCenterPage({ onNavigateHome, onNavigatePage }) 
       </section>
 
       {/* 5. LEARN BY YOUR FINANCIAL GOAL SECTION */}
-      <section className="py-8 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto select-none border-t border-[#EBE8EF]/60">
+      <section className="py-8 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none border-t border-[#EBE8EF]/60">
         
         {/* Centered Header */}
         <div className="text-center max-w-2xl mx-auto mb-8">
@@ -470,7 +546,7 @@ export default function KnowledgeCenterPage({ onNavigateHome, onNavigatePage }) 
       </section>
 
       {/* 5. MAIN CONTENT */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8 select-none">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8 select-none">
 
         {/* 6. BEGINNER'S LEARNING HUB SECTION */}
         <div className="py-6 sm:py-8">

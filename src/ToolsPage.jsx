@@ -106,7 +106,7 @@ export default function ToolsPage({ onNavigateHome, onNavigatePage }) {
       
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -298,13 +298,98 @@ export default function ToolsPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* 3. HERO SECTION BANNER - FULL WIDTH */}
-      <section className="w-full overflow-hidden bg-[#FAF5FD]">
-        <img 
-          src="/tools_hero_banner.png" 
-          alt="Calculate today. Plan better tomorrow. - Smart Tools by PROSPERi5" 
-          className="w-full h-auto block select-none"
-        />
+      {/* 3. HERO SECTION (CALCULATE TODAY. PLAN BETTER TOMORROW.) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-5 sm:pb-6 lg:pb-7 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          
+          {/* LEFT COLUMN: Badge, Title, Subtitle & 4 Feature Badges Row */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            
+            {/* Top Category Badge */}
+            <div className="flex items-center gap-2.5 mb-3.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+              <span className="text-[#7C1FA8] text-xs sm:text-[13px] font-black uppercase tracking-widest font-sans">
+                SMART TOOLS, BETTER DECISIONS
+              </span>
+            </div>
+
+            {/* Main Title */}
+            <h1 className="font-sans font-extrabold text-[38px] leading-[44px] sm:text-[48px] sm:leading-[54px] lg:text-[54px] lg:leading-[60px] tracking-[-0.035em] text-[#1E1B2E] mb-4 max-w-[580px]">
+              Calculate today. <br /><span className="text-[#7C1FA8]">Plan better tomorrow.</span>
+            </h1>
+
+            {/* Subtitle Paragraph */}
+            <p className="font-medium text-[15px] sm:text-[16.5px] leading-[23px] sm:leading-[26px] text-[#544F66] mb-8 max-w-[500px]">
+              Use our smart financial calculators to make informed decisions and reach your goals faster.
+            </p>
+
+            {/* 4 Feature Badges Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-6 border-t border-purple-100/70 w-full max-w-[620px]">
+              
+              {/* Feature 1 */}
+              <div className="flex flex-col items-start text-left">
+                <div className="w-13 h-13 rounded-[20px] bg-[#6B1F9D] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="font-extrabold text-sm sm:text-[15px] text-[#1E1B2E] mt-3">Instant Results</span>
+                <span className="text-xs font-medium text-[#666077] mt-1 leading-tight">Real-time calculations</span>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="flex flex-col items-start text-left">
+                <div className="w-13 h-13 rounded-[20px] bg-[#C81E8C] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0112 2.714z" />
+                  </svg>
+                </div>
+                <span className="font-extrabold text-sm sm:text-[15px] text-[#1E1B2E] mt-3">100% Accurate</span>
+                <span className="text-xs font-medium text-[#666077] mt-1 leading-tight">Reliable & precise</span>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="flex flex-col items-start text-left">
+                <div className="w-13 h-13 rounded-[20px] bg-[#F5A623] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                </div>
+                <span className="font-extrabold text-sm sm:text-[15px] text-[#1E1B2E] mt-3">Private & Secure</span>
+                <span className="text-xs font-medium text-[#666077] mt-1 leading-tight">Your data is safe</span>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="flex flex-col items-start text-left">
+                <div className="w-13 h-13 rounded-[20px] bg-[#10B981] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                  </svg>
+                </div>
+                <span className="font-extrabold text-sm sm:text-[15px] text-[#1E1B2E] mt-3">Easy to Use</span>
+                <span className="text-xs font-medium text-[#666077] mt-1 leading-tight">Simple & intuitive</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: User 3D Image */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+            <div className="relative z-10 w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[580px] flex justify-center items-center">
+              <img
+                src="/ChatGPT Image Aug 29, 2026, 03_32_38 PM.png"
+                alt="Calculate today. Plan better tomorrow. - Smart Calculator Illustration"
+                className="w-full h-auto max-h-[420px] sm:max-h-[460px] lg:max-h-[480px] object-contain drop-shadow-xl select-none"
+              />
+            </div>
+          </div>
+
+        </div>
       </section>
 
       {/* 4. ATTRACTIVE & BEAUTIFUL TOOLS 4-CARDS SECTION */}

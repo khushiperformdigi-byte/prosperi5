@@ -1,6 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Footer from './Footer';
 
+// Helper component for smooth number counting animation when visible
+function AnimatedStatCounter({ end, decimal = false, prefix = '', suffix = '' }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const animatedRef = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !animatedRef.current) {
+          animatedRef.current = true;
+          let start = null;
+          const duration = 1800;
+          const step = (ts) => {
+            if (!start) start = ts;
+            const progress = Math.min((ts - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            if (decimal) {
+              setCount(Math.round(ease * end * 10) / 10);
+            } else {
+              setCount(Math.floor(ease * end));
+            }
+            if (progress < 1) requestAnimationFrame(step);
+            else setCount(end);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [end, decimal]);
+
+  return (
+    <span ref={ref}>
+      {prefix}
+      {decimal ? count.toFixed(1) : count.toLocaleString('en-IN')}
+      {suffix}
+    </span>
+  );
+}
+
 export default function AboutPage({ onNavigateHome, onNavigatePage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
@@ -104,7 +147,7 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 1. TOP CONTACT UTILITY BAR */}
       <div className="hidden sm:block bg-[#11081F] w-full py-2 px-4 sm:px-6 select-none relative z-20 font-sans">
-        <div className="max-w-[1500px] mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
+        <div className="max-w-7xl mx-auto bg-[#1A102B]/90 backdrop-blur-md border border-white/15 rounded-full px-5 sm:px-6 py-1.5 flex justify-between items-center text-xs md:text-sm text-white shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex gap-2 items-center text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#F5A623]/15 flex items-center justify-center text-[#F5A623]">
@@ -206,13 +249,163 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
         </div>
       )}
 
-      {/* HERO SECTION – Full-width, no bottom clipping */}
-      <section className="w-full overflow-hidden">
-        <img
-          src="/ChatGPT Image Aug 25, 2026, 02_18_28 PM.png"
-          alt="About PROSPERi5 - Empowering Partners, Enriching Futures"
-          className="w-full h-auto block"
-        />
+      {/* 3. HERO SECTION (EMPOWERING PARTNERS. ENRICHING FUTURES.) */}
+      <section className="w-full bg-[#FAF8FC] bg-gradient-to-r from-[#FAF8FC] via-[#F5EEFC] to-[#FAF8FC] relative overflow-hidden border-b border-[#EBE8EF]/60 pt-4 sm:pt-5 lg:pt-6 pb-6 sm:pb-7 lg:pb-8 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-purple-200/40 rounded-full filter blur-[90px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto space-y-7 relative z-10">
+          
+          {/* TOP HERO GRID (Left Text & Bank Partners + Right 3D Visual & Mission Cards) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* LEFT COLUMN: Badge, Title, Subtitle, CTA Buttons & Bank Partners */}
+            <div className="lg:col-span-6 flex flex-col items-start text-left">
+              
+              {/* Top Category Badge */}
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#7C1FA8] inline-block animate-pulse"></span>
+                <span className="text-[#7C1FA8] text-xs font-black uppercase tracking-widest font-sans">
+                  ABOUT PROSPERIS
+                </span>
+              </div>
+
+              {/* Main Title */}
+              <h1 className="font-sans font-extrabold text-[34px] leading-[42px] sm:text-[44px] sm:leading-[52px] lg:text-[50px] lg:leading-[58px] tracking-[-0.035em] text-[#1E1B2E] mb-3 max-w-[560px]">
+                Empowering Partners. <br /><span className="text-[#7C1FA8]">Enriching Futures.</span>
+              </h1>
+
+              {/* Subtitle Paragraph */}
+              <p className="font-medium text-[14.5px] sm:text-[15.5px] leading-[22px] sm:leading-[25px] text-[#544F66] mb-6 max-w-[500px]">
+                At PROSPERi5, we simplify finance and empower partners with world-class tools, deep insights and unmatched support to help their clients build a stronger financial future.
+              </p>
+
+              {/* CTA Buttons Row */}
+              <div className="flex flex-wrap items-center gap-3.5 mb-7">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('our-values');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-xl bg-[#7C1FA8] hover:bg-[#68198f] text-white font-bold text-sm sm:text-base shadow-md shadow-purple-900/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Our Story</span>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('our-values');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="h-[46px] sm:h-[50px] px-7 sm:px-8 rounded-xl bg-white hover:bg-purple-50 text-[#7C1FA8] border border-[#7C1FA8]/40 font-bold text-sm sm:text-base shadow-2xs transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>Our Values</span>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                  </svg>
+                </button>
+              </div>
+
+            </div>
+
+            {/* RIGHT COLUMN: 3D Graphic Container */}
+            <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full mt-4 lg:mt-0">
+              <div className="relative z-10 w-full max-w-[520px] sm:max-w-[560px] lg:max-w-[620px] flex justify-center items-center">
+                <img
+                  src="/ChatGPT Image Aug 29, 2026, 04_37_32 PM.png"
+                  alt="Empowering Partners. Enriching Futures - About Us 3D Graphic"
+                  className="w-full h-auto max-h-[380px] sm:max-h-[420px] lg:max-h-[440px] object-contain drop-shadow-xl select-none"
+                />
+              </div>
+            </div>
+
+          </div>
+
+          {/* BOTTOM 5 STATS COUNTER BAR */}
+          <div className="bg-white/95 backdrop-blur-md rounded-[22px] p-4 sm:p-5 border border-purple-100/80 shadow-md grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-purple-100/80">
+            
+            {/* Stat 1 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6 0 3.375 3.375 0 016 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] leading-none">
+                  <AnimatedStatCounter end={50} suffix="K+" />
+                </h3>
+                <span className="text-xs font-medium text-[#666077] mt-1">Active Partners</span>
+              </div>
+            </div>
+
+            {/* Stat 2 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5h-15V21" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] leading-none">
+                  <AnimatedStatCounter end={250} suffix="+" />
+                </h3>
+                <span className="text-xs font-medium text-[#666077] mt-1">Financial Products</span>
+              </div>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] leading-none">
+                  <AnimatedStatCounter end={100} suffix="+" />
+                </h3>
+                <span className="text-xs font-medium text-[#666077] mt-1">Top Financial Partners</span>
+              </div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5a1.5 1.5 0 011.5 1.5v10.5a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] leading-none">
+                  <AnimatedStatCounter end={2500} prefix="₹" suffix=" Cr+" />
+                </h3>
+                <span className="text-xs font-medium text-[#666077] mt-1">Assets Under Management</span>
+              </div>
+            </div>
+
+            {/* Stat 5 */}
+            <div className="flex items-center gap-3.5 pt-3 sm:pt-0 px-2 sm:pl-4">
+              <div className="w-11 h-11 rounded-2xl bg-purple-100/70 border border-purple-200/60 text-[#7C1FA8] flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="font-extrabold text-base sm:text-lg text-[#1E1B2E] leading-none">
+                  <AnimatedStatCounter end={4.8} decimal={true} suffix="/5" />
+                </h3>
+                <span className="text-xs font-medium text-[#666077] mt-1">Average Partner Rating</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </section>
 
       {/* OUR VALUES – Light theme with reduced padding & growing purple hover effect */}
@@ -342,13 +535,13 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
             ].map((item, i) => (
               <div
                 key={i}
-                className="bg-[#2A084B] border border-[#481678]/50 rounded-3xl p-4 sm:p-5 flex flex-col items-center text-center shadow-lg hover:bg-[#7C1FA8] hover:border-[#7C1FA8] hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(124,31,168,0.5)] transition-all duration-300 group cursor-pointer min-h-[220px] justify-between"
+                className="bg-[#7C1FA8] border border-purple-400/40 rounded-3xl p-4 sm:p-5 flex flex-col items-center text-center shadow-[0_12px_32px_rgba(124,31,168,0.35)] cursor-default min-h-[220px] justify-between"
               >
-                <div className="mb-1.5 transform group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
+                <div className="mb-1.5 flex items-center justify-center">
                   <svg className="w-20 h-20" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                     {/* Left Wreath Branch */}
-                    <g className="fill-white group-hover:fill-white transition-colors duration-300">
-                      <path d="M 45 96 C 30 85 23 66 23 48 C 23 36 28 24 38 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" className="text-white group-hover:text-white transition-colors duration-300" />
+                    <g className="fill-white">
+                      <path d="M 45 96 C 30 85 23 66 23 48 C 23 36 28 24 38 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" className="text-white" />
                       <path d="M37 20 C30 22 25 18 23 13 C26 18 33 19 37 20Z" />
                       <path d="M30 32 C23 33 17 28 16 23 C19 28 26 30 30 32Z" />
                       <path d="M26 46 C19 46 14 40 14 34 C17 39 23 42 26 46Z" />
@@ -362,8 +555,8 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
                       <path d="M39 80 C35 76 37 70 41 66 C41 71 39 76 39 80Z" />
                     </g>
                     {/* Right Wreath Branch */}
-                    <g className="fill-white group-hover:fill-white transition-colors duration-300">
-                      <path d="M 75 96 C 90 85 97 66 97 48 C 97 36 92 24 82 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" className="text-white group-hover:text-white transition-colors duration-300" />
+                    <g className="fill-white">
+                      <path d="M 75 96 C 90 85 97 66 97 48 C 97 36 92 24 82 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" className="text-white" />
                       <path d="M83 20 C90 22 95 18 97 13 C94 18 87 19 83 20Z" />
                       <path d="M90 32 C97 33 103 28 104 23 C101 28 94 30 90 32Z" />
                       <path d="M94 46 C101 46 106 40 106 34 C103 39 97 42 94 46Z" />
@@ -376,12 +569,12 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
                       <path d="M86 68 C90 64 88 58 84 54 C84 59 86 64 86 68Z" />
                       <path d="M81 80 C85 76 83 70 79 66 C79 71 81 76 81 80Z" />
                     </g>
-                    {/* Central Shield */}
-                    <path className="fill-[#7C1FA8] group-hover:fill-[#F5A623] transition-colors duration-300" d="M60 22 C73 22 81 16 81 16 V48 C81 65 71 77 60 83 C49 77 39 65 39 48 V16 C39 16 47 22 60 22 Z" />
+                    {/* Central Shield Accent */}
+                    <path className="fill-[#F5A623]" d="M60 22 C73 22 81 16 81 16 V48 C81 65 71 77 60 83 C49 77 39 65 39 48 V16 C39 16 47 22 60 22 Z" />
                     {/* Shield Content */}
                     {item.type === 'amfi' && (
-                      <g className="fill-white group-hover:fill-[#18082D] transition-colors duration-300">
-                        <polygon className="fill-[#F5A623] group-hover:fill-white" points="60,28 61.3,31 64.5,31.3 62,33.5 62.7,36.5 60,34.8 57.3,36.5 58,33.5 55.5,31.3 58.7,31" />
+                      <g className="fill-white">
+                        <polygon className="fill-white" points="60,28 61.3,31 64.5,31.3 62,33.5 62.7,36.5 60,34.8 57.3,36.5 58,33.5 55.5,31.3 58.7,31" />
                         <circle cx="60" cy="44" r="4" />
                         <path d="M52 58c0-4.5 3.6-8 8-8s8 3.5 8 8v1H52v-1z" />
                         <circle cx="51" cy="47" r="2.8" />
@@ -391,16 +584,16 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
                       </g>
                     )}
                     {item.type === 'top' && (
-                      <g className="fill-white group-hover:fill-[#18082D] transition-colors duration-300">
+                      <g className="fill-white">
                         <rect x="49" y="52" width="5" height="11" rx="1.5" />
                         <rect x="57.5" y="44" width="5" height="19" rx="1.5" />
                         <rect x="66" y="38" width="5" height="25" rx="1.5" />
-                        <path className="stroke-white group-hover:stroke-[#18082D] transition-colors duration-300" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="M49 46l7-6 6 4 9-9" />
-                        <polygon points="71,35 73,40 68,39" className="fill-white group-hover:fill-[#18082D]" />
+                        <path className="stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="M49 46l7-6 6 4 9-9" />
+                        <polygon points="71,35 73,40 68,39" className="fill-white" />
                       </g>
                     )}
                     {item.type === 'support' && (
-                      <g className="fill-white group-hover:fill-[#18082D] transition-colors duration-300">
+                      <g className="fill-white">
                         <circle cx="60" cy="42" r="4.5" />
                         <path d="M51 57c0-5 4-9 9-9s9 4 9 9v1H51v-1z" />
                         <circle cx="49" cy="45" r="2.8" />
@@ -410,17 +603,17 @@ export default function AboutPage({ onNavigateHome, onNavigatePage }) {
                       </g>
                     )}
                     {item.type === 'trusted' && (
-                      <g className="fill-white group-hover:fill-[#18082D] transition-colors duration-300">
+                      <g className="fill-white">
                         <circle cx="60" cy="43" r="7" />
                         <path d="M48 63c0-6.5 5.4-11.5 12-11.5s12 5 12 11.5v1H48v-1z" />
                       </g>
                     )}
                   </svg>
                 </div>
-                <h3 className="font-bold text-white group-hover:text-[#F5A623] text-base sm:text-[17px] leading-snug my-auto max-w-[210px] transition-colors duration-300">
+                <h3 className="font-bold text-white text-base sm:text-[17px] leading-snug my-auto max-w-[210px]">
                   {item.title}
                 </h3>
-                <p className="text-[#C4A8E8] group-hover:text-white text-xs sm:text-[13px] font-bold pt-1 transition-colors duration-300">
+                <p className="text-white/90 text-xs sm:text-[13px] font-semibold pt-1">
                   {item.sub}
                 </p>
               </div>

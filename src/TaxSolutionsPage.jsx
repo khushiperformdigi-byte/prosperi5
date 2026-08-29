@@ -231,7 +231,7 @@ export default function TaxSolutionsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 3. SECTION 3: HOW IT WORKS (EXACT MATCH TO REFERENCE SCREENSHOT 2) */}
       <section className="w-full bg-[#FAF5FD] py-12 sm:py-16 px-4 sm:px-6 lg:px-8 my-6 font-sans">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Column: Title & Decorative Squiggly Arrow */}
           <div className="lg:col-span-4 space-y-3 text-center lg:text-left">
@@ -323,7 +323,7 @@ export default function TaxSolutionsPage({ onNavigateHome, onNavigatePage }) {
 
       {/* 4. SECTION 4: CALCULATE YOUR SAVINGS (INTERACTIVE TAX CALCULATOR WITH MATCHING HEIGHT) */}
       <section className="w-full bg-[#FCE9F4] py-8 sm:py-10 px-4 sm:px-6 lg:px-8 my-6 font-sans">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
           
           {/* Left Content Side */}
           <div className="lg:col-span-5 flex flex-col justify-between space-y-3.5">
@@ -432,7 +432,7 @@ export default function TaxSolutionsPage({ onNavigateHome, onNavigatePage }) {
 
 
       {/* 7. SECTION 6: 5 TRUST METRICS STRIP (SHIFTED UP WITH ANIMATED COUNTERS) */}
-      <section className="-mt-3 sm:-mt-4 mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans relative z-20">
+      <section className=" -mt-3 sm:-mt-4 mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans relative z-20">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 sm:gap-4">
           
           <AnimatedMetric value="2L+" label="Happy Investors" />
@@ -445,7 +445,7 @@ export default function TaxSolutionsPage({ onNavigateHome, onNavigatePage }) {
       </section>
 
       {/* 8. SECTION 7: BOTTOM CTA BANNER (ULTRA COMPACT HEIGHT) */}
-      <section className="py-2 sm:py-3 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-sans">
+      <section className="py-2 sm:py-3 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
         <div 
           className="rounded-[20px] sm:rounded-[24px] py-3.5 sm:py-4.5 px-5 sm:px-7 lg:px-9 shadow-xl text-white relative overflow-hidden bg-cover bg-center"
           style={{ backgroundImage: "url('/ChatGPT Image Aug 26, 2026, 09_00_05 PM.png')" }}
