@@ -9,11 +9,12 @@ const TINYMCE_API_KEY =
 export default function TinyEditor({ value, onChange, height = 520 }) {
   const editorRef = useRef(null);
   const [EditorComp, setEditorComp] = useState(null);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     import('@tinymce/tinymce-react')
       .then((mod) => setEditorComp(() => mod.Editor))
-      .catch(() => setEditorComp(null));
+      .catch(() => setLoadError(true));
   }, []);
 
   const init = useMemo(
@@ -90,27 +91,27 @@ export default function TinyEditor({ value, onChange, height = 520 }) {
     [height]
   );
 
-  if (EditorComp) {
+  if (loadError || !EditorComp) {
     return (
-      <EditorComp
-        apiKey={TINYMCE_API_KEY}
-        onInit={(_evt, editor) => {
-          editorRef.current = editor;
-        }}
-        value={value}
-        onEditorChange={(content) => onChange(content)}
-        init={init}
+      <textarea
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ height: `${height}px` }}
+        className="w-full p-4 border border-purple-200 rounded-xl font-mono text-sm focus:outline-none focus:border-purple-600 bg-white text-[#1E1B2E]"
+        placeholder="HTML Content Editor..."
       />
     );
   }
 
   return (
-    <textarea
+    <EditorComp
+      apiKey={TINYMCE_API_KEY}
+      onInit={(_evt, editor) => {
+        editorRef.current = editor;
+      }}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full border border-purple-200 rounded-lg p-3 text-sm font-mono focus:outline-none focus:border-purple-600 bg-white text-[#1E1B2E]"
-      style={{ height: `${height}px` }}
-      placeholder="Write post content..."
+      onEditorChange={(content) => onChange(content)}
+      init={init}
     />
   );
 }
