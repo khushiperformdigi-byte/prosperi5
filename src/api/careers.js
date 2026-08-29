@@ -122,4 +122,18 @@ export async function deleteAdminJob(id) {
   return payload.data;
 }
 
+export async function fetchAdminEnquiries(params = {}) {
+  const query = new URLSearchParams(params).toString();
+  const payload = await request(`/admin/enquiries${query ? `?${query}` : ''}`, { auth: true });
+  return Array.isArray(payload.data?.enquiries) ? payload.data.enquiries : [];
+}
+
+export async function deleteAdminEnquiry(id) {
+  const payload = await request(`/admin/enquiries/${id}`, {
+    method: 'DELETE',
+    auth: true,
+  });
+  return payload.data;
+}
+
 export { API_BASE };

@@ -22,6 +22,7 @@ require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/JobsController.php';
 require_once __DIR__ . '/controllers/BlogController.php';
 require_once __DIR__ . '/controllers/MediaController.php';
+require_once __DIR__ . '/controllers/EnquiriesController.php';
 
 // 3. Parse Request Method & Path
 $method = $_SERVER['REQUEST_METHOD'];
@@ -63,13 +64,6 @@ try {
         exit;
     }
 
-    // Media Serving (Binary output)
-    if ($method === 'GET' && preg_match('#^/media/(\d+)$#', $path, $m)) {
-        MediaController::serve((int)$m[1]);
-        exit;
-    }
-
-    // JSON API Endpoints
     header('Content-Type: application/json');
 
     // Public Careers
@@ -86,7 +80,7 @@ try {
         exit;
     }
     if ($method === 'POST' && $path === '/enquiries') {
-        echo json_encode(JobsController::submitEnquiry($body));
+        echo json_encode(EnquiriesController::submit($body));
         exit;
     }
 
@@ -174,6 +168,16 @@ try {
     if ($method === 'POST' && $path === '/admin/media/from-url') {
         AuthController::authenticate();
         echo json_encode(MediaController::uploadFromUrl($body));
+        exit;
+    }
+
+    // Admin Enquiries / Leads
+    if ($method === 'GET' && $path === '/admin/enquiries') {
+        echo json_encode(EnquiriesController::listAdmin($_GET));
+        exit;
+    }
+    if ($method === 'DELETE' && preg_match('#^/admin/enquiries/(\d+)$#', $path, $m)) {
+        echo json_encode(EnquiriesController::deleteAdmin((int)$m[1]));
         exit;
     }
 

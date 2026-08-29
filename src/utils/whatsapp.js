@@ -16,12 +16,14 @@ export const sendWhatsAppEnquiry = ({
   message = "",
   extra = {}
 }) => {
-  // 1. Trigger backend email notification asynchronously
+  const formPath = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : '/';
+
+  // 1. Trigger backend enquiry recording & email notification asynchronously
   fetch(`${API_BASE}/enquiries`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ formName, name, phone, email, city, service, message, extra }),
-  }).catch((err) => console.warn('Email notification error:', err));
+    body: JSON.stringify({ formName, formPath, name, phone, email, city, service, message, extra }),
+  }).catch((err) => console.warn('Backend enquiry notification error:', err));
 
   // 2. Format & open WhatsApp link
   let text = `📌 *New Enquiry - PROSPERi5*\n`;

@@ -42,6 +42,28 @@ CREATE TABLE `job_applications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- Table structure for `enquiries` (User Form Leads & Enquiries)
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `enquiries`;
+CREATE TABLE `enquiries` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `form_name` VARCHAR(255) NOT NULL DEFAULT 'Website Form',
+  `form_path` VARCHAR(255) NOT NULL DEFAULT '/',
+  `name` VARCHAR(191) DEFAULT NULL,
+  `email` VARCHAR(191) DEFAULT NULL,
+  `phone` VARCHAR(100) DEFAULT NULL,
+  `city` VARCHAR(100) DEFAULT NULL,
+  `service` VARCHAR(255) DEFAULT NULL,
+  `message` LONGTEXT DEFAULT NULL,
+  `extra_data` LONGTEXT DEFAULT NULL,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'new',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_enquiries_path` (`form_path`),
+  KEY `idx_enquiries_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- 3. Table structure for `jobs` (Parent table)
 -- ------------------------------------------------------------
 DROP TABLE IF EXISTS `jobs`;
